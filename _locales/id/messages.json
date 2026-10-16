@@ -1,0 +1,10 @@
+{
+   "extensionDescription": {
+      "description": "Short description of the extension. Max 132 characters in the Chrome Web Store.",
+      "message": "Rekam formulir sekali, isi otomatis selamanya dalam satu klik. Mendukung React & aplikasi web kompleks. Gratis, privat, tanpa akun."
+   },
+   "extensionName": {
+      "description": "Name of the extension. Max 45 characters in the Chrome Web Store.",
+      "message": "Help Seif"
+   }
+}

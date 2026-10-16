@@ -1,0 +1,193 @@
+{
+  "id": "5312e5af-9da9-4344-81a1-0ab1e4114afd",
+  "name": "Follow Up",
+  "url": "https://britishcouncil.lightning.force.com/lightning/r/Opportunity/006Nz00000uAVyMIAW/view",
+  "interactions": [
+    {
+      "id": "1a734108-db09-4261-a0b9-cd1be21b92f3",
+      "type": "CLICK",
+      "key": "button[title=\"Edit Close Date\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "653f70d0-42ca-4bd2-88dd-ac2c5c90e46a",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "196e53e0-809a-45f5-a612-4b9952c75092",
+      "type": "MULTIPLE_FIELDS",
+      "fields": [
+        {
+          "key": "CloseDate",
+          "value": "{{TODAY}}",
+          "fieldType": "text",
+          "searchType": "name"
+        },
+        {
+          "key": "Flexible_Field_3_Value__c",
+          "value": "BEG 10% List",
+          "fieldType": "text",
+          "searchType": "name"
+        }
+      ]
+    },
+    {
+      "id": "e1b4968b-f58a-4c7a-a664-efda57de40b0",
+      "type": "CLICK",
+      "key": "button[aria-label=\"Log a Call\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "f34aa4f3-49e9-496a-b4b8-8cab40fe18ee",
+      "type": "DELAY",
+      "value": "1000",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "3758744f-7d30-47cb-8c43-041da83c7b81",
+      "type": "MULTIPLE_FIELDS",
+      "fields": [
+        {
+          "key": "input[aria-label=\"Subject\"]",
+          "value": "EG/Sales Call",
+          "fieldType": "text",
+          "searchType": "cssSelector"
+        },
+        {
+          "key": "textarea[aria-describedby=\"quickTextKeyboardTip\"]",
+          "value": "Follow up ",
+          "fieldType": "text",
+          "searchType": "cssSelector"
+        }
+      ]
+    },
+    {
+      "id": "3deb6f38-ce82-4640-be49-3b0bc388f6df",
+      "type": "CLICK",
+      "key": "button.cuf-publisherShareButton",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "433a33cb-ecee-47f6-a074-33323a9e0218",
+      "type": "CLICK",
+      "key": "button[aria-label='New Task']",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "5341cceb-0007-41a5-ba72-78c8a6426a0a",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "0ee81ded-2d61-4aa9-9937-acb9907a808a",
+      "type": "INPUT",
+      "key": "input[aria-label=\"Subject\"]",
+      "value": "EG/Sales team (Follow up)",
+      "fieldType": "text",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-fup-01",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-fup-02",
+      "type": "CLICK",
+      "key": ".change-owner-trigger button, button[title=\"Change Owner\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-fup-03",
+      "type": "DELAY",
+      "value": "1000",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-fup-04",
+      "type": "CLICK",
+      "key": ".autocompleteWrapper input, input[title=\"Search Users\"], input.uiInputTextForAutocomplete, input[placeholder=\"Search Users...\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-fup-05",
+      "type": "DELAY",
+      "value": "600",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-fup-06",
+      "type": "CLICK",
+      "key": "ul.lookup__list li.lookup__item:first-child a[role=\"option\"], ul.lookup__list li.lookup__item a[role=\"option\"], .lookup__list .lookup__item a",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-fup-07",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-fup-08",
+      "type": "CLICK",
+      "key": "button[name=\"change owner\"], button[value=\"change owner\"], .slds-modal__footer button.slds-button_brand, footer.slds-modal__footer button.slds-button_brand, button.changeOwnerConfirm",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-fup-09",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    }
+  ],
+  "updatedAt": "2026-10-16T15:40:17.037Z",
+  "createdAt": "2026-10-16T05:11:20.700Z",
+  "description": "Log and update fields"
+}

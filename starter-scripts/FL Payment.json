@@ -1,0 +1,184 @@
+{
+  "id": "f1a00000-pay1-4000-8000-000000000001",
+  "name": "FL Payment",
+  "url": "https://britishcouncil.lightning.force.com/lightning/o/Opportunity/new?count=12&nooverride=1&useRecordTypeCheck=1&navigationLocation=RELATED_LIST&uid=179205036504112013&recordTypeId=01220000000MKJPAA4",
+  "description": "Payment workflow and call log",
+  "interactions": [
+    {
+      "id": "qfe-flp-edit-date-btn",
+      "type": "CLICK",
+      "key": "button[title=\"Edit Close Date\"], [data-target-selection-name*=\"CloseDate\"] button, button[title*=\"Close Date\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-d1",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-multi-fields",
+      "type": "MULTIPLE_FIELDS",
+      "fields": [
+        {
+          "key": "CloseDate",
+          "value": "{{TODAY}}",
+          "fieldType": "text",
+          "searchType": "name"
+        },
+        {
+          "key": "Flexible_Field_3_Value__c",
+          "value": "BEG 10% List",
+          "fieldType": "text",
+          "searchType": "name"
+        }
+      ]
+    },
+    {
+      "id": "qfe-flp-d2",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-owner-btn",
+      "type": "CLICK",
+      "key": ".change-owner-trigger button, button[title=\"Change Owner\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-d3",
+      "type": "DELAY",
+      "value": "1000",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-owner-input",
+      "type": "CLICK",
+      "key": ".autocompleteWrapper input, input[title=\"Search Users\"], input.uiInputTextForAutocomplete, input[placeholder=\"Search Users...\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-d4",
+      "type": "DELAY",
+      "value": "600",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-owner-opt",
+      "type": "CLICK",
+      "key": "ul.lookup__list li.lookup__item:first-child a[role=\"option\"], ul.lookup__list li.lookup__item a[role=\"option\"], .lookup__list .lookup__item a",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-d5",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-owner-confirm",
+      "type": "CLICK",
+      "key": "button[name=\"change owner\"], button[value=\"change owner\"], .slds-modal__footer button.slds-button_brand, footer.slds-modal__footer button.slds-button_brand, button.changeOwnerConfirm",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-d6",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-path-tab",
+      "type": "CLICK",
+      "key": "li[data-name=\"Registered Not Paid\"] a, a[data-tab-name=\"Registered Not Paid\"], a[title=\"Registered Not Paid\"], [data-target-selection-name=\"registeredNotPaidPathTab\"] a",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-d7",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-path-mark",
+      "type": "CLICK",
+      "key": "button.slds-path__mark-complete, .slds-path__stage-button button, .runtime_sales_pathassistantPathAssistantHeader button.slds-button_brand, .runtime_sales_pathassistantPathAssistant button.slds-path__mark-complete",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-d8",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-call-btn",
+      "type": "CLICK",
+      "key": "button[aria-label=\"Log a Call\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-d9",
+      "type": "DELAY",
+      "value": "1000",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-call-subj",
+      "type": "MULTIPLE_FIELDS",
+      "fields": [
+        {
+          "key": "input[aria-label=\"Subject\"]",
+          "value": "EG/Sales Call",
+          "fieldType": "text",
+          "searchType": "cssSelector"
+        }
+      ]
+    }
+  ],
+  "updatedAt": "2026-10-16T16:40:32.629Z",
+  "createdAt": "2026-10-15T07:48:39.737Z"
+}

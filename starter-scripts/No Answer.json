@@ -1,0 +1,260 @@
+{
+  "id": "c07fa334-c6a6-417a-ba2b-9c0a55208836",
+  "name": "No Answer",
+  "url": "https://britishcouncil.lightning.force.com/lightning/r/Opportunity/006Nz00000uAVyMIAW/view",
+  "interactions": [
+    {
+      "id": "1a734108-db09-4261-a0b9-cd1be21b92f3",
+      "type": "CLICK",
+      "key": "button[title=\"Edit Close Date\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "653f70d0-42ca-4bd2-88dd-ac2c5c90e46a",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "196e53e0-809a-45f5-a612-4b9952c75092",
+      "type": "MULTIPLE_FIELDS",
+      "fields": [
+        {
+          "key": "CloseDate",
+          "value": "{{TODAY}}",
+          "fieldType": "text",
+          "searchType": "name"
+        },
+        {
+          "key": "Flexible_Field_3_Value__c",
+          "value": "BEG 10% List",
+          "fieldType": "text",
+          "searchType": "name"
+        }
+      ]
+    },
+    {
+      "id": "e1b4968b-f58a-4c7a-a664-efda57de40b0",
+      "type": "CLICK",
+      "key": "button[aria-label=\"Log a Call\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "f34aa4f3-49e9-496a-b4b8-8cab40fe18ee",
+      "type": "DELAY",
+      "value": "1000",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "3758744f-7d30-47cb-8c43-041da83c7b81",
+      "type": "MULTIPLE_FIELDS",
+      "fields": [
+        {
+          "key": "input[aria-label=\"Subject\"]",
+          "value": "EG/Sales Call",
+          "fieldType": "text",
+          "searchType": "cssSelector"
+        },
+        {
+          "key": "textarea[aria-describedby=\"quickTextKeyboardTip\"]",
+          "value": "No Answer",
+          "fieldType": "text",
+          "searchType": "cssSelector"
+        }
+      ]
+    },
+    {
+      "id": "b9d34853-cf35-4f1f-8727-52d8acd5194a",
+      "type": "CLICK",
+      "key": "button.cuf-publisherShareButton",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "018c8087-bccf-4997-a56d-cd29055ef446",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "a1518a2a-0464-4f23-83d7-9e98e657252c",
+      "type": "CLICK",
+      "key": "li[data-name=\"Closed\"] a[title=\"Closed\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "c0039121-d41e-4a78-a7fe-c33efecbe643",
+      "type": "CLICK",
+      "key": "button.slds-path__mark-complete",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "ad4f16b9-552d-4f75-831b-764ae3d7f416",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "e6569478-5b69-4495-a5d1-62d10425f9ad",
+      "type": "CLICK",
+      "key": "button[name=\"StageName\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "27fa619d-c0fa-413f-8077-e71047cdea42",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "f764bd3b-53c2-4725-82dd-6090c698211c",
+      "type": "CLICK",
+      "key": "lightning-base-combobox-item[data-value=\"Not Registered (Closed Lost)\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "f94c443f-0e9b-4eb3-8143-ba2e075d7f30",
+      "type": "CLICK",
+      "key": "button[name=\"Reason_opportunity_Lost__c\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "9940d1c5-af7b-4ffb-b2f3-95848b5112a9",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "64ebd0a1-3604-4b65-b37f-70967c2e91df",
+      "type": "CLICK",
+      "key": "lightning-base-combobox-item[data-value=\"Not reachable/No answer\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "ff37284f-cfb5-472f-b2c6-ec4447e908be",
+      "type": "CLICK",
+      "key": "button.slds-button_brand[type=\"submit\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-na-01",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-na-02",
+      "type": "CLICK",
+      "key": ".change-owner-trigger button, button[title=\"Change Owner\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-na-03",
+      "type": "DELAY",
+      "value": "1000",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-na-04",
+      "type": "CLICK",
+      "key": ".autocompleteWrapper input, input[title=\"Search Users\"], input.uiInputTextForAutocomplete, input[placeholder=\"Search Users...\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-na-05",
+      "type": "DELAY",
+      "value": "600",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-na-06",
+      "type": "CLICK",
+      "key": "ul.lookup__list li.lookup__item:first-child a[role=\"option\"], ul.lookup__list li.lookup__item a[role=\"option\"], .lookup__list .lookup__item a",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-na-07",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-na-08",
+      "type": "CLICK",
+      "key": "button[name=\"change owner\"], button[value=\"change owner\"], .slds-modal__footer button.slds-button_brand, footer.slds-modal__footer button.slds-button_brand, button.changeOwnerConfirm",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-na-09",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    }
+  ],
+  "updatedAt": "2026-10-16T15:40:17.029Z",
+  "createdAt": "2026-10-16T03:42:14.732Z",
+  "description": "Log and update fields"
+}

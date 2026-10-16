@@ -1,0 +1,10 @@
+{
+   "extensionDescription": {
+      "description": "Short description of the extension. Max 132 characters in the Chrome Web Store.",
+      "message": "フォームを一度記録すれば、ワンクリックで何度でも自動入力。React や複雑なWebアプリにも対応。無料・プライベート・アカウント不要。"
+   },
+   "extensionName": {
+      "description": "Name of the extension. Max 45 characters in the Chrome Web Store.",
+      "message": "Help Seif"
+   }
+}

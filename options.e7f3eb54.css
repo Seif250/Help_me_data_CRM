@@ -1,0 +1,3 @@
+.pSEYVG_interactionsList{width:100%;min-height:400px}.pSEYVG_interactionsListActive{min-height:100vh}.pSEYVG_active{border-color:var(--primary)}.pSEYVG_interactionItemDroppableZone{width:100%;height:200px}.QlE-jG_navItem:hover>span{color:#fff}.mDljlW_sidebar{width:100%;max-width:320px}
+/* QuickForm Editor: hide Lite mode navigation */
+a[href*="#/lite"],a[href*="/lite/edit/"]{display:none!important}

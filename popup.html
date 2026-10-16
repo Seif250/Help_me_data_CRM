@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Help Seif</title>
+  <link rel="stylesheet" href="/quickform-editor-controls.css">
+</head>
+<body class="flexi-body">
+  <div class="flexi-popup" id="flexi-popup">
+    <!-- 1. Header -->
+    <header class="flexi-header">
+      <div class="flexi-brand">
+        <div class="flexi-logo">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="#FFFFFF">
+            <path d="M13 2L3 14h8l-2 8 10-12h-8l2-8z"/>
+          </svg>
+        </div>
+        <div class="flexi-titles">
+          <h1 class="flexi-title">Help Seif</h1>
+          <p class="flexi-subtitle">Salesforce scripts</p>
+        </div>
+      </div>
+      <div class="flexi-header-actions">
+        <div class="flexi-status-pill">
+          <span class="flexi-status-dot"></span>
+          <span class="flexi-status-text">Active</span>
+        </div>
+        <button type="button" class="flexi-icon-btn" id="flexi-settings-btn" title="Settings" aria-label="Settings">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#17231D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+        <button type="button" class="flexi-icon-btn" id="flexi-close-btn" title="Close" aria-label="Close">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#17231D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- 2. Flexible Field 3 Value Section -->
+    <section class="flexi-field-card">
+      <div class="flexi-field-header">
+        <div class="flexi-dollar-icon">
+          <span>$</span>
+        </div>
+        <label for="qfe-flex-value" class="flexi-field-label">Flexible Field 3 Value</label>
+      </div>
+      <div class="flexi-select-wrapper">
+        <select id="qfe-flex-value" class="flexi-select" aria-label="Flexible Field 3 Value"></select>
+        <div class="flexi-select-arrow" aria-hidden="true">
+          <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="#17231D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 7.5L10 12.5L15 7.5"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Automation Scripts List -->
+    <main class="flexi-scripts-list" id="flexi-scripts-list" aria-label="Automation scripts">
+      <!-- 5 script rows rendered dynamically by quickform-editor-controls.js -->
+    </main>
+
+    <div id="flexi-toast" class="flexi-toast" role="status" aria-live="polite"></div>
+  </div>
+
+  <div id="__plasmo" style="display:none !important;" aria-hidden="true"></div>
+  <script src="/quickform-editor-controls.js"></script>
+  <script src="/popup.100f6462.js" defer></script>
+</body>
+</html>

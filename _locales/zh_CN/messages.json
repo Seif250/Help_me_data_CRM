@@ -1,0 +1,10 @@
+{
+   "extensionDescription": {
+      "description": "Short description of the extension. Max 132 characters in the Chrome Web Store.",
+      "message": "表单录制一次，一键永久自动填充。支持 React 及复杂网页应用。免费、私密、无需账户。"
+   },
+   "extensionName": {
+      "description": "Name of the extension. Max 45 characters in the Chrome Web Store.",
+      "message": "Help Seif"
+   }
+}

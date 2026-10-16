@@ -1,0 +1,10 @@
+{
+   "extensionDescription": {
+      "description": "Short description of the extension. Max 132 characters in the Chrome Web Store.",
+      "message": "I-record ang form minsan, autofill nang paulit-ulit sa isang klik. Gumagana sa React at web apps. Libre, pribado, walang account."
+   },
+   "extensionName": {
+      "description": "Name of the extension. Max 45 characters in the Chrome Web Store.",
+      "message": "Help Seif"
+   }
+}

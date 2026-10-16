@@ -1,0 +1,10 @@
+{
+   "extensionDescription": {
+      "description": "Short description of the extension. Max 132 characters in the Chrome Web Store.",
+      "message": "Запишите форму один раз — заполняйте в один клик. Работает с React и сложными веб-приложениями. Бесплатно, приватно, без аккаунта."
+   },
+   "extensionName": {
+      "description": "Name of the extension. Max 45 characters in the Chrome Web Store.",
+      "message": "Help Seif"
+   }
+}

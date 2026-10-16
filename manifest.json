@@ -1,0 +1,79 @@
+{
+  "action": {
+    "default_icon": {
+      "128": "icon128.plasmo.3c1ed2d2.png",
+      "16": "icon16.plasmo.6c567d50.png",
+      "32": "icon32.plasmo.76b92899.png",
+      "48": "icon48.plasmo.aced7582.png",
+      "64": "icon64.plasmo.8bb5e6e0.png"
+    },
+    "default_popup": "popup.html"
+  },
+  "author": "Albert Gabdullin. <quickform.pro@gmail.com>",
+  "background": {
+    "service_worker": "static/background/index.js"
+  },
+  "content_scripts": [
+    {
+      "all_frames": false,
+      "css": [
+        "font.f64e3f04.css",
+        "content.5e152e98.css"
+      ],
+      "js": [
+        "content.883ade9e.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "default_locale": "en",
+  "description": "Help Seif - Salesforce automation and script runner with custom workflows, dynamic Close Date, and configurable Flexible Field 3 Value.",
+  "externally_connectable": {
+    "matches": [
+      "https://quickform.pro/*",
+      "https://*.quickform.pro/*"
+    ]
+  },
+  "host_permissions": [
+    "https://*/*"
+  ],
+  "icons": {
+    "128": "icon128.plasmo.3c1ed2d2.png",
+    "16": "icon16.plasmo.6c567d50.png",
+    "32": "icon32.plasmo.76b92899.png",
+    "48": "icon48.plasmo.aced7582.png",
+    "64": "icon64.plasmo.8bb5e6e0.png"
+  },
+  "manifest_version": 3,
+  "name": "Help Seif",
+  "options_ui": {
+    "open_in_tab": true,
+    "page": "options.html"
+  },
+  "permissions": [
+    "storage",
+    "scripting",
+    "activeTab",
+    "tabs",
+    "contextMenus"
+  ],
+  "version": "1.17.8",
+  "web_accessible_resources": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "resources": [
+        "Inter.a6dc61af.woff2",
+        "wl-6SIEURNF.44f29c6d.js",
+        "wl-Y3PKYBWS.380a7a2c.js",
+        "content.b08964b6.css",
+        "content.642039fc.css",
+        "content.33e81aa6.svg"
+      ]
+    }
+  ]
+}
