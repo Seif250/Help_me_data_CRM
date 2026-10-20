@@ -204,9 +204,58 @@ body::-webkit-scrollbar-thumb {
   letter-spacing: -0.01em;
 }
 
+/* Flexible Field row (select + add/del buttons) */
+.flexi-field-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .flexi-select-wrapper {
   position: relative;
-  width: 100%;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Add / Delete option buttons */
+.flexi-field-action-btn {
+  width: 34px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--color-subtle-green-border);
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+  padding: 0;
+}
+
+.flexi-field-add-btn {
+  color: var(--color-primary-green);
+}
+
+.flexi-field-add-btn:hover {
+  background: var(--color-light-green-bg);
+  border-color: var(--color-primary-green);
+  transform: scale(1.05);
+}
+
+.flexi-field-del-btn {
+  color: #c53030;
+  border-color: #f5c6c6;
+}
+
+.flexi-field-del-btn:hover {
+  background: #fff0f0;
+  border-color: #c53030;
+  transform: scale(1.05);
+}
+
+.flexi-field-action-btn:active {
+  transform: scale(0.96);
 }
 
 .flexi-select {

@@ -72,20 +72,25 @@
     }, 2200);
   }
 
-  // 1. Initialize Flexible Field 3 Value
+  // 1. Initialize Flexible Field 3 Value (with Add / Delete option support)
   async function initFlexibleField() {
     const select = document.getElementById("qfe-flex-value");
+    const addBtn  = document.getElementById("qfe-flex-add");
+    const delBtn  = document.getElementById("qfe-flex-del");
     if (!select) return;
 
-    try {
+    // --- helpers ---
+    async function loadOptions() {
       const stored = await chrome.storage.local.get([OPTIONS_KEY, VALUE_KEY]);
       let options = Array.isArray(stored[OPTIONS_KEY]) ? stored[OPTIONS_KEY] : [...DEFAULTS];
       if (!options.length) options = [...DEFAULTS];
-
-      let value = typeof stored[VALUE_KEY] === "string" ? stored[VALUE_KEY].trim() : "BEG 10% List";
-      if (!value) value = "BEG 10% List";
+      let value = typeof stored[VALUE_KEY] === "string" ? stored[VALUE_KEY].trim() : DEFAULTS[0];
+      if (!value) value = DEFAULTS[0];
       if (!options.includes(value)) options.unshift(value);
+      return { options, value };
+    }
 
+    async function renderOptions(options, selectedValue) {
       select.replaceChildren();
       for (const opt of options) {
         const el = document.createElement("option");
@@ -93,17 +98,112 @@
         el.textContent = opt;
         select.appendChild(el);
       }
-      select.value = value;
+      select.value = selectedValue;
+    }
 
+    async function save(options, value) {
+      await chrome.storage.local.set({ [OPTIONS_KEY]: options, [VALUE_KEY]: value });
+    }
+
+    // --- initial render ---
+    try {
+      const { options, value } = await loadOptions();
+      await renderOptions(options, value);
+
+      // On change: persist selected value
       select.addEventListener("change", async () => {
         const next = select.value;
         await chrome.storage.local.set({ [VALUE_KEY]: next });
         showToast(`✓ Field 3: ${next}`);
       });
+
+      // ➕ Add new option
+      if (addBtn) {
+        addBtn.addEventListener("click", async () => {
+          const raw = prompt("اكتب الـ Option الجديد:");
+          if (!raw) return;
+          const newOpt = raw.trim();
+          if (!newOpt) return;
+          const { options: current } = await loadOptions();
+          if (current.includes(newOpt)) {
+            showToast("الخيار موجود بالفعل", true);
+            return;
+          }
+          const updated = [...current, newOpt];
+          await save(updated, newOpt);
+          await renderOptions(updated, newOpt);
+          showToast(`✓ تمت إضافة: ${newOpt}`);
+        });
+      }
+
+      // ➖ Delete current option
+      if (delBtn) {
+        delBtn.addEventListener("click", async () => {
+          const current = select.value;
+          if (!current) return;
+          const { options: all } = await loadOptions();
+          if (all.length <= 1) {
+            showToast("لازم يفضل خيار واحد على الأقل", true);
+            return;
+          }
+          const confirmed = confirm(`هتحذف "${current}"؟`);
+          if (!confirmed) return;
+          const updated = all.filter(o => o !== current);
+          const newSelected = updated[0];
+          await save(updated, newSelected);
+          await renderOptions(updated, newSelected);
+          showToast(`✓ تم حذف: ${current}`);
+        });
+      }
+
     } catch (e) {
       console.warn("Help Seif: Flexible field init error", e);
     }
   }
+
+  // ─── Adaptive Delay ────────────────────────────────────────────────────────
+  // Measures actual page load/response time and stores a multiplier so that
+  // slow connections get longer delays and fast connections get shorter ones.
+  // Multiplier is stored in chrome.storage.local as "qfeDelayMultiplier".
+  const DELAY_MULTIPLIER_KEY = "qfeDelayMultiplier";
+
+  async function measureAndStoreLatency() {
+    try {
+      const t0 = performance.now();
+      // Lightweight ping: check how fast storage itself responds as a proxy
+      await chrome.storage.local.get(["resources"]);
+      const roundTripMs = performance.now() - t0;
+
+      // Map round-trip to a sane multiplier:
+      //   < 50 ms  → 0.7 (fast)
+      //   50-150   → 1.0 (normal)
+      //   150-400  → 1.4 (medium-slow)
+      //   > 400 ms → 2.0 (slow / heavy page)
+      let multiplier;
+      if      (roundTripMs < 50)  multiplier = 0.7;
+      else if (roundTripMs < 150) multiplier = 1.0;
+      else if (roundTripMs < 400) multiplier = 1.4;
+      else                        multiplier = 2.0;
+
+      await chrome.storage.local.set({ [DELAY_MULTIPLIER_KEY]: multiplier });
+    } catch (e) {
+      // Non-fatal – scripts will fall back to their hard-coded delays
+      console.warn("Help Seif: latency measurement failed", e);
+    }
+  }
+
+  // Expose a helper the content scripts can read before executing each DELAY step
+  // (the background/index.js already reads qfeDelayMultiplier from storage)
+  async function getDelayMultiplier() {
+    try {
+      const res = await chrome.storage.local.get([DELAY_MULTIPLIER_KEY]);
+      const m = res[DELAY_MULTIPLIER_KEY];
+      return (typeof m === "number" && m > 0) ? m : 1.0;
+    } catch {
+      return 1.0;
+    }
+  }
+
 
   // 2. Initialize Header Actions
   function initHeaderActions() {
@@ -463,6 +563,7 @@
     initHeaderActions();
     setupGlobalMenuCloser();
     initScriptRows();
+    measureAndStoreLatency();
   });
 
   // If DOM is already loaded
@@ -471,5 +572,6 @@
     initHeaderActions();
     setupGlobalMenuCloser();
     initScriptRows();
+    measureAndStoreLatency();
   }
 })();
