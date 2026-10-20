@@ -4,21 +4,69 @@
   "url": "https://britishcouncil.lightning.force.com/lightning/r/Opportunity/006Nz00000uAVyMIAW/view",
   "interactions": [
     {
+      "id": "qfe-o-nswer-owner-open",
+      "type": "CLICK",
+      "key": ".change-owner-trigger button, button[title=\"Change Owner\"]",
+      "searchType": "cssSelector",
+      "fields": [{}]
+    },
+    {
+      "id": "qfe-o-nswer-owner-modal-wait",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [{}]
+    },
+    {
+      "id": "qfe-o-nswer-owner-input",
+      "type": "CLICK",
+      "key": ".autocompleteWrapper input, input[title=\"Search Users\"], input.uiInputTextForAutocomplete, input[placeholder=\"Search Users...\"]",
+      "searchType": "cssSelector",
+      "fields": [{}]
+    },
+    {
+      "id": "qfe-o-nswer-owner-results-wait",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [{}]
+    },
+    {
+      "id": "qfe-o-nswer-owner-first-result",
+      "type": "CLICK",
+      "key": "ul.lookup__list li.lookup__item:first-child a[role=\"option\"], ul.lookup__list li.lookup__item a[role=\"option\"], .lookup__list .lookup__item a",
+      "searchType": "cssSelector",
+      "fields": [{}]
+    },
+    {
+      "id": "qfe-o-nswer-owner-before-confirm",
+      "type": "DELAY",
+      "value": "400",
+      "fields": [{}]
+    },
+    {
+      "id": "qfe-o-nswer-owner-confirm",
+      "type": "CLICK",
+      "key": "button[name=\"change owner\"], button[value=\"change owner\"], .slds-modal__footer button.slds-button_brand, footer.slds-modal__footer button.slds-button_brand, button.changeOwnerConfirm",
+      "searchType": "cssSelector",
+      "fields": [{}]
+    },
+    {
+      "id": "qfe-o-nswer-owner-done",
+      "type": "DELAY",
+      "value": "600",
+      "fields": [{}]
+    },
+    {
       "id": "1a734108-db09-4261-a0b9-cd1be21b92f3",
       "type": "CLICK",
       "key": "button[title=\"Edit Close Date\"]",
       "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
+      "fields": [{}]
     },
     {
       "id": "653f70d0-42ca-4bd2-88dd-ac2c5c90e46a",
       "type": "DELAY",
       "value": "400",
-      "fields": [
-        {}
-      ]
+      "fields": [{}]
     },
     {
       "id": "196e53e0-809a-45f5-a612-4b9952c75092",
@@ -43,17 +91,13 @@
       "type": "CLICK",
       "key": "button[aria-label=\"Log a Call\"]",
       "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
+      "fields": [{}]
     },
     {
       "id": "f34aa4f3-49e9-496a-b4b8-8cab40fe18ee",
       "type": "DELAY",
-      "value": "500",
-      "fields": [
-        {}
-      ]
+      "value": "800",
+      "fields": [{}]
     },
     {
       "id": "3758744f-7d30-47cb-8c43-041da83c7b81",
@@ -74,226 +118,109 @@
       ]
     },
     {
+      "id": "qfe-na-before-log-save",
       "type": "DELAY",
       "value": "500",
-      "fields": [
-        {}
-      ]
+      "fields": [{}]
     },
     {
       "id": "b9d34853-cf35-4f1f-8727-52d8acd5194a",
       "type": "CLICK",
       "key": "button.cuf-publisherShareButton",
       "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
+      "fields": [{}]
     },
     {
       "id": "018c8087-bccf-4997-a56d-cd29055ef446",
       "type": "DELAY",
-      "value": "500",
-      "fields": [
-        {}
-      ]
+      "value": "600",
+      "fields": [{}]
     },
     {
-      "id": "a1518a2a-0464-4f23-83d7-9e98e657252c",
+      "id": "qfe-na-stage-open",
       "type": "CLICK",
-      "key": "li[data-name=\"Closed\"] a[title=\"Closed\"]",
+      "key": "button[aria-label=\"Stage\"]",
       "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
+      "fields": [{}]
     },
     {
-      "id": "c0039121-d41e-4a78-a7fe-c33efecbe643",
-      "type": "CLICK",
-      "key": "button.slds-path__mark-complete",
-      "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "ad4f16b9-552d-4f75-831b-764ae3d7f416",
+      "id": "qfe-na-stage-wait",
       "type": "DELAY",
       "value": "400",
-      "fields": [
-        {}
-      ]
+      "fields": [{}]
     },
     {
-      "id": "e6569478-5b69-4495-a5d1-62d10425f9ad",
-      "type": "CLICK",
-      "key": "button[name=\"StageName\"]",
-      "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "27fa619d-c0fa-413f-8077-e71047cdea42",
-      "type": "DELAY",
-      "value": "400",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "f764bd3b-53c2-4725-82dd-6090c698211c",
+      "id": "qfe-na-stage-select",
       "type": "CLICK",
       "key": "lightning-base-combobox-item[data-value=\"Not Registered (Closed Lost)\"]",
       "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
+      "fields": [{}]
     },
     {
-      "id": "f94c443f-0e9b-4eb3-8143-ba2e075d7f30",
-      "type": "CLICK",
-      "key": "button[name=\"Reason_opportunity_Lost__c\"]",
-      "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "9940d1c5-af7b-4ffb-b2f3-95848b5112a9",
+      "id": "qfe-na-after-stage",
       "type": "DELAY",
       "value": "400",
-      "fields": [
-        {}
-      ]
+      "fields": [{}]
     },
     {
-      "id": "64ebd0a1-3604-4b65-b37f-70967c2e91df",
+      "id": "qfe-na-reason-open",
+      "type": "CLICK",
+      "key": "button[aria-label=\"Reason Opportunity Lost or Closed\"]",
+      "searchType": "cssSelector",
+      "fields": [{}]
+    },
+    {
+      "id": "qfe-na-reason-wait",
+      "type": "DELAY",
+      "value": "400",
+      "fields": [{}]
+    },
+    {
+      "id": "qfe-na-reason-select",
       "type": "CLICK",
       "key": "lightning-base-combobox-item[data-value=\"Not reachable/No answer\"]",
       "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
+      "fields": [{}]
     },
     {
-      "id": "ff37284f-cfb5-472f-b2c6-ec4447e908be",
-      "type": "CLICK",
-      "key": "button.slds-button_brand[type=\"submit\"]",
-      "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-na-01",
+      "id": "qfe-na-reason-other-wait",
       "type": "DELAY",
       "value": "400",
+      "fields": [{}]
+    },
+    {
+      "id": "qfe-na-reason-other",
+      "type": "MULTIPLE_FIELDS",
       "fields": [
-        {}
+        {
+          "key": "input[name=\"Reason_Opportunity_Lost_Other__c\"]",
+          "value": "No Answer",
+          "fieldType": "text",
+          "searchType": "cssSelector"
+        }
       ]
     },
     {
-      "id": "qfe-na-03",
-      "type": "DELAY",
-      "value": "500",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-na-05",
-      "type": "DELAY",
-      "value": "500",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-na-07",
+      "id": "qfe-na-before-save",
       "type": "DELAY",
       "value": "400",
-      "fields": [
-        {}
-      ]
+      "fields": [{}]
     },
     {
-      "id": "qfe-na-09",
-      "type": "DELAY",
-      "value": "400",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-o-nswer-owner-open",
+      "id": "qfe-na-save",
       "type": "CLICK",
-      "key": ".change-owner-trigger button, button[title=\"Change Owner\"]",
+      "key": "button[name=\"SaveEdit\"]",
       "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
+      "fields": [{}]
     },
     {
-      "id": "qfe-o-nswer-owner-modal-wait",
+      "id": "qfe-na-save-done",
       "type": "DELAY",
       "value": "500",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-o-nswer-owner-input",
-      "type": "CLICK",
-      "key": ".autocompleteWrapper input, input[title=\"Search Users\"], input.uiInputTextForAutocomplete, input[placeholder=\"Search Users...\"]",
-      "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-o-nswer-owner-results-wait",
-      "type": "DELAY",
-      "value": "500",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-o-nswer-owner-first-result",
-      "type": "CLICK",
-      "key": "ul.lookup__list li.lookup__item:first-child a[role=\"option\"], ul.lookup__list li.lookup__item a[role=\"option\"], .lookup__list .lookup__item a",
-      "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-o-nswer-owner-before-confirm",
-      "type": "DELAY",
-      "value": "400",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-o-nswer-owner-confirm",
-      "type": "CLICK",
-      "key": "button[name=\"change owner\"], button[value=\"change owner\"], .slds-modal__footer button.slds-button_brand, footer.slds-modal__footer button.slds-button_brand, button.changeOwnerConfirm",
-      "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-o-nswer-owner-done",
-      "type": "DELAY",
-      "value": "500",
-      "fields": [
-        {}
-      ]
+      "fields": [{}]
     }
   ],
-  "updatedAt": "2026-10-19T23:59:59.000Z",
+  "updatedAt": "2026-10-21T00:16:00.000Z",
   "createdAt": "2026-10-16T03:42:14.732Z",
   "description": "Log and update fields"
 }
