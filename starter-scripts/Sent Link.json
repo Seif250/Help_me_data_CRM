@@ -2,24 +2,72 @@
   "id": "b7b0f68c-7238-43c9-90a5-62be52f3f7a6",
   "name": "Sent Link",
   "url": "https://britishcouncil.lightning.force.com/lightning/o/Opportunity/new?count=12&nooverride=1&useRecordTypeCheck=1&navigationLocation=RELATED_LIST&uid=179205036504112013&recordTypeId=01220000000MKJPAA4",
-  "description": "Set Registered Not Paid, then open Log a Call with Subject prefilled; enter comment manually and save.",
+  "description": "Change Owner first, then update date fields, set Registered Not Paid stage, then open Log a Call with Subject + Comment prefilled. Leave open for manual saving.",
   "interactions": [
+    {
+      "id": "qfe-sl-owner-open",
+      "type": "CLICK",
+      "key": ".change-owner-trigger button, button[title=\"Change Owner\"]",
+      "searchType": "cssSelector",
+      "fields": [{}]
+    },
+    {
+      "id": "qfe-sl-owner-modal-wait",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [{}]
+    },
+    {
+      "id": "qfe-sl-owner-input",
+      "type": "CLICK",
+      "key": ".autocompleteWrapper input, input[title=\"Search Users\"], input.uiInputTextForAutocomplete, input[placeholder=\"Search Users...\"]",
+      "searchType": "cssSelector",
+      "fields": [{}]
+    },
+    {
+      "id": "qfe-sl-owner-results-wait",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [{}]
+    },
+    {
+      "id": "qfe-sl-owner-first-result",
+      "type": "CLICK",
+      "key": "ul.lookup__list li.lookup__item:first-child a[role=\"option\"], ul.lookup__list li.lookup__item a[role=\"option\"], .lookup__list .lookup__item a",
+      "searchType": "cssSelector",
+      "fields": [{}]
+    },
+    {
+      "id": "qfe-sl-owner-before-confirm",
+      "type": "DELAY",
+      "value": "400",
+      "fields": [{}]
+    },
+    {
+      "id": "qfe-sl-owner-confirm",
+      "type": "CLICK",
+      "key": "button[name=\"change owner\"], button[value=\"change owner\"], .slds-modal__footer button.slds-button_brand, footer.slds-modal__footer button.slds-button_brand, button.changeOwnerConfirm",
+      "searchType": "cssSelector",
+      "fields": [{}]
+    },
+    {
+      "id": "qfe-sl-owner-done",
+      "type": "DELAY",
+      "value": "600",
+      "fields": [{}]
+    },
     {
       "id": "qfe-sl-edit-date-btn",
       "type": "CLICK",
       "key": "button[title=\"Edit Close Date\"], [data-target-selection-name*=\"CloseDate\"] button, button[title*=\"Close Date\"]",
       "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
+      "fields": [{}]
     },
     {
       "id": "qfe-sl-d1",
       "type": "DELAY",
       "value": "400",
-      "fields": [
-        {}
-      ]
+      "fields": [{}]
     },
     {
       "id": "qfe-sl-multi-fields",
@@ -43,92 +91,46 @@
       "id": "qfe-sl-d2",
       "type": "DELAY",
       "value": "400",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-sl-d3",
-      "type": "DELAY",
-      "value": "500",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-sl-d4",
-      "type": "DELAY",
-      "value": "500",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-sl-d5",
-      "type": "DELAY",
-      "value": "400",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-sl-d6",
-      "type": "DELAY",
-      "value": "400",
-      "fields": [
-        {}
-      ]
+      "fields": [{}]
     },
     {
       "id": "qfe-sl-path-tab",
       "type": "CLICK",
       "key": "li[data-name=\"Registered Not Paid\"] a, a[data-tab-name=\"Registered Not Paid\"], a[title=\"Registered Not Paid\"], [data-target-selection-name=\"registeredNotPaidPathTab\"] a",
       "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
+      "fields": [{}]
     },
     {
-      "id": "qfe-sl-d7",
+      "id": "qfe-sl-d3",
       "type": "DELAY",
       "value": "400",
-      "fields": [
-        {}
-      ]
+      "fields": [{}]
     },
     {
       "id": "qfe-sl-path-mark",
       "type": "CLICK",
       "key": "button.slds-path__mark-complete, .slds-path__stage-button button, .runtime_sales_pathassistantPathAssistantHeader button.slds-button_brand, .runtime_sales_pathassistantPathAssistant button.slds-path__mark-complete",
       "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
+      "fields": [{}]
     },
     {
       "id": "qfe-sl-after-stage-wait",
       "type": "DELAY",
       "value": "400",
-      "fields": [
-        {}
-      ]
+      "fields": [{}]
     },
     {
       "id": "qfe-sl-call-btn",
       "type": "CLICK",
       "key": "button[aria-label=\"Log a Call\"]",
       "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
+      "fields": [{}]
     },
     {
       "id": "qfe-sl-call-open-wait",
       "type": "DELAY",
       "value": "500",
-      "fields": [
-        {}
-      ]
+      "fields": [{}]
     },
     {
       "id": "qfe-sl-call-manual-fields",
@@ -139,11 +141,17 @@
           "value": "EG/Sales Call",
           "fieldType": "text",
           "searchType": "cssSelector"
+        },
+        {
+          "key": "textarea[aria-describedby=\"quickTextKeyboardTip\"]",
+          "value": "Sent Link",
+          "fieldType": "text",
+          "searchType": "cssSelector"
         }
       ]
     }
   ],
-  "updatedAt": "2026-10-19T23:59:59.000Z",
+  "updatedAt": "2026-10-21T00:37:00.000Z",
   "createdAt": "2026-10-15T07:48:39.737Z",
   "manualCallLog": true
 }
