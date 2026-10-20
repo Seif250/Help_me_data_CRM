@@ -1,0 +1,7 @@
+Help Seif v1.17.17
+
+Changes:
+- Follow Up now completes Change Owner before opening New Task, so the task form is the final UI step.
+- The task Subject field uses the exact Salesforce combobox selector identified in the supplied HTML.
+- A read-back check verifies the task Subject and retries filling once if the value does not match.
+- The New Task modal is intentionally left open. The workflow does not click Save or Close for the task; review and save it manually.

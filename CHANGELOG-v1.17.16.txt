@@ -1,0 +1,10 @@
+Help Seif v1.17.16
+
+Changes:
+- Flexible Field 3 script steps now use {{FLEXIBLE_FIELD_3}} and resolve to the value selected in the extension popup.
+- Delay steps normalized to 400 ms or 500 ms maximum, while the runner keeps smart element-presence waits.
+- FL Payment writes Reason Opportunity Lost - Other only after selecting Other and before saving the loss reason.
+- Sent Link now changes the stage to Registered Not Paid, opens Log a Call last, fills Subject = EG/Sales Call only, leaves the comment field untouched, and does not auto-save. Enter the comment manually and press Save.
+- Follow Up task Subject selector now targets the visible task form and supports common Salesforce selector variants.
+- Runtime selector resolution prefers visible matching elements to avoid selecting a hidden duplicate Subject field.
+- Built-in starter workflows are refreshed once after updating the extension so the requested changes reach existing stored starter scripts.

@@ -15,7 +15,7 @@
     {
       "id": "653f70d0-42ca-4bd2-88dd-ac2c5c90e46a",
       "type": "DELAY",
-      "value": "500",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -32,7 +32,7 @@
         },
         {
           "key": "Flexible_Field_3_Value__c",
-          "value": "BEG 10% List",
+          "value": "{{FLEXIBLE_FIELD_3}}",
           "fieldType": "text",
           "searchType": "name"
         }
@@ -50,7 +50,7 @@
     {
       "id": "f34aa4f3-49e9-496a-b4b8-8cab40fe18ee",
       "type": "DELAY",
-      "value": "1000",
+      "value": "500",
       "fields": [
         {}
       ]
@@ -74,10 +74,85 @@
       ]
     },
     {
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
       "id": "3deb6f38-ce82-4640-be49-3b0bc388f6df",
       "type": "CLICK",
       "key": "button.cuf-publisherShareButton",
       "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-ollow-p-owner-open",
+      "type": "CLICK",
+      "key": ".change-owner-trigger button, button[title=\"Change Owner\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-ollow-p-owner-modal-wait",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-ollow-p-owner-input",
+      "type": "CLICK",
+      "key": ".autocompleteWrapper input, input[title=\"Search Users\"], input.uiInputTextForAutocomplete, input[placeholder=\"Search Users...\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-ollow-p-owner-results-wait",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-ollow-p-owner-first-result",
+      "type": "CLICK",
+      "key": "ul.lookup__list li.lookup__item:first-child a[role=\"option\"], ul.lookup__list li.lookup__item a[role=\"option\"], .lookup__list .lookup__item a",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-ollow-p-owner-before-confirm",
+      "type": "DELAY",
+      "value": "400",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-ollow-p-owner-confirm",
+      "type": "CLICK",
+      "key": "button[name=\"change owner\"], button[value=\"change owner\"], .slds-modal__footer button.slds-button_brand, footer.slds-modal__footer button.slds-button_brand, button.changeOwnerConfirm",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-ollow-p-owner-done",
+      "type": "DELAY",
+      "value": "500",
       "fields": [
         {}
       ]
@@ -102,7 +177,7 @@
     {
       "id": "0ee81ded-2d61-4aa9-9937-acb9907a808a",
       "type": "INPUT",
-      "key": "input[aria-label=\"Subject\"]",
+      "key": "input.slds-combobox__input[role=\"combobox\"][aria-label=\"Subject\"]",
       "value": "EG/Sales team (Follow up)",
       "fieldType": "text",
       "searchType": "cssSelector",
@@ -111,83 +186,18 @@
       ]
     },
     {
-      "id": "qfe-fup-01",
-      "type": "DELAY",
-      "value": "500",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-fup-02",
-      "type": "CLICK",
-      "key": ".change-owner-trigger button, button[title=\"Change Owner\"]",
+      "id": "qfe-followup-subject-verify",
+      "type": "VERIFY_FIELD",
+      "key": "input.slds-combobox__input[role=\"combobox\"][aria-label=\"Subject\"]",
+      "value": "EG/Sales team (Follow up)",
+      "fieldType": "text",
       "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-fup-03",
-      "type": "DELAY",
-      "value": "1000",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-fup-04",
-      "type": "CLICK",
-      "key": ".autocompleteWrapper input, input[title=\"Search Users\"], input.uiInputTextForAutocomplete, input[placeholder=\"Search Users...\"]",
-      "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-fup-05",
-      "type": "DELAY",
-      "value": "600",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-fup-06",
-      "type": "CLICK",
-      "key": "ul.lookup__list li.lookup__item:first-child a[role=\"option\"], ul.lookup__list li.lookup__item a[role=\"option\"], .lookup__list .lookup__item a",
-      "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-fup-07",
-      "type": "DELAY",
-      "value": "500",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-fup-08",
-      "type": "CLICK",
-      "key": "button[name=\"change owner\"], button[value=\"change owner\"], .slds-modal__footer button.slds-button_brand, footer.slds-modal__footer button.slds-button_brand, button.changeOwnerConfirm",
-      "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-fup-09",
-      "type": "DELAY",
-      "value": "500",
       "fields": [
         {}
       ]
     }
   ],
-  "updatedAt": "2026-10-16T15:40:17.037Z",
+  "updatedAt": "2026-10-20T00:00:00.000Z",
   "createdAt": "2026-10-16T05:11:20.700Z",
-  "description": "Log and update fields"
+  "description": "Log Follow up, change owner, then open New Task and fill/verify its Subject. Leave the task open for manual review and saving."
 }

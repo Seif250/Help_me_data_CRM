@@ -1,4 +1,4 @@
-HELP SEIF 1.17.8 (local modified copy)
+HELP SEIF 1.17.14 (local modified copy)
 
 Features
 - Advanced popup mode only; Lite tab/navigation/context-menu entry removed.
@@ -20,3 +20,10 @@ Notes
 - This is a locally modified copy, not an official QuickForm release.
 - Four Salesforce workflows are preloaded into local extension storage. Review/test on a safe Salesforce record before live use.
 - Changing the dropdown affects all workflows that contain Flexible_Field_3_Value__c and remains selected until changed.
+
+
+Version 1.17.14 changes
+- CRM Autofill saves before the final Change Owner sequence and waits for Salesforce to finish saving.
+- When Salesforce reports that the selected owner already owns the record, the extension clicks Cancel and skips the remaining owner steps.
+- Not Interested is seeded into the resource store and applies “Not interested/Not needed” after the Closed Lost / Other choices are selected.
+- Popup layout uses tighter spacing and smaller controls while keeping the green, white and gray theme.

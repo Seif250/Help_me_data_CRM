@@ -15,7 +15,7 @@
     {
       "id": "653f70d0-42ca-4bd2-88dd-ac2c5c90e46a",
       "type": "DELAY",
-      "value": "500",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -32,7 +32,7 @@
         },
         {
           "key": "Flexible_Field_3_Value__c",
-          "value": "BEG 10% List",
+          "value": "{{FLEXIBLE_FIELD_3}}",
           "fieldType": "text",
           "searchType": "name"
         }
@@ -50,7 +50,7 @@
     {
       "id": "f34aa4f3-49e9-496a-b4b8-8cab40fe18ee",
       "type": "DELAY",
-      "value": "1000",
+      "value": "500",
       "fields": [
         {}
       ]
@@ -71,6 +71,13 @@
           "fieldType": "text",
           "searchType": "cssSelector"
         }
+      ]
+    },
+    {
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
       ]
     },
     {
@@ -111,7 +118,7 @@
     {
       "id": "ad4f16b9-552d-4f75-831b-764ae3d7f416",
       "type": "DELAY",
-      "value": "500",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -128,7 +135,7 @@
     {
       "id": "27fa619d-c0fa-413f-8077-e71047cdea42",
       "type": "DELAY",
-      "value": "500",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -154,7 +161,7 @@
     {
       "id": "9940d1c5-af7b-4ffb-b2f3-95848b5112a9",
       "type": "DELAY",
-      "value": "500",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -180,13 +187,45 @@
     {
       "id": "qfe-na-01",
       "type": "DELAY",
+      "value": "400",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-na-03",
+      "type": "DELAY",
       "value": "500",
       "fields": [
         {}
       ]
     },
     {
-      "id": "qfe-na-02",
+      "id": "qfe-na-05",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-na-07",
+      "type": "DELAY",
+      "value": "400",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-na-09",
+      "type": "DELAY",
+      "value": "400",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-o-nswer-owner-open",
       "type": "CLICK",
       "key": ".change-owner-trigger button, button[title=\"Change Owner\"]",
       "searchType": "cssSelector",
@@ -195,15 +234,15 @@
       ]
     },
     {
-      "id": "qfe-na-03",
+      "id": "qfe-o-nswer-owner-modal-wait",
       "type": "DELAY",
-      "value": "1000",
+      "value": "500",
       "fields": [
         {}
       ]
     },
     {
-      "id": "qfe-na-04",
+      "id": "qfe-o-nswer-owner-input",
       "type": "CLICK",
       "key": ".autocompleteWrapper input, input[title=\"Search Users\"], input.uiInputTextForAutocomplete, input[placeholder=\"Search Users...\"]",
       "searchType": "cssSelector",
@@ -212,15 +251,15 @@
       ]
     },
     {
-      "id": "qfe-na-05",
+      "id": "qfe-o-nswer-owner-results-wait",
       "type": "DELAY",
-      "value": "600",
+      "value": "500",
       "fields": [
         {}
       ]
     },
     {
-      "id": "qfe-na-06",
+      "id": "qfe-o-nswer-owner-first-result",
       "type": "CLICK",
       "key": "ul.lookup__list li.lookup__item:first-child a[role=\"option\"], ul.lookup__list li.lookup__item a[role=\"option\"], .lookup__list .lookup__item a",
       "searchType": "cssSelector",
@@ -229,15 +268,15 @@
       ]
     },
     {
-      "id": "qfe-na-07",
+      "id": "qfe-o-nswer-owner-before-confirm",
       "type": "DELAY",
-      "value": "500",
+      "value": "400",
       "fields": [
         {}
       ]
     },
     {
-      "id": "qfe-na-08",
+      "id": "qfe-o-nswer-owner-confirm",
       "type": "CLICK",
       "key": "button[name=\"change owner\"], button[value=\"change owner\"], .slds-modal__footer button.slds-button_brand, footer.slds-modal__footer button.slds-button_brand, button.changeOwnerConfirm",
       "searchType": "cssSelector",
@@ -246,7 +285,7 @@
       ]
     },
     {
-      "id": "qfe-na-09",
+      "id": "qfe-o-nswer-owner-done",
       "type": "DELAY",
       "value": "500",
       "fields": [
@@ -254,7 +293,7 @@
       ]
     }
   ],
-  "updatedAt": "2026-10-16T15:40:17.029Z",
+  "updatedAt": "2026-10-19T23:59:59.000Z",
   "createdAt": "2026-10-16T03:42:14.732Z",
   "description": "Log and update fields"
 }

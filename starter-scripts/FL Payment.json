@@ -2,7 +2,7 @@
   "id": "f1a00000-pay1-4000-8000-000000000001",
   "name": "FL Payment",
   "url": "https://britishcouncil.lightning.force.com/lightning/o/Opportunity/new?count=12&nooverride=1&useRecordTypeCheck=1&navigationLocation=RELATED_LIST&uid=179205036504112013&recordTypeId=01220000000MKJPAA4",
-  "description": "Payment workflow and call log",
+  "description": "Log FL Payment, set Closed Lost / Other and detail, then change owner.",
   "interactions": [
     {
       "id": "qfe-flp-edit-date-btn",
@@ -16,13 +16,13 @@
     {
       "id": "qfe-flp-d1",
       "type": "DELAY",
-      "value": "500",
+      "value": "400",
       "fields": [
         {}
       ]
     },
     {
-      "id": "qfe-flp-multi-fields",
+      "id": "qfe-flp-date",
       "type": "MULTIPLE_FIELDS",
       "fields": [
         {
@@ -30,121 +30,33 @@
           "value": "{{TODAY}}",
           "fieldType": "text",
           "searchType": "name"
-        },
+        }
+      ]
+    },
+    {
+      "id": "qfe-flp-d-date",
+      "type": "DELAY",
+      "value": "400",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-flexible-field3",
+      "type": "MULTIPLE_FIELDS",
+      "fields": [
         {
           "key": "Flexible_Field_3_Value__c",
-          "value": "BEG 10% List",
+          "value": "{{FLEXIBLE_FIELD_3}}",
           "fieldType": "text",
           "searchType": "name"
         }
       ]
     },
     {
-      "id": "qfe-flp-d2",
+      "id": "qfe-flp-d-field3",
       "type": "DELAY",
-      "value": "500",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-flp-owner-btn",
-      "type": "CLICK",
-      "key": ".change-owner-trigger button, button[title=\"Change Owner\"]",
-      "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-flp-d3",
-      "type": "DELAY",
-      "value": "1000",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-flp-owner-input",
-      "type": "CLICK",
-      "key": ".autocompleteWrapper input, input[title=\"Search Users\"], input.uiInputTextForAutocomplete, input[placeholder=\"Search Users...\"]",
-      "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-flp-d4",
-      "type": "DELAY",
-      "value": "600",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-flp-owner-opt",
-      "type": "CLICK",
-      "key": "ul.lookup__list li.lookup__item:first-child a[role=\"option\"], ul.lookup__list li.lookup__item a[role=\"option\"], .lookup__list .lookup__item a",
-      "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-flp-d5",
-      "type": "DELAY",
-      "value": "500",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-flp-owner-confirm",
-      "type": "CLICK",
-      "key": "button[name=\"change owner\"], button[value=\"change owner\"], .slds-modal__footer button.slds-button_brand, footer.slds-modal__footer button.slds-button_brand, button.changeOwnerConfirm",
-      "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-flp-d6",
-      "type": "DELAY",
-      "value": "500",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-flp-path-tab",
-      "type": "CLICK",
-      "key": "li[data-name=\"Registered Not Paid\"] a, a[data-tab-name=\"Registered Not Paid\"], a[title=\"Registered Not Paid\"], [data-target-selection-name=\"registeredNotPaidPathTab\"] a",
-      "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-flp-d7",
-      "type": "DELAY",
-      "value": "500",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-flp-path-mark",
-      "type": "CLICK",
-      "key": "button.slds-path__mark-complete, .slds-path__stage-button button, .runtime_sales_pathassistantPathAssistantHeader button.slds-button_brand, .runtime_sales_pathassistantPathAssistant button.slds-path__mark-complete",
-      "searchType": "cssSelector",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-flp-d8",
-      "type": "DELAY",
-      "value": "500",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -159,15 +71,15 @@
       ]
     },
     {
-      "id": "qfe-flp-d9",
+      "id": "qfe-flp-d-call-open",
       "type": "DELAY",
-      "value": "1000",
+      "value": "500",
       "fields": [
         {}
       ]
     },
     {
-      "id": "qfe-flp-call-subj",
+      "id": "qfe-flp-call-fields",
       "type": "MULTIPLE_FIELDS",
       "fields": [
         {
@@ -175,10 +87,288 @@
           "value": "EG/Sales Call",
           "fieldType": "text",
           "searchType": "cssSelector"
+        },
+        {
+          "key": "textarea[aria-describedby=\"quickTextKeyboardTip\"]",
+          "value": "FL Payment",
+          "fieldType": "text",
+          "searchType": "cssSelector"
         }
+      ]
+    },
+    {
+      "id": "qfe-flp-d-call-fill",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-call-save",
+      "type": "CLICK",
+      "key": "button.cuf-publisherShareButton",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-d-call-save",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-path-closed",
+      "type": "CLICK",
+      "key": "li[data-name=\"Closed\"] a[title=\"Closed\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-d-path-closed",
+      "type": "DELAY",
+      "value": "400",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-path-mark",
+      "type": "CLICK",
+      "key": "button.slds-path__mark-complete",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-d-mark-complete",
+      "type": "DELAY",
+      "value": "400",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-stage-name",
+      "type": "CLICK",
+      "key": "button[name=\"StageName\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-d-stage-menu",
+      "type": "DELAY",
+      "value": "400",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-stage-closed-lost",
+      "type": "CLICK",
+      "key": "lightning-base-combobox-item[data-value=\"Not Registered (Closed Lost)\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-d-lost-reason-open",
+      "type": "DELAY",
+      "value": "400",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-reason-button",
+      "type": "CLICK",
+      "key": "button[name=\"Reason_opportunity_Lost__c\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-d-reason-options",
+      "type": "DELAY",
+      "value": "400",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-reason-other",
+      "type": "CLICK",
+      "key": "lightning-base-combobox-item[data-value=\"Other\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-after-other-field-ready",
+      "type": "DELAY",
+      "value": "400",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-loss-other-text",
+      "type": "MULTIPLE_FIELDS",
+      "fields": [
+        {
+          "key": "input[name=\"Reason_Opportunity_Lost_Other__c\"]",
+          "value": "FL Payment",
+          "fieldType": "text",
+          "searchType": "cssSelector"
+        }
+      ]
+    },
+    {
+      "id": "qfe-flp-d-other",
+      "type": "DELAY",
+      "value": "400",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-d-save-stage",
+      "type": "DELAY",
+      "value": "400",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-stage-save",
+      "type": "CLICK",
+      "key": "button.slds-button_brand[type=\"submit\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-d-stage-save",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-owner-modal-wait",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-owner-results-wait",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-owner-before-confirm",
+      "type": "DELAY",
+      "value": "400",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-flp-owner-done",
+      "type": "DELAY",
+      "value": "400",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-ayment-owner-open",
+      "type": "CLICK",
+      "key": ".change-owner-trigger button, button[title=\"Change Owner\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-ayment-owner-modal-wait",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-ayment-owner-input",
+      "type": "CLICK",
+      "key": ".autocompleteWrapper input, input[title=\"Search Users\"], input.uiInputTextForAutocomplete, input[placeholder=\"Search Users...\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-ayment-owner-results-wait",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-ayment-owner-first-result",
+      "type": "CLICK",
+      "key": "ul.lookup__list li.lookup__item:first-child a[role=\"option\"], ul.lookup__list li.lookup__item a[role=\"option\"], .lookup__list .lookup__item a",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-ayment-owner-before-confirm",
+      "type": "DELAY",
+      "value": "400",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-ayment-owner-confirm",
+      "type": "CLICK",
+      "key": "button[name=\"change owner\"], button[value=\"change owner\"], .slds-modal__footer button.slds-button_brand, footer.slds-modal__footer button.slds-button_brand, button.changeOwnerConfirm",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-ayment-owner-done",
+      "type": "DELAY",
+      "value": "500",
+      "fields": [
+        {}
       ]
     }
   ],
-  "updatedAt": "2026-10-16T16:40:32.629Z",
+  "updatedAt": "2026-10-19T23:59:59.000Z",
   "createdAt": "2026-10-15T07:48:39.737Z"
 }

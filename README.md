@@ -50,3 +50,21 @@
 
 ## 📄 License
 This project is licensed under the terms of the [LICENSE](LICENSE) file.
+
+## Update 1.17.9
+- Updated CRM Autofill to include the requested Salesforce picklists.
+- Improved custom dropdown click sequencing, option whitespace matching, and delays for dependent picklists.
+
+## v1.17.12 — FL Payment & Closed Lost workflow update
+
+- Will Call us back now waits 500 ms after selecting `Not Registered (Closed Lost)` before opening the loss-reason dropdown.
+- FL Payment now fills today's Close Date, `Reason_Opportunity_Lost_Other__c` (`FL Payment`), and Flexible Field 3 before logging the call.
+- FL Payment logs the call as `EG/Sales Call` with `FL Payment` in the call-log textarea, then changes the stage to Closed Lost, selects reason `Other`, saves, and changes the owner last.
+- Existing locally stored copies are migrated when the updated workflow sequence is missing.
+
+
+## v1.17.15 — Save, Owner, Not Interested, and compact popup fixes
+- CRM Autofill now saves before the final Change Owner sequence.
+- Change Owner detects Salesforce’s “already owns this record” toast and closes the dialog with Cancel.
+- Not Interested is seeded into the actual resources store and fills the Other detail only after the loss reason is selected.
+- Popup spacing and controls are more compact while retaining the green/white/gray palette.

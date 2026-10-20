@@ -2,7 +2,7 @@
   "id": "b7b0f68c-7238-43c9-90a5-62be52f3f7a6",
   "name": "Sent Link",
   "url": "https://britishcouncil.lightning.force.com/lightning/o/Opportunity/new?count=12&nooverride=1&useRecordTypeCheck=1&navigationLocation=RELATED_LIST&uid=179205036504112013&recordTypeId=01220000000MKJPAA4",
-  "description": "Send link, update fields and log call",
+  "description": "Set Registered Not Paid, then open Log a Call with Subject prefilled; enter comment manually and save.",
   "interactions": [
     {
       "id": "qfe-sl-edit-date-btn",
@@ -16,7 +16,7 @@
     {
       "id": "qfe-sl-d1",
       "type": "DELAY",
-      "value": "500",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -33,7 +33,7 @@
         },
         {
           "key": "Flexible_Field_3_Value__c",
-          "value": "BEG 10% List",
+          "value": "{{FLEXIBLE_FIELD_3}}",
           "fieldType": "text",
           "searchType": "name"
         }
@@ -42,16 +42,7 @@
     {
       "id": "qfe-sl-d2",
       "type": "DELAY",
-      "value": "500",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-sl-owner-btn",
-      "type": "CLICK",
-      "key": ".change-owner-trigger button, button[title=\"Change Owner\"]",
-      "searchType": "cssSelector",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -59,16 +50,7 @@
     {
       "id": "qfe-sl-d3",
       "type": "DELAY",
-      "value": "1000",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-sl-owner-input",
-      "type": "CLICK",
-      "key": ".autocompleteWrapper input, input[title=\"Search Users\"], input.uiInputTextForAutocomplete, input[placeholder=\"Search Users...\"]",
-      "searchType": "cssSelector",
+      "value": "500",
       "fields": [
         {}
       ]
@@ -76,16 +58,7 @@
     {
       "id": "qfe-sl-d4",
       "type": "DELAY",
-      "value": "600",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-sl-owner-opt",
-      "type": "CLICK",
-      "key": "ul.lookup__list li.lookup__item:first-child a[role=\"option\"], ul.lookup__list li.lookup__item a[role=\"option\"], .lookup__list .lookup__item a",
-      "searchType": "cssSelector",
+      "value": "500",
       "fields": [
         {}
       ]
@@ -93,16 +66,7 @@
     {
       "id": "qfe-sl-d5",
       "type": "DELAY",
-      "value": "500",
-      "fields": [
-        {}
-      ]
-    },
-    {
-      "id": "qfe-sl-owner-confirm",
-      "type": "CLICK",
-      "key": "button[name=\"change owner\"], button[value=\"change owner\"], .slds-modal__footer button.slds-button_brand, footer.slds-modal__footer button.slds-button_brand, button.changeOwnerConfirm",
-      "searchType": "cssSelector",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -110,7 +74,7 @@
     {
       "id": "qfe-sl-d6",
       "type": "DELAY",
-      "value": "500",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -127,7 +91,7 @@
     {
       "id": "qfe-sl-d7",
       "type": "DELAY",
-      "value": "500",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -142,9 +106,9 @@
       ]
     },
     {
-      "id": "qfe-sl-d8",
+      "id": "qfe-sl-after-stage-wait",
       "type": "DELAY",
-      "value": "500",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -159,15 +123,15 @@
       ]
     },
     {
-      "id": "qfe-sl-d9",
+      "id": "qfe-sl-call-open-wait",
       "type": "DELAY",
-      "value": "1000",
+      "value": "500",
       "fields": [
         {}
       ]
     },
     {
-      "id": "qfe-sl-call-subj",
+      "id": "qfe-sl-call-manual-fields",
       "type": "MULTIPLE_FIELDS",
       "fields": [
         {
@@ -179,6 +143,7 @@
       ]
     }
   ],
-  "updatedAt": "2026-10-16T16:21:29.195Z",
-  "createdAt": "2026-10-15T07:48:39.737Z"
+  "updatedAt": "2026-10-19T23:59:59.000Z",
+  "createdAt": "2026-10-15T07:48:39.737Z",
+  "manualCallLog": true
 }

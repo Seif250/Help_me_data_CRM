@@ -1,0 +1,6 @@
+Help Seif v1.17.18
+
+Changes:
+- Not Interested now selects the loss-reason picklist option "Not interested/Not needed" directly.
+- Removed the old "Other" selection and the separate Reason Opportunity Lost - Other text entry from this workflow.
+- Updated starter seeding logic so existing installations with the old Not Interested sequence are migrated to the corrected one, without forcing unrelated workflows to reset.

@@ -30,7 +30,7 @@
     }
   ],
   "default_locale": "en",
-  "description": "Help Seif - Salesforce automation and script runner with custom workflows, dynamic Close Date, and configurable Flexible Field 3 Value.",
+  "description": "Help Seif - Faster Salesforce workflows with adaptive waits and reliable Save/owner handling.",
   "externally_connectable": {
     "matches": [
       "https://quickform.pro/*",
@@ -60,7 +60,7 @@
     "tabs",
     "contextMenus"
   ],
-  "version": "1.17.8",
+  "version": "1.17.18",
   "web_accessible_resources": [
     {
       "matches": [
