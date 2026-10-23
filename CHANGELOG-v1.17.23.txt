@@ -1,0 +1,24 @@
+================================================================================
+CHANGELOG - QuickForm Editor (Help Seif) v1.17.23
+Date: 2026-10-23
+================================================================================
+
+1. FIXED INSTANT CANCEL ON DUPLICATE OWNER IN ALL PROFILES:
+   - Fixed a variable shadowing bug where checkDismiss was calling shadowed 'c'
+     instead of a true visibility checker, causing cancelBtn click to be skipped.
+   - Now, whenever "already owns this record" appears in any profile, it accurately
+     locates the Cancel button inside the Change Owner modal and clicks it immediately.
+   - Strictly protects Opportunity workspace tabs from closing.
+
+2. NEW TASK SUBJECT TYPING (LWC COMPOSING):
+   - Added LWC event dispatcher (composed: true) directly targeting the active New Task
+     combobox input so Salesforce's internal state updates with "EG/Sales team (Follow up)".
+   - Leaves the task open for manual review.
+
+3. SENT LINK: STAGE SET TO "Registered Not Paid" & REASON CLEARED:
+   - Sets CloseDate to TODAY and Flexible Field 3 Value.
+   - Explicitly clears Reason_Opportunity_Lost_Other__c to empty ("").
+   - Selects Stage "Registered Not Paid" from combobox dropdown.
+   - Saves all changes together in one single SaveEdit click.
+   - Opens Log a Call with Subject "EG/Sales Call" and Comment "Sent Link" left open.
+================================================================================

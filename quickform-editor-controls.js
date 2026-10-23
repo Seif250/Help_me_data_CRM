@@ -32,6 +32,14 @@
       iconSvg: `<svg viewBox="0 0 24 24" width="22" height="22" fill="#126747"><path d="M6.62 10.79a15.053 15.053 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/><path d="M15 3h6v6l-2.5-2.5-4.5 4.5-1.5-1.5 4.5-4.5L15 3z" /></svg>`
     },
     {
+      key: "not-interested",
+      name: "Not Interested",
+      desc: "Log not interested, set Closed Lost",
+      defaultId: "b8d4e5a1-8b45-4c2c-9a91-6b5e2c3f7a10",
+      type: "resource",
+      iconSvg: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#126747" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`
+    },
+    {
       key: "crm-autofill",
       name: "CRM autofill",
       desc: "Fill CRM fields automatically",

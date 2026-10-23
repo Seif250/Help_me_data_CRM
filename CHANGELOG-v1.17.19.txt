@@ -1,0 +1,42 @@
+================================================================================
+CHANGELOG - QuickForm Editor (Help Seif) v1.17.19
+Date: 2026-10-23
+================================================================================
+
+1. FOLLOW UP WORKFLOW FIXES:
+   - Call Log Delay & Empty Description Fix:
+     * Added active retry polling (up to 3000ms every 80ms) in DefaultStrategy (6FqSw)
+       so slow-loading Call Log textareas are never missed.
+     * Enhanced wait helper (w) to ensure all fields in MULTIPLE_FIELDS are mounted and visible.
+     * Increased Log a Call delay to 1500ms.
+   - Change Owner Fix:
+     * Switched Follow Up to use the exact Change Owner sequence and timings from 'No Answer'
+       (1500ms modal wait, 2000ms search results wait, 1000ms confirm wait, 1500ms post-confirm wait).
+     * Moved Change Owner to Step 1 so it executes reliably before other form modifications.
+   - Opportunity Textarea Protection:
+     * Hard-blocked any fallback from targeting textarea with maxlength="32000" (the user's Opportunity/Task Description field).
+     * Removed textarea.slds-textarea from fallback selectors in 4ZdJm.
+   - Reason Opportunity Lost - Other Field Clearing:
+     * Added Reason_Opportunity_Lost_Other__c = "" in Follow Up Opportunity edit step with SaveEdit.
+     * Fixed typing simulator (e5h7e) to cleanly handle empty string "" and fire input/change events.
+     * Added proactive runner check to clear Reason_Opportunity_Lost_Other__c on start.
+
+2. SENT LINK WORKFLOW FIXES:
+   - Change Owner:
+     * Added full Change Owner sequence at Step 1 using the exact 'No Answer' method.
+   - Stage Dropdown Selection:
+     * Replaced chevron path-assistant clicks with the actual Stage combobox dropdown:
+       button[aria-label="Stage"] -> lightning-base-combobox-item[data-value="Registered Not Paid"].
+   - Save Button:
+     * Added explicit click on button[name="SaveEdit"] to save CloseDate, Flexible Field 3,
+       and Stage: Registered Not Paid together.
+   - Manual Call Log:
+     * Opens Log a Call, prefills Subject "EG/Sales Call" and Comments "Sent Link",
+       and leaves it open for manual review.
+
+3. BACKGROUND SEEDING & SYNCHRONIZATION:
+   - Updated STARTER_RESOURCES in static/background/index.js with all 7 updated workflows.
+   - Timestamp bumped to 2026-10-23T10:00:00.000Z so chrome.storage.local automatically
+     migrates existing installs to v1.17.19.
+   - Version bumped to 1.17.19 in manifest.json.
+================================================================================

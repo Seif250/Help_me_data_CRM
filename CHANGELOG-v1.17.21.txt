@@ -1,0 +1,25 @@
+================================================================================
+CHANGELOG - QuickForm Editor (Help Seif) v1.17.21
+Date: 2026-10-23
+================================================================================
+
+1. FIXED CALL LOG DESCRIPTION ("No Answer", "Follow up ", "Sent Link"):
+   - Corrected isOppDesc() in content.883ade9e.js: it previously falsely matched
+     Task.Description in the Log a Call publisher due to a broad [data-target-selection-name*="Description"].
+   - Explicitly whitelisted .cuf-publisherContainer, .activityTimelinePublisherContainer,
+     and .forceChatterPublisher so Call Log textareas are always recognized, found,
+     and populated with the requested comment ("No Answer", "Follow up ", etc.).
+   - Still completely shields Opportunity Description/Comments from being modified.
+
+2. RESTORED STAGE & REASON IN "No Answer", "Will Call Us Back", etc.:
+   - Removed the premature SaveEdit that had been placed right after CloseDate.
+     That premature save was closing inline edit mode before Stage could be clicked!
+   - Now, Edit Close Date keeps the form in edit mode through Log a Call, allowing
+     button[aria-label="Stage"] to immediately select "Not Registered (Closed Lost)",
+     then Reason "Not reachable/No answer", Reason Other "No Answer", and saves
+     everything together cleanly at the end.
+
+3. CHANGE OWNER DUPLICATE ERROR & SPEED:
+   - Kept fast owner delays (~600-700ms).
+   - Instant Cancel click if "already owns this record" appears.
+================================================================================

@@ -55,7 +55,7 @@
     {
       "id": "qfe-crm-fields-settle",
       "type": "DELAY",
-      "value": "400",
+      "value": "600",
       "fields": [
         {}
       ]
@@ -72,7 +72,7 @@
     {
       "id": "qfe-crm-post-save-wait",
       "type": "DELAY",
-      "value": "500",
+      "value": "2000",
       "fields": [
         {}
       ]
@@ -89,13 +89,13 @@
     {
       "id": "qfe-crm-owner-modal-wait",
       "type": "DELAY",
-      "value": "500",
+      "value": "600",
       "fields": [
         {}
       ]
     },
     {
-      "id": "qfe-crm-owner-input",
+      "id": "qfe-crm-owner-input-click",
       "type": "CLICK",
       "key": ".autocompleteWrapper input, input[title=\"Search Users\"], input.uiInputTextForAutocomplete, input[placeholder=\"Search Users...\"]",
       "searchType": "cssSelector",
@@ -106,7 +106,7 @@
     {
       "id": "qfe-crm-owner-results-wait",
       "type": "DELAY",
-      "value": "500",
+      "value": "700",
       "fields": [
         {}
       ]
@@ -123,7 +123,7 @@
     {
       "id": "qfe-crm-owner-before-confirm",
       "type": "DELAY",
-      "value": "400",
+      "value": "500",
       "fields": [
         {}
       ]
@@ -138,6 +138,6 @@
       ]
     }
   ],
-  "updatedAt": "2026-10-19T23:59:59.000Z",
+  "updatedAt": "2026-10-23T12:30:00.000Z",
   "createdAt": "2026-10-15T07:48:39.737Z"
 }

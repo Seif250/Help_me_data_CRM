@@ -2,74 +2,103 @@
   "id": "6915604c-386b-4175-b45f-39f456fe1a7d",
   "name": "Will Call us back",
   "url": "https://britishcouncil.lightning.force.com/lightning/r/Opportunity/006Nz00000uAVyMIAW/view",
+  "description": "Change Owner first, update date fields and save, log call, update stage/reason fields and save.",
   "interactions": [
     {
-      "id": "qfe-ill-all-us-b-owner-open",
+      "id": "qfe-wcb-page-settle",
+      "type": "DELAY",
+      "value": "1000",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-wcb-owner-open",
       "type": "CLICK",
       "key": ".change-owner-trigger button, button[title=\"Change Owner\"]",
       "searchType": "cssSelector",
-      "fields": [{}]
+      "fields": [
+        {}
+      ]
     },
     {
-      "id": "qfe-ill-all-us-b-owner-modal-wait",
+      "id": "qfe-wcb-owner-modal-wait",
       "type": "DELAY",
-      "value": "500",
-      "fields": [{}]
+      "value": "600",
+      "fields": [
+        {}
+      ]
     },
     {
-      "id": "qfe-ill-all-us-b-owner-input",
+      "id": "qfe-wcb-owner-input-click",
       "type": "CLICK",
       "key": ".autocompleteWrapper input, input[title=\"Search Users\"], input.uiInputTextForAutocomplete, input[placeholder=\"Search Users...\"]",
       "searchType": "cssSelector",
-      "fields": [{}]
+      "fields": [
+        {}
+      ]
     },
     {
-      "id": "qfe-ill-all-us-b-owner-results-wait",
+      "id": "qfe-wcb-owner-results-wait",
       "type": "DELAY",
-      "value": "500",
-      "fields": [{}]
+      "value": "700",
+      "fields": [
+        {}
+      ]
     },
     {
-      "id": "qfe-ill-all-us-b-owner-first-result",
+      "id": "qfe-wcb-owner-first-result",
       "type": "CLICK",
       "key": "ul.lookup__list li.lookup__item:first-child a[role=\"option\"], ul.lookup__list li.lookup__item a[role=\"option\"], .lookup__list .lookup__item a",
       "searchType": "cssSelector",
-      "fields": [{}]
+      "fields": [
+        {}
+      ]
     },
     {
-      "id": "qfe-ill-all-us-b-owner-before-confirm",
+      "id": "qfe-wcb-owner-before-confirm",
       "type": "DELAY",
-      "value": "400",
-      "fields": [{}]
+      "value": "500",
+      "fields": [
+        {}
+      ]
     },
     {
-      "id": "qfe-ill-all-us-b-owner-confirm",
+      "id": "qfe-wcb-owner-confirm",
       "type": "CLICK",
       "key": "button[name=\"change owner\"], button[value=\"change owner\"], .slds-modal__footer button.slds-button_brand, footer.slds-modal__footer button.slds-button_brand, button.changeOwnerConfirm",
       "searchType": "cssSelector",
-      "fields": [{}]
+      "fields": [
+        {}
+      ]
     },
     {
-      "id": "qfe-ill-all-us-b-owner-done",
+      "id": "qfe-wcb-owner-done",
       "type": "DELAY",
       "value": "600",
-      "fields": [{}]
+      "fields": [
+        {}
+      ]
     },
     {
-      "id": "1a734108-db09-4261-a0b9-cd1be21b92f3",
+      "id": "qfe-wcb-edit-date-btn",
       "type": "CLICK",
       "key": "button[title=\"Edit Close Date\"]",
       "searchType": "cssSelector",
-      "fields": [{}]
+      "fields": [
+        {}
+      ]
     },
     {
-      "id": "653f70d0-42ca-4bd2-88dd-ac2c5c90e46a",
+      "id": "qfe-wcb-date-wait",
       "type": "DELAY",
-      "value": "400",
-      "fields": [{}]
+      "value": "600",
+      "fields": [
+        {}
+      ]
     },
     {
-      "id": "196e53e0-809a-45f5-a612-4b9952c75092",
+      "id": "qfe-wcb-opp-fields",
       "type": "MULTIPLE_FIELDS",
       "fields": [
         {
@@ -87,20 +116,24 @@
       ]
     },
     {
-      "id": "e1b4968b-f58a-4c7a-a664-efda57de40b0",
+      "id": "qfe-wcb-log-call-btn",
       "type": "CLICK",
       "key": "button[aria-label=\"Log a Call\"]",
       "searchType": "cssSelector",
-      "fields": [{}]
+      "fields": [
+        {}
+      ]
     },
     {
-      "id": "f34aa4f3-49e9-496a-b4b8-8cab40fe18ee",
+      "id": "qfe-wcb-log-open-wait",
       "type": "DELAY",
-      "value": "800",
-      "fields": [{}]
+      "value": "1500",
+      "fields": [
+        {}
+      ]
     },
     {
-      "id": "3758744f-7d30-47cb-8c43-041da83c7b81",
+      "id": "qfe-wcb-log-fields",
       "type": "MULTIPLE_FIELDS",
       "fields": [
         {
@@ -120,73 +153,95 @@
     {
       "id": "qfe-wcb-before-log-save",
       "type": "DELAY",
-      "value": "500",
-      "fields": [{}]
+      "value": "600",
+      "fields": [
+        {}
+      ]
     },
     {
-      "id": "b9d34853-cf35-4f1f-8727-52d8acd5194a",
+      "id": "qfe-wcb-log-save",
       "type": "CLICK",
       "key": "button.cuf-publisherShareButton",
       "searchType": "cssSelector",
-      "fields": [{}]
+      "fields": [
+        {}
+      ]
     },
     {
-      "id": "018c8087-bccf-4997-a56d-cd29055ef446",
+      "id": "qfe-wcb-after-log-save",
       "type": "DELAY",
-      "value": "600",
-      "fields": [{}]
+      "value": "800",
+      "fields": [
+        {}
+      ]
     },
     {
       "id": "qfe-wcb-stage-open",
       "type": "CLICK",
       "key": "button[aria-label=\"Stage\"]",
       "searchType": "cssSelector",
-      "fields": [{}]
+      "fields": [
+        {}
+      ]
     },
     {
       "id": "qfe-wcb-stage-wait",
       "type": "DELAY",
-      "value": "400",
-      "fields": [{}]
+      "value": "600",
+      "fields": [
+        {}
+      ]
     },
     {
       "id": "qfe-wcb-stage-select",
       "type": "CLICK",
       "key": "lightning-base-combobox-item[data-value=\"Not Registered (Closed Lost)\"]",
       "searchType": "cssSelector",
-      "fields": [{}]
+      "fields": [
+        {}
+      ]
     },
     {
       "id": "qfe-wcb-after-stage",
       "type": "DELAY",
-      "value": "400",
-      "fields": [{}]
+      "value": "600",
+      "fields": [
+        {}
+      ]
     },
     {
       "id": "qfe-wcb-reason-open",
       "type": "CLICK",
       "key": "button[aria-label=\"Reason Opportunity Lost or Closed\"]",
       "searchType": "cssSelector",
-      "fields": [{}]
+      "fields": [
+        {}
+      ]
     },
     {
       "id": "qfe-wcb-reason-wait",
       "type": "DELAY",
-      "value": "400",
-      "fields": [{}]
+      "value": "600",
+      "fields": [
+        {}
+      ]
     },
     {
       "id": "qfe-wcb-reason-select",
       "type": "CLICK",
       "key": "lightning-base-combobox-item[data-value=\"Not now, maybe later\"]",
       "searchType": "cssSelector",
-      "fields": [{}]
+      "fields": [
+        {}
+      ]
     },
     {
       "id": "qfe-wcb-reason-other-wait",
       "type": "DELAY",
-      "value": "400",
-      "fields": [{}]
+      "value": "600",
+      "fields": [
+        {}
+      ]
     },
     {
       "id": "qfe-wcb-reason-other",
@@ -203,24 +258,29 @@
     {
       "id": "qfe-wcb-before-save",
       "type": "DELAY",
-      "value": "400",
-      "fields": [{}]
+      "value": "500",
+      "fields": [
+        {}
+      ]
     },
     {
       "id": "qfe-wcb-save",
       "type": "CLICK",
       "key": "button[name=\"SaveEdit\"]",
       "searchType": "cssSelector",
-      "fields": [{}]
+      "fields": [
+        {}
+      ]
     },
     {
       "id": "qfe-wcb-save-done",
       "type": "DELAY",
-      "value": "500",
-      "fields": [{}]
+      "value": "700",
+      "fields": [
+        {}
+      ]
     }
   ],
-  "updatedAt": "2026-10-21T00:22:00.000Z",
-  "createdAt": "2026-10-16T05:09:01.189Z",
-  "description": "Log and update fields"
+  "updatedAt": "2026-10-23T12:30:00.000Z",
+  "createdAt": "2026-10-16T05:09:01.189Z"
 }

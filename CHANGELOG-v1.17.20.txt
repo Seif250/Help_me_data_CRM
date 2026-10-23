@@ -1,0 +1,40 @@
+================================================================================
+CHANGELOG - QuickForm Editor (Help Seif) v1.17.20
+Date: 2026-10-23
+================================================================================
+
+1. INSTANT CANCEL ON DUPLICATE OWNER & SPEED OPTIMIZATION:
+   - When Salesforce displays "Seif Ezz Eldin already owns this record", the extension
+     now detects it immediately (across any error element / container) and triggers
+     a direct click on the Cancel button within the modal.
+   - Sets __helpSeifOwnerAlreadyCurrent = true so all remaining owner steps are
+     skipped instantly without delay.
+   - Reduced owner interaction delays to ~500-700ms across all 7 workflows, making
+     the entire process fast and snappy.
+
+2. CALL LOG & NEW TASK WRITING RESTORED:
+   - Fixed findElement: removed the restrictive maxlength="32000" check that was
+     mistakenly rejecting the legitimate Call Log description textarea.
+   - The Call Log textarea (textarea[aria-describedby*="quickTextKeyboardTip"]) is now
+     matched and populated immediately.
+   - Updated wait helper (w) to specifically wait for the active comment field in Call Log
+     without timing out or getting stuck.
+   - New Task subject input is filled and verified reliably.
+
+3. HARD PROTECTION FOR "Opportunity Description/Comments":
+   - Added explicit protection isOppDesc(): ANY element belonging to the Opportunity's
+     "Opportunity Description/Comments" field (or with title "Edit Opportunity Description/Comments")
+     is strictly excluded from being targeted, edited, or clicked by ANY profile.
+
+4. SENT LINK & STAGE UPDATES:
+   - Change Owner runs first with fast ~600-700ms delays and auto-cancel if already owned.
+   - Opportunity dates are updated and saved via button[name="SaveEdit"].
+   - Stage is selected via combobox dropdown button[aria-label="Stage"] -> Registered Not Paid
+     and saved via button[name="SaveEdit"].
+   - Log a Call opens with Subject "EG/Sales Call" and Comment "Sent Link" left open for manual review.
+
+5. BACKGROUND SEEDING:
+   - Updated STARTER_RESOURCES in static/background/index.js for all 7 workflows with
+     timestamp 2026-10-23T11:00:00.000Z.
+   - Bumped version in manifest.json to 1.17.20.
+================================================================================
