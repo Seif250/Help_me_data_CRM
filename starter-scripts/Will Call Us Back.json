@@ -7,7 +7,7 @@
     {
       "id": "qfe-wcb-page-settle",
       "type": "DELAY",
-      "value": "1000",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -24,7 +24,7 @@
     {
       "id": "qfe-wcb-owner-modal-wait",
       "type": "DELAY",
-      "value": "600",
+      "value": "1000",
       "fields": [
         {}
       ]
@@ -41,7 +41,7 @@
     {
       "id": "qfe-wcb-owner-results-wait",
       "type": "DELAY",
-      "value": "700",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -58,7 +58,7 @@
     {
       "id": "qfe-wcb-owner-before-confirm",
       "type": "DELAY",
-      "value": "500",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -75,7 +75,7 @@
     {
       "id": "qfe-wcb-owner-done",
       "type": "DELAY",
-      "value": "600",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -92,7 +92,7 @@
     {
       "id": "qfe-wcb-date-wait",
       "type": "DELAY",
-      "value": "600",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -127,7 +127,7 @@
     {
       "id": "qfe-wcb-log-open-wait",
       "type": "DELAY",
-      "value": "1500",
+      "value": "1000",
       "fields": [
         {}
       ]
@@ -153,7 +153,7 @@
     {
       "id": "qfe-wcb-before-log-save",
       "type": "DELAY",
-      "value": "600",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -170,7 +170,7 @@
     {
       "id": "qfe-wcb-after-log-save",
       "type": "DELAY",
-      "value": "800",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -187,7 +187,7 @@
     {
       "id": "qfe-wcb-stage-wait",
       "type": "DELAY",
-      "value": "600",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -204,7 +204,7 @@
     {
       "id": "qfe-wcb-after-stage",
       "type": "DELAY",
-      "value": "600",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -221,7 +221,7 @@
     {
       "id": "qfe-wcb-reason-wait",
       "type": "DELAY",
-      "value": "600",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -238,7 +238,7 @@
     {
       "id": "qfe-wcb-reason-other-wait",
       "type": "DELAY",
-      "value": "600",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -258,7 +258,7 @@
     {
       "id": "qfe-wcb-before-save",
       "type": "DELAY",
-      "value": "500",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -275,12 +275,12 @@
     {
       "id": "qfe-wcb-save-done",
       "type": "DELAY",
-      "value": "700",
+      "value": "400",
       "fields": [
         {}
       ]
     }
   ],
-  "updatedAt": "2026-10-23T12:30:00.000Z",
+  "updatedAt": "2026-10-24T04:37:27.761Z",
   "createdAt": "2026-10-16T05:09:01.189Z"
 }

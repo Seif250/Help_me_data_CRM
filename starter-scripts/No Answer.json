@@ -7,7 +7,7 @@
     {
       "id": "qfe-na-page-settle",
       "type": "DELAY",
-      "value": "500",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -24,7 +24,7 @@
     {
       "id": "qfe-na-owner-modal-wait",
       "type": "DELAY",
-      "value": "600",
+      "value": "1000",
       "fields": [
         {}
       ]
@@ -41,7 +41,7 @@
     {
       "id": "qfe-na-owner-results-wait",
       "type": "DELAY",
-      "value": "700",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -58,7 +58,7 @@
     {
       "id": "qfe-na-owner-before-confirm",
       "type": "DELAY",
-      "value": "500",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -75,7 +75,7 @@
     {
       "id": "qfe-na-owner-done",
       "type": "DELAY",
-      "value": "600",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -92,7 +92,7 @@
     {
       "id": "qfe-na-date-wait",
       "type": "DELAY",
-      "value": "600",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -153,7 +153,7 @@
     {
       "id": "qfe-na-before-log-save",
       "type": "DELAY",
-      "value": "600",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -170,7 +170,7 @@
     {
       "id": "qfe-na-after-log-save",
       "type": "DELAY",
-      "value": "800",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -187,7 +187,7 @@
     {
       "id": "qfe-na-stage-wait",
       "type": "DELAY",
-      "value": "600",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -204,7 +204,7 @@
     {
       "id": "qfe-na-after-stage",
       "type": "DELAY",
-      "value": "600",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -221,7 +221,7 @@
     {
       "id": "qfe-na-reason-wait",
       "type": "DELAY",
-      "value": "600",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -238,7 +238,7 @@
     {
       "id": "qfe-na-reason-other-wait",
       "type": "DELAY",
-      "value": "600",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -258,7 +258,7 @@
     {
       "id": "qfe-na-before-save",
       "type": "DELAY",
-      "value": "500",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -275,12 +275,12 @@
     {
       "id": "qfe-na-save-done",
       "type": "DELAY",
-      "value": "700",
+      "value": "400",
       "fields": [
         {}
       ]
     }
   ],
-  "updatedAt": "2026-10-23T12:30:00.000Z",
+  "updatedAt": "2026-10-24T04:37:27.754Z",
   "createdAt": "2026-10-16T03:42:14.732Z"
 }

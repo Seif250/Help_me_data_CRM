@@ -7,7 +7,7 @@
     {
       "id": "qfe-followup-page-settle",
       "type": "DELAY",
-      "value": "500",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -24,7 +24,7 @@
     {
       "id": "qfe-followup-owner-modal-wait",
       "type": "DELAY",
-      "value": "600",
+      "value": "1000",
       "fields": [
         {}
       ]
@@ -41,7 +41,7 @@
     {
       "id": "qfe-followup-owner-results-wait",
       "type": "DELAY",
-      "value": "700",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -58,7 +58,7 @@
     {
       "id": "qfe-followup-owner-before-confirm",
       "type": "DELAY",
-      "value": "500",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -75,7 +75,7 @@
     {
       "id": "qfe-followup-owner-done",
       "type": "DELAY",
-      "value": "600",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -92,7 +92,7 @@
     {
       "id": "qfe-followup-date-wait",
       "type": "DELAY",
-      "value": "600",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -124,7 +124,7 @@
     {
       "id": "qfe-followup-before-opp-save",
       "type": "DELAY",
-      "value": "500",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -141,7 +141,7 @@
     {
       "id": "qfe-followup-opp-save-wait",
       "type": "DELAY",
-      "value": "800",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -158,7 +158,7 @@
     {
       "id": "qfe-followup-log-open-wait",
       "type": "DELAY",
-      "value": "1200",
+      "value": "1000",
       "fields": [
         {}
       ]
@@ -184,7 +184,7 @@
     {
       "id": "qfe-followup-before-log-save",
       "type": "DELAY",
-      "value": "600",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -201,7 +201,7 @@
     {
       "id": "qfe-followup-after-log-save",
       "type": "DELAY",
-      "value": "800",
+      "value": "400",
       "fields": [
         {}
       ]
@@ -209,7 +209,7 @@
     {
       "id": "qfe-followup-task-btn",
       "type": "CLICK",
-      "key": "button[aria-label='New Task'], button[aria-label=\"New Task\"]",
+      "key": "[data-target-selection-name=\"sfdc:QuickAction.Task.NewTask\"] a, a[role=\"tab\"][title=\"New Task\"], a.slds-tabs_default__link[title=\"New Task\"], [data-target-selection-name*=\"NewTask\"] a, [data-target-selection-name=\"sfdc:QuickAction.Task.NewTask\"], [title=\"New Task\"], button[aria-label=\"New Task\"], button[title=\"New Task\"]",
       "searchType": "cssSelector",
       "fields": [
         {}
@@ -218,7 +218,7 @@
     {
       "id": "qfe-followup-task-open-wait",
       "type": "DELAY",
-      "value": "1500",
+      "value": "1000",
       "fields": [
         {}
       ]
@@ -226,7 +226,7 @@
     {
       "id": "qfe-followup-task-subject",
       "type": "INPUT",
-      "key": "[data-target-selection-name*=\"NewTask\"] input, .runtime_sales_activitiesTaskTabContent input[aria-label=\"Subject\"], .active.slds-tabs_default__content input[aria-label=\"Subject\"], input.slds-combobox__input[role=\"combobox\"][aria-label=\"Subject\"], input[aria-label=\"Subject\"]",
+      "key": "input.slds-combobox__input[aria-label=\"Subject\"], input[role=\"combobox\"][aria-label=\"Subject\"], [part=\"input\"][aria-label=\"Subject\"], [data-target-selection-name=\"sfdc:RecordField.Task.Subject\"] input",
       "value": "EG/Sales team (Follow up)",
       "fieldType": "text",
       "searchType": "cssSelector",
@@ -237,7 +237,7 @@
     {
       "id": "qfe-followup-subject-verify",
       "type": "VERIFY_FIELD",
-      "key": "[data-target-selection-name*=\"NewTask\"] input, .runtime_sales_activitiesTaskTabContent input[aria-label=\"Subject\"], .active.slds-tabs_default__content input[aria-label=\"Subject\"], input.slds-combobox__input[role=\"combobox\"][aria-label=\"Subject\"], input[aria-label=\"Subject\"]",
+      "key": "input.slds-combobox__input[aria-label=\"Subject\"], input[role=\"combobox\"][aria-label=\"Subject\"], [part=\"input\"][aria-label=\"Subject\"], [data-target-selection-name=\"sfdc:RecordField.Task.Subject\"] input",
       "value": "EG/Sales team (Follow up)",
       "fieldType": "text",
       "searchType": "cssSelector",
@@ -246,6 +246,6 @@
       ]
     }
   ],
-  "updatedAt": "2026-10-23T12:30:00.000Z",
+  "updatedAt": "2026-10-24T04:37:27.748Z",
   "createdAt": "2026-10-16T05:11:20.700Z"
 }
