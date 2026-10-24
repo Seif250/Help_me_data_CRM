@@ -132,7 +132,7 @@
     {
       "id": "qfe-sl-stage-open",
       "type": "CLICK",
-      "key": "button[aria-label=\"Stage\"], button.slds-combobox__input[aria-label=\"Stage\"], [data-target-selection-name*=\"Stage\"] button, button[title=\"Edit Stage\"]",
+      "key": "button[aria-label=\"Stage\"], button.slds-combobox__input[aria-label=\"Stage\"], [data-target-selection-name*=\"Stage\"] button, button[title=\"Edit Stage\"], button[title*=\"Stage\"]",
       "searchType": "cssSelector",
       "fields": [
         {}
@@ -149,7 +149,7 @@
     {
       "id": "qfe-sl-stage-select",
       "type": "CLICK",
-      "key": "lightning-base-combobox-item[data-value=\"Registered Not Paid\"], [role=\"option\"][data-value=\"Registered Not Paid\"], .slds-listbox__option[data-value=\"Registered Not Paid\"]",
+      "key": "lightning-base-combobox-item[data-value=\"Registered Not Paid\"], [data-value=\"Registered Not Paid\"], [role=\"option\"][data-value=\"Registered Not Paid\"], [role=\"option\"] span[title=\"Registered Not Paid\"], span[title=\"Registered Not Paid\"], .slds-listbox__option[data-value=\"Registered Not Paid\"]",
       "searchType": "cssSelector",
       "fields": [
         {}
@@ -166,7 +166,7 @@
     {
       "id": "qfe-sl-stage-save",
       "type": "CLICK",
-      "key": "button[name=\"SaveEdit\"], button.slds-button_brand[name=\"SaveEdit\"], .slds-docked-form-footer button.slds-button_brand, button[title=\"Save\"]",
+      "key": "button[name=\"SaveEdit\"], .slds-button_brand[name=\"SaveEdit\"], button.slds-button_brand",
       "searchType": "cssSelector",
       "fields": [
         {}
