@@ -21,7 +21,8 @@
         "content.5e152e98.css"
       ],
       "js": [
-        "content.883ade9e.js"
+        "content.883ade9e.js",
+        "salesforce-floating-bar.js"
       ],
       "matches": [
         "<all_urls>"
@@ -54,7 +55,7 @@
     "tabs",
     "contextMenus"
   ],
-  "version": "1.17.25",
+  "version": "1.17.26",
   "web_accessible_resources": [
     {
       "matches": [

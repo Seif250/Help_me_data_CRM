@@ -18,10 +18,13 @@
         </div>
         <div class="flexi-titles">
           <h1 class="flexi-title">Help Seif</h1>
-          <p class="flexi-subtitle">Salesforce scripts <span class="flexi-version-badge">v1.17.25</span></p>
+          <p class="flexi-subtitle">Salesforce scripts <span class="flexi-version-badge">v1.17.26</span></p>
         </div>
       </div>
       <div class="flexi-header-actions">
+        <button type="button" class="flexi-float-toggle active" id="flexi-float-toggle-btn" title="Show/Hide Floating Quick-Action Bar on Salesforce page" aria-label="Toggle Floating Bar">
+          <span>⚡ Bar</span>
+        </button>
         <button type="button" class="flexi-speed-pill" id="flexi-speed-btn" title="Change execution speed (Fast / 1x / Slow)" aria-label="Execution speed">
           <span class="flexi-status-dot"></span>
           <span class="flexi-status-text" id="flexi-speed-label">1x</span>
@@ -45,6 +48,42 @@
         </button>
       </div>
     </header>
+
+    <!-- 1b. Customer Info Copy Card -->
+    <section class="flexi-customer-card" id="flexi-customer-card">
+      <div class="flexi-customer-header">
+        <div class="flexi-customer-title-wrap">
+          <span class="flexi-customer-title">Customer Queue</span>
+          <span class="flexi-customer-hint">(Win+V order)</span>
+        </div>
+        <div class="flexi-customer-actions">
+          <div class="flexi-suffix-box" title="Letters added after SMS ID (e.g. SE or MY)">
+            <span class="flexi-suffix-lbl">ID+</span>
+            <input type="text" id="flexi-id-suffix" class="flexi-suffix-input" maxlength="6" value="SE" placeholder="SE" aria-label="SMS ID Suffix" />
+          </div>
+          <button type="button" id="flexi-cust-refresh" class="flexi-cust-refresh-btn" title="Auto-hover Account & refresh customer data" aria-label="Refresh customer data">↻</button>
+          <button type="button" id="flexi-cust-copy-all" class="flexi-cust-copy-all-btn" title="Copy ID, Email, Phone & Name separately into Clipboard Queue">📋 Copy All</button>
+        </div>
+      </div>
+      <div class="flexi-customer-grid">
+        <button type="button" class="flexi-cust-row" data-cust-field="name" title="Click to copy Name only">
+          <span class="flexi-cust-lbl">1. Name (Top)</span>
+          <span class="flexi-cust-val is-empty" id="flexi-cust-name">—</span>
+        </button>
+        <button type="button" class="flexi-cust-row" data-cust-field="phone" title="Click to copy Phone only">
+          <span class="flexi-cust-lbl">2. Phone</span>
+          <span class="flexi-cust-val is-empty" id="flexi-cust-phone">—</span>
+        </button>
+        <button type="button" class="flexi-cust-row" data-cust-field="email" title="Click to copy Email only">
+          <span class="flexi-cust-lbl">3. Email</span>
+          <span class="flexi-cust-val is-empty" id="flexi-cust-email">—</span>
+        </button>
+        <button type="button" class="flexi-cust-row" data-cust-field="smsId" title="Click to copy Student SMS ID + Suffix">
+          <span class="flexi-cust-lbl">4. SMS ID (Bottom)</span>
+          <span class="flexi-cust-val is-empty" id="flexi-cust-smsId">—</span>
+        </button>
+      </div>
+    </section>
 
     <!-- 2. Flexible Field 3 & 4 Values Section -->
     <section class="flexi-field-card">

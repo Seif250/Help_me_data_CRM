@@ -720,7 +720,225 @@
     });
   }
 
-  // 7. Keyboard shortcuts (1-9 to run script, S to stop) inside Popup
+  // 7. Customer Info Copy Card & Floating Bar Toggle
+  const FLOAT_ENABLED_KEY = "qfeFloatingBarEnabled";
+
+  async function initFloatingBarToggle() {
+    const toggleBtn = document.getElementById("flexi-float-toggle-btn");
+    if (!toggleBtn) return;
+
+    let isEnabled = true;
+    try {
+      const stored = await chrome.storage.local.get(FLOAT_ENABLED_KEY);
+      isEnabled = stored[FLOAT_ENABLED_KEY] !== false;
+    } catch {}
+
+    const renderToggle = () => {
+      toggleBtn.classList.toggle("active", isEnabled);
+      toggleBtn.title = isEnabled
+        ? "Floating Quick-Action Bar is ON (click to hide)"
+        : "Floating Quick-Action Bar is OFF (click to show)";
+    };
+    renderToggle();
+
+    toggleBtn.addEventListener("click", async () => {
+      isEnabled = !isEnabled;
+      renderToggle();
+      try {
+        await chrome.storage.local.set({ [FLOAT_ENABLED_KEY]: isEnabled });
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        if (tab?.id) {
+          chrome.tabs.sendMessage(tab.id, {
+            name: "setFloatingBarEnabled",
+            enabled: isEnabled,
+          }).catch(() => {});
+        }
+        showToast(isEnabled ? "⚡ Floating Bar enabled" : "Floating Bar hidden");
+      } catch {}
+    });
+  }
+
+  const SMS_ID_SUFFIX_KEY = "qfeSmsIdSuffix";
+
+  const formatSmsIdWithSuffix = (rawId, suffix) => {
+    const cleanId = String(rawId || "").trim();
+    if (!cleanId) return "";
+    const cleanSuffix = String(suffix || "").trim();
+    return cleanSuffix ? `${cleanId}  ${cleanSuffix}` : cleanId;
+  };
+
+  async function initCustomerInfoCard() {
+    const copyAllBtn = document.getElementById("flexi-cust-copy-all");
+    const refreshBtn = document.getElementById("flexi-cust-refresh");
+    const suffixInput = document.getElementById("flexi-id-suffix");
+    const rows = document.querySelectorAll(".flexi-cust-row");
+    if (!copyAllBtn || !rows.length) return;
+
+    let currentInfo = { name: "", phone: "", email: "", smsId: "" };
+    let currentSuffix = "SE";
+
+    try {
+      const stored = await chrome.storage.local.get(SMS_ID_SUFFIX_KEY);
+      if (stored[SMS_ID_SUFFIX_KEY] !== undefined) {
+        currentSuffix = String(stored[SMS_ID_SUFFIX_KEY]);
+      }
+    } catch {}
+
+    if (suffixInput) {
+      suffixInput.value = currentSuffix;
+      suffixInput.addEventListener("input", async () => {
+        currentSuffix = suffixInput.value.trim().toUpperCase();
+        suffixInput.value = currentSuffix;
+        updateUI(currentInfo);
+        try {
+          await chrome.storage.local.set({ [SMS_ID_SUFFIX_KEY]: currentSuffix });
+        } catch {}
+      });
+    }
+
+    const updateUI = (info) => {
+      currentInfo = info || { name: "", phone: "", email: "", smsId: "" };
+      for (const key of ["name", "phone", "email", "smsId"]) {
+        const el = document.getElementById(`flexi-cust-${key}`);
+        if (!el) continue;
+        const rawVal = String(currentInfo[key] || "").trim();
+        const displayVal =
+          key === "smsId" && rawVal
+            ? formatSmsIdWithSuffix(rawVal, currentSuffix)
+            : rawVal;
+        el.textContent = displayVal || "—";
+        el.classList.toggle("is-empty", !displayVal);
+      }
+    };
+
+    const fetchFromActiveTab = async (autoHover = false) => {
+      try {
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        if (!tab?.id || !tab.url || /^(?:chrome|edge|about):/i.test(tab.url)) {
+          return;
+        }
+        let res = null;
+        try {
+          res = await chrome.tabs.sendMessage(tab.id, {
+            name: "getCustomerInfo",
+            autoHover,
+          });
+        } catch {
+          try {
+            await chrome.scripting.executeScript({
+              target: { tabId: tab.id },
+              files: ["salesforce-floating-bar.js"],
+            });
+            res = await chrome.tabs.sendMessage(tab.id, {
+              name: "getCustomerInfo",
+              autoHover,
+            });
+          } catch {}
+        }
+        if (res?.ok && res.data) {
+          updateUI(res.data);
+        }
+      } catch {}
+    };
+
+    refreshBtn?.addEventListener("click", async () => {
+      refreshBtn.textContent = "…";
+      await fetchFromActiveTab(true);
+      refreshBtn.textContent = "↻";
+      showToast("↻ Customer data refreshed");
+    });
+
+    rows.forEach((row) => {
+      row.addEventListener("click", async () => {
+        const field = row.getAttribute("data-cust-field");
+        if (!currentInfo[field]) {
+          await fetchFromActiveTab(true);
+        } else {
+          await fetchFromActiveTab(false);
+        }
+        const rawVal = String(currentInfo[field] || "").trim();
+        const valToCopy =
+          field === "smsId"
+            ? formatSmsIdWithSuffix(rawVal, currentSuffix)
+            : rawVal;
+        if (!valToCopy) {
+          showToast(`No ${field} found on this page`);
+          return;
+        }
+        try {
+          await navigator.clipboard.writeText(valToCopy);
+          showToast(`✓ Copied: ${valToCopy}`);
+        } catch {
+          showToast("Failed to copy to clipboard");
+        }
+      });
+    });
+
+    // Copy All separately into Windows Clipboard History (Win+V):
+    // 1st copied (bottom of Win+V): SMS ID + Suffix (e.g. "0061704516  SE")
+    // 2nd copied (above ID):        Email
+    // 3rd copied (above Email):     Phone
+    // 4th copied (top of Win+V):    Name
+    copyAllBtn.addEventListener("click", async () => {
+      const defaultLabel = "📋 Copy All";
+      copyAllBtn.textContent = "Reading...";
+      await fetchFromActiveTab(true);
+
+      const formattedId = formatSmsIdWithSuffix(currentInfo.smsId, currentSuffix);
+      const queue = [
+        { label: "SMS ID", value: formattedId },
+        { label: "Email", value: String(currentInfo.email || "").trim() },
+        { label: "Phone", value: String(currentInfo.phone || "").trim() },
+        { label: "Name", value: String(currentInfo.name || "").trim() },
+      ].filter((item) => Boolean(item.value));
+
+      if (queue.length === 0) {
+        copyAllBtn.textContent = defaultLabel;
+        showToast("No customer info found on active tab");
+        return;
+      }
+
+      try {
+        for (let i = 0; i < queue.length; i++) {
+          copyAllBtn.textContent = `Copying ${i + 1}/${queue.length}...`;
+          await navigator.clipboard.writeText(queue[i].value);
+          if (i < queue.length - 1) {
+            await new Promise((r) => setTimeout(r, 420));
+          }
+        }
+        copyAllBtn.textContent = `✓ Queued ${queue.length}!`;
+        showToast(`✓ Queued ${queue.length} items to Win+V (Name on top, ID on bottom)`);
+        setTimeout(() => {
+          copyAllBtn.textContent = defaultLabel;
+        }, 1200);
+      } catch {
+        copyAllBtn.textContent = defaultLabel;
+        showToast("Failed to copy to clipboard");
+      }
+    });
+
+    // Listen for live updates pushed from salesforce-floating-bar.js while popup is open
+    if (typeof chrome !== "undefined" && chrome.runtime?.onMessage) {
+      chrome.runtime.onMessage.addListener((msg) => {
+        if (msg?.name === "customerInfoUpdated" && msg.data) {
+          updateUI(msg.data);
+        }
+      });
+    }
+
+    // Live poll while popup stays open so UI updates automatically without closing/reopening
+    setInterval(() => {
+      fetchFromActiveTab(false);
+    }, 550);
+
+    // Fetch immediately on popup open (and auto-scroll + auto-hover if smsId/phone/email missing)
+    await fetchFromActiveTab(false);
+    if (!currentInfo.phone || !currentInfo.email || !currentInfo.smsId) {
+      await fetchFromActiveTab(true);
+    }
+  }
+
+  // 8. Keyboard shortcuts (1-9 to run script, S to stop) inside Popup
   function setupKeyboardShortcuts() {
     document.addEventListener("keydown", (e) => {
       const tag = (e.target?.tagName || "").toUpperCase();
@@ -748,6 +966,8 @@
     initFlexibleField();
     initFlexibleField4();
     initSpeedControl();
+    initFloatingBarToggle();
+    initCustomerInfoCard();
     initHeaderActions();
     setupGlobalMenuCloser();
     initScriptRows();
