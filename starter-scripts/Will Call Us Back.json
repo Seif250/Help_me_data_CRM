@@ -83,7 +83,7 @@
     {
       "id": "qfe-wcb-edit-date-btn",
       "type": "CLICK",
-      "key": "button[title=\"Edit Close Date\"]",
+      "key": "button[title=\"Edit Close Date\"], [data-target-selection-name*=\"CloseDate\"] button, button[title*=\"Close Date\"]",
       "searchType": "cssSelector",
       "fields": [
         {}
@@ -178,7 +178,7 @@
     {
       "id": "qfe-wcb-stage-open",
       "type": "CLICK",
-      "key": "button[aria-label=\"Stage\"]",
+      "key": "button[aria-label=\"Stage\"], button.slds-combobox__input[aria-label=\"Stage\"], button[title=\"Edit Stage\"], [data-target-selection-name*=\"Stage\"] button",
       "searchType": "cssSelector",
       "fields": [
         {}
@@ -195,7 +195,7 @@
     {
       "id": "qfe-wcb-stage-select",
       "type": "CLICK",
-      "key": "lightning-base-combobox-item[data-value=\"Not Registered (Closed Lost)\"]",
+      "key": "lightning-base-combobox-item[data-value=\"Not Registered (Closed Lost)\"], [role=\"option\"][data-value=\"Not Registered (Closed Lost)\"]",
       "searchType": "cssSelector",
       "fields": [
         {}
@@ -212,7 +212,7 @@
     {
       "id": "qfe-wcb-reason-open",
       "type": "CLICK",
-      "key": "button[aria-label=\"Reason Opportunity Lost or Closed\"]",
+      "key": "button[aria-label=\"Reason Opportunity Lost or Closed\"], button[aria-label*=\"Reason Opportunity Lost\"]",
       "searchType": "cssSelector",
       "fields": [
         {}
@@ -229,7 +229,7 @@
     {
       "id": "qfe-wcb-reason-select",
       "type": "CLICK",
-      "key": "lightning-base-combobox-item[data-value=\"Not now, maybe later\"]",
+      "key": "lightning-base-combobox-item[data-value=\"Not now, maybe later\"], [role=\"option\"][data-value=\"Not now, maybe later\"]",
       "searchType": "cssSelector",
       "fields": [
         {}
@@ -266,7 +266,7 @@
     {
       "id": "qfe-wcb-save",
       "type": "CLICK",
-      "key": "button[name=\"SaveEdit\"]",
+      "key": "button[name=\"SaveEdit\"], .slds-button_brand[name=\"SaveEdit\"]",
       "searchType": "cssSelector",
       "fields": [
         {}
@@ -281,6 +281,6 @@
       ]
     }
   ],
-  "updatedAt": "2026-10-24T04:37:27.761Z",
+  "updatedAt": "2026-10-25T00:00:00.000Z",
   "createdAt": "2026-10-16T05:09:01.189Z"
 }

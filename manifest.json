@@ -9,7 +9,7 @@
     },
     "default_popup": "popup.html"
   },
-  "author": "Albert Gabdullin. <quickform.pro@gmail.com>",
+  "author": "Seif Ezz Eldin",
   "background": {
     "service_worker": "static/background/index.js"
   },
@@ -30,13 +30,7 @@
     }
   ],
   "default_locale": "en",
-  "description": "Help Seif - Faster Salesforce workflows with adaptive waits and reliable Save/owner handling.",
-  "externally_connectable": {
-    "matches": [
-      "https://quickform.pro/*",
-      "https://*.quickform.pro/*"
-    ]
-  },
+  "description": "Help Seif - Faster Salesforce workflows with adaptive waits, live status HUD, and reliable Save/owner handling.",
   "host_permissions": [
     "https://*/*"
   ],
@@ -60,7 +54,7 @@
     "tabs",
     "contextMenus"
   ],
-  "version": "1.17.24",
+  "version": "1.17.25",
   "web_accessible_resources": [
     {
       "matches": [
@@ -68,8 +62,6 @@
       ],
       "resources": [
         "Inter.a6dc61af.woff2",
-        "wl-6SIEURNF.44f29c6d.js",
-        "wl-Y3PKYBWS.380a7a2c.js",
         "content.b08964b6.css",
         "content.642039fc.css",
         "content.33e81aa6.svg"

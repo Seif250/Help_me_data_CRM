@@ -3,7 +3,15 @@
 
   const OPTIONS_KEY = "qfeFlexibleFieldOptions";
   const VALUE_KEY = "qfeFlexibleFieldValue";
+  const DELAY_MULTIPLIER_KEY = "qfeDelayMultiplier";
+  const ORDER_KEY = "flexiScriptOrder";
   const DEFAULTS = ["BEG 10% List", "ANR", "LED", "REG 10%", "BEG T1 RES"];
+
+  const SPEED_PRESETS = [
+    { label: "1x", multiplier: 1.0, desc: "السرعة الطبيعية (1x)" },
+    { label: "Fast", multiplier: 0.7, desc: "السرعة العالية (Fast 0.7x)" },
+    { label: "Slow", multiplier: 1.5, desc: "السرعة الهادئة للاتصال البطيء (Slow 1.5x)" }
+  ];
 
   // Script definitions strictly matching the design system
   const DEFAULT_DEFINITIONS = [
@@ -80,14 +88,30 @@
     }, 2200);
   }
 
-  // 1. Initialize Flexible Field 3 Value (with Add / Delete option support)
+  // 1. Initialize Flexible Field 3 Value (with inline Add / Delete option support)
   async function initFlexibleField() {
     const select = document.getElementById("qfe-flex-value");
-    const addBtn  = document.getElementById("qfe-flex-add");
-    const delBtn  = document.getElementById("qfe-flex-del");
+    const addBtn = document.getElementById("qfe-flex-add");
+    const delBtn = document.getElementById("qfe-flex-del");
+    const inlineAddBox = document.getElementById("qfe-flex-inline-add");
+    const newInput = document.getElementById("qfe-flex-new-input");
+    const saveNewBtn = document.getElementById("qfe-flex-save-btn");
+    const cancelNewBtn = document.getElementById("qfe-flex-cancel-btn");
     if (!select) return;
 
-    // --- helpers ---
+    const defaultDelHtml = delBtn ? delBtn.innerHTML : "";
+    let deleteConfirmTimer = null;
+
+    function resetDeleteConfirm() {
+      if (!delBtn) return;
+      if (deleteConfirmTimer) {
+        clearTimeout(deleteConfirmTimer);
+        deleteConfirmTimer = null;
+      }
+      delBtn.classList.remove("confirming");
+      delBtn.innerHTML = defaultDelHtml;
+    }
+
     async function loadOptions() {
       const stored = await chrome.storage.local.get([OPTIONS_KEY, VALUE_KEY]);
       let options = Array.isArray(stored[OPTIONS_KEY]) ? stored[OPTIONS_KEY] : [...DEFAULTS];
@@ -113,40 +137,72 @@
       await chrome.storage.local.set({ [OPTIONS_KEY]: options, [VALUE_KEY]: value });
     }
 
-    // --- initial render ---
+    async function commitNewOption() {
+      if (!newInput) return;
+      const newOpt = newInput.value.trim();
+      if (!newOpt) {
+        showToast("اكتب قيمة الخيار أولاً", true);
+        newInput.focus();
+        return;
+      }
+      const { options: current } = await loadOptions();
+      if (current.includes(newOpt)) {
+        showToast("الخيار موجود بالفعل", true);
+        return;
+      }
+      const updated = [...current, newOpt];
+      await save(updated, newOpt);
+      await renderOptions(updated, newOpt);
+      newInput.value = "";
+      if (inlineAddBox) inlineAddBox.hidden = true;
+      showToast(`✓ تمت إضافة: ${newOpt}`);
+    }
+
     try {
       const { options, value } = await loadOptions();
       await renderOptions(options, value);
 
-      // On change: persist selected value
       select.addEventListener("change", async () => {
+        resetDeleteConfirm();
         const next = select.value;
         await chrome.storage.local.set({ [VALUE_KEY]: next });
         showToast(`✓ Field 3: ${next}`);
       });
 
-      // ➕ Add new option
-      if (addBtn) {
-        addBtn.addEventListener("click", async () => {
-          const raw = prompt("اكتب الـ Option الجديد:");
-          if (!raw) return;
-          const newOpt = raw.trim();
-          if (!newOpt) return;
-          const { options: current } = await loadOptions();
-          if (current.includes(newOpt)) {
-            showToast("الخيار موجود بالفعل", true);
-            return;
+      // ➕ Open inline add form
+      if (addBtn && inlineAddBox && newInput) {
+        addBtn.addEventListener("click", () => {
+          resetDeleteConfirm();
+          const isHidden = inlineAddBox.hidden;
+          inlineAddBox.hidden = !isHidden;
+          if (!inlineAddBox.hidden) {
+            newInput.value = "";
+            newInput.focus();
           }
-          const updated = [...current, newOpt];
-          await save(updated, newOpt);
-          await renderOptions(updated, newOpt);
-          showToast(`✓ تمت إضافة: ${newOpt}`);
+        });
+
+        saveNewBtn?.addEventListener("click", commitNewOption);
+        cancelNewBtn?.addEventListener("click", () => {
+          newInput.value = "";
+          inlineAddBox.hidden = true;
+        });
+
+        newInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            commitNewOption();
+          } else if (e.key === "Escape") {
+            e.preventDefault();
+            newInput.value = "";
+            inlineAddBox.hidden = true;
+          }
         });
       }
 
-      // ➖ Delete current option
+      // ➖ Two-step inline delete confirmation (no blocking confirm() dialog)
       if (delBtn) {
         delBtn.addEventListener("click", async () => {
+          if (inlineAddBox) inlineAddBox.hidden = true;
           const current = select.value;
           if (!current) return;
           const { options: all } = await loadOptions();
@@ -154,8 +210,15 @@
             showToast("لازم يفضل خيار واحد على الأقل", true);
             return;
           }
-          const confirmed = confirm(`هتحذف "${current}"؟`);
-          if (!confirmed) return;
+
+          if (!delBtn.classList.contains("confirming")) {
+            delBtn.classList.add("confirming");
+            delBtn.textContent = "حذف؟";
+            deleteConfirmTimer = setTimeout(resetDeleteConfirm, 2500);
+            return;
+          }
+
+          resetDeleteConfirm();
           const updated = all.filter(o => o !== current);
           const newSelected = updated[0];
           await save(updated, newSelected);
@@ -163,58 +226,68 @@
           showToast(`✓ تم حذف: ${current}`);
         });
       }
-
     } catch (e) {
       console.warn("Help Seif: Flexible field init error", e);
     }
   }
 
-  // ─── Adaptive Delay ────────────────────────────────────────────────────────
-  // Measures actual page load/response time and stores a multiplier so that
-  // slow connections get longer delays and fast connections get shorter ones.
-  // Multiplier is stored in chrome.storage.local as "qfeDelayMultiplier".
-  const DELAY_MULTIPLIER_KEY = "qfeDelayMultiplier";
+  // 2. Speed Preset Selector (Fast 0.7x / Normal 1.0x / Slow 1.5x)
+  async function initSpeedControl() {
+    const speedBtn = document.getElementById("flexi-speed-btn");
+    const speedLabel = document.getElementById("flexi-speed-label");
+    if (!speedBtn || !speedLabel) return;
 
-  async function measureAndStoreLatency() {
+    let currentMult = 1.0;
     try {
-      const t0 = performance.now();
-      // Lightweight ping: check how fast storage itself responds as a proxy
-      await chrome.storage.local.get(["resources"]);
-      const roundTripMs = performance.now() - t0;
+      const stored = await chrome.storage.local.get([DELAY_MULTIPLIER_KEY]);
+      const val = Number(stored[DELAY_MULTIPLIER_KEY]);
+      if (SPEED_PRESETS.some(p => p.multiplier === val)) {
+        currentMult = val;
+      } else {
+        await chrome.storage.local.set({ [DELAY_MULTIPLIER_KEY]: 1.0 });
+      }
+    } catch {}
 
-      // Map round-trip to a sane multiplier:
-      //   < 50 ms  → 0.7 (fast)
-      //   50-150   → 1.0 (normal)
-      //   150-400  → 1.4 (medium-slow)
-      //   > 400 ms → 2.0 (slow / heavy page)
-      let multiplier;
-      if      (roundTripMs < 50)  multiplier = 0.7;
-      else if (roundTripMs < 150) multiplier = 1.0;
-      else if (roundTripMs < 400) multiplier = 1.4;
-      else                        multiplier = 2.0;
+    const renderSpeed = (mult) => {
+      const preset = SPEED_PRESETS.find(p => p.multiplier === mult) || SPEED_PRESETS[0];
+      speedLabel.textContent = preset.label;
+    };
+    renderSpeed(currentMult);
 
-      await chrome.storage.local.set({ [DELAY_MULTIPLIER_KEY]: multiplier });
-    } catch (e) {
-      // Non-fatal – scripts will fall back to their hard-coded delays
-      console.warn("Help Seif: latency measurement failed", e);
-    }
+    speedBtn.addEventListener("click", async () => {
+      const idx = SPEED_PRESETS.findIndex(p => p.multiplier === currentMult);
+      const nextPreset = SPEED_PRESETS[(idx + 1) % SPEED_PRESETS.length];
+      currentMult = nextPreset.multiplier;
+      renderSpeed(currentMult);
+      try {
+        await chrome.storage.local.set({ [DELAY_MULTIPLIER_KEY]: currentMult });
+        showToast(`⚡ ${nextPreset.desc}`);
+      } catch {}
+    });
   }
 
-  // Expose a helper the content scripts can read before executing each DELAY step
-  // (the background/index.js already reads qfeDelayMultiplier from storage)
-  async function getDelayMultiplier() {
-    try {
-      const res = await chrome.storage.local.get([DELAY_MULTIPLIER_KEY]);
-      const m = res[DELAY_MULTIPLIER_KEY];
-      return (typeof m === "number" && m > 0) ? m : 1.0;
-    } catch {
-      return 1.0;
-    }
-  }
-
-
-  // 2. Initialize Header Actions
+  // 3. Initialize Header Actions (Stop, Settings, Close)
   function initHeaderActions() {
+    const stopBtn = document.getElementById("flexi-stop-btn");
+    if (stopBtn) {
+      stopBtn.addEventListener("click", async () => {
+        try {
+          const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+          if (tab?.id) {
+            chrome.tabs.sendMessage(tab.id, {
+              name: "content",
+              body: { type: "stop" }
+            }, () => {
+              void chrome.runtime?.lastError;
+            });
+          }
+          showToast("⏹ تم إرسال أمر الإيقاف");
+        } catch {
+          showToast("تعذر إرسال أمر الإيقاف", true);
+        }
+      });
+    }
+
     const settingsBtn = document.getElementById("flexi-settings-btn");
     if (settingsBtn) {
       settingsBtn.addEventListener("click", () => {
@@ -234,7 +307,7 @@
     }
   }
 
-  // 3. Close open dropdown menus on click outside
+  // 4. Close open dropdown menus on click outside
   function setupGlobalMenuCloser() {
     document.addEventListener("click", (e) => {
       if (!e.target.closest(".flexi-menu-btn") && !e.target.closest(".flexi-dropdown-menu")) {
@@ -243,14 +316,14 @@
     });
   }
 
-  // 4. Run Script on Salesforce Tab
+  // 5. Run Script on Salesforce Tab
   async function runScript(scriptId, scriptName, playBtn, scriptType = "resource") {
     if (playBtn) {
       playBtn.classList.add("flexi-play-active");
       setTimeout(() => playBtn.classList.remove("flexi-play-active"), 600);
     }
 
-    showToast(`Running ${scriptName}...`);
+    showToast(`▶ Running ${scriptName}...`);
 
     try {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -265,9 +338,10 @@
           type: scriptType === "profile" ? "profile" : "resource",
           id: scriptId
         }
-      }, (res) => {
+      }, () => {
         if (chrome.runtime?.lastError) {
           console.warn("Help Seif: script message note:", chrome.runtime.lastError.message);
+          showToast("افتح صفحة Salesforce أو اعمل Refresh للصفحة", true);
         }
       });
     } catch (err) {
@@ -276,14 +350,11 @@
     }
   }
 
-  const ORDER_KEY = "flexiScriptOrder";
-
-  // 5. Initialize Script Rows (Dynamically loading defaults + all user-added workflows)
+  // 6. Initialize Script Rows (Dynamically loading defaults + all user-added workflows)
   async function initScriptRows() {
     const container = document.getElementById("flexi-scripts-list");
     if (!container) return;
 
-    // Load actual stored resources, profiles, and saved script order
     let storedResources = [];
     let storedProfiles = [];
     let savedOrder = null;
@@ -310,10 +381,8 @@
 
     const norm = (s) => String(s || "").trim().toLowerCase();
 
-    // Start with default definitions
     const allDefs = [...DEFAULT_DEFINITIONS];
 
-    // Dynamically append any user-created resources that aren't in allDefs
     for (const r of storedResources) {
       if (!r || !r.name) continue;
       const exists = allDefs.some(d => d.defaultId === r.id || norm(d.name) === norm(r.name));
@@ -334,7 +403,6 @@
       }
     }
 
-    // Dynamically append any user-created profiles that aren't in allDefs
     for (const p of storedProfiles) {
       if (!p || !p.name) continue;
       const exists = allDefs.some(d => d.defaultId === p.id || norm(d.name) === norm(p.name));
@@ -351,7 +419,6 @@
       }
     }
 
-    // Sort script definitions according to saved custom order
     let orderedDefs = [...allDefs];
     if (savedOrder && savedOrder.length) {
       orderedDefs.sort((a, b) => {
@@ -365,10 +432,25 @@
 
     container.replaceChildren();
 
-    // Persist reordered script keys to storage
+    function refreshShortcutBadges() {
+      const rows = container.querySelectorAll(".flexi-script-row");
+      rows.forEach((r, idx) => {
+        const badge = r.querySelector(".flexi-shortcut-badge");
+        if (badge) {
+          if (idx < 9) {
+            badge.textContent = String(idx + 1);
+            badge.style.display = "flex";
+          } else {
+            badge.style.display = "none";
+          }
+        }
+      });
+    }
+
     async function persistNewOrder() {
       const rows = container.querySelectorAll(".flexi-script-row");
       const currentKeys = Array.from(rows).map(r => r.dataset.key).filter(Boolean);
+      refreshShortcutBadges();
       try {
         await chrome.storage.local.set({ [ORDER_KEY]: currentKeys });
         showToast("✓ تم حفظ ترتيب السكريبتات");
@@ -379,8 +461,7 @@
 
     let draggedElement = null;
 
-    for (const def of orderedDefs) {
-      // Find matching resource/profile by ID or name
+    orderedDefs.forEach((def, index) => {
       const matchedRes = storedResources.find(r => r && (
         r.id === def.defaultId || norm(r.name) === norm(def.name)
       ));
@@ -394,13 +475,14 @@
       const row = document.createElement("div");
       row.className = `flexi-script-row${def.isHighlighted ? " flexi-row-highlight" : ""}`;
       row.dataset.key = def.key;
+      row.dataset.scriptId = activeId;
+      row.dataset.scriptName = def.name;
+      row.dataset.scriptType = scriptType;
       row.setAttribute("draggable", "true");
 
-      // Left side: Drag Handle + Icon + Title + Description
       const left = document.createElement("div");
       left.className = "flexi-row-left";
 
-      // 6-Dot Drag Handle
       const dragHandle = document.createElement("div");
       dragHandle.className = "flexi-drag-handle";
       dragHandle.title = "اسحب لتغيير الترتيب";
@@ -410,6 +492,16 @@
       const iconBox = document.createElement("div");
       iconBox.className = "flexi-row-icon";
       iconBox.innerHTML = def.iconSvg;
+
+      const shortcutBadge = document.createElement("span");
+      shortcutBadge.className = "flexi-shortcut-badge";
+      shortcutBadge.title = `اختصار لوحة المفاتيح: اضغط رقم ${index + 1}`;
+      if (index < 9) {
+        shortcutBadge.textContent = String(index + 1);
+      } else {
+        shortcutBadge.style.display = "none";
+      }
+      iconBox.appendChild(shortcutBadge);
 
       const infoBox = document.createElement("div");
       infoBox.className = "flexi-row-info";
@@ -429,15 +521,13 @@
       left.appendChild(iconBox);
       left.appendChild(infoBox);
 
-      // Right side: Play Button + 3-Dot Button
       const actions = document.createElement("div");
       actions.className = "flexi-row-actions";
 
-      // Play Button
       const playBtn = document.createElement("button");
       playBtn.type = "button";
       playBtn.className = "flexi-play-btn";
-      playBtn.title = `Run ${def.name}`;
+      playBtn.title = `Run ${def.name} (Shortcut: ${index + 1})`;
       playBtn.setAttribute("aria-label", `Run ${def.name}`);
       playBtn.setAttribute("draggable", "false");
       playBtn.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" fill="#FFFFFF"><path d="M8 5v14l11-7z"/></svg>`;
@@ -445,7 +535,6 @@
         runScript(activeId, def.name, playBtn, scriptType);
       });
 
-      // 3-Dot Overflow Menu Button
       const menuBtn = document.createElement("button");
       menuBtn.type = "button";
       menuBtn.className = "flexi-menu-btn";
@@ -462,7 +551,6 @@
           return;
         }
 
-        // Close other open menus
         document.querySelectorAll(".flexi-dropdown-menu").forEach(m => m.remove());
 
         const menu = document.createElement("div");
@@ -492,6 +580,22 @@
 
         menu.appendChild(editItem);
         menu.appendChild(viewItem);
+
+        if (!def.isCustom) {
+          const resetItem = document.createElement("button");
+          resetItem.type = "button";
+          resetItem.className = "flexi-dropdown-item";
+          resetItem.textContent = "Reset to default";
+          resetItem.addEventListener("click", () => {
+            chrome.runtime.sendMessage({ name: "resetStarterResources", id: def.defaultId }, () => {
+              void chrome.runtime?.lastError;
+              showToast(`✓ تمت استعادة ${def.name} للوضع الافتراضي`);
+            });
+            menu.remove();
+          });
+          menu.appendChild(resetItem);
+        }
+
         row.appendChild(menu);
       });
 
@@ -562,24 +666,45 @@
       });
 
       container.appendChild(row);
-    }
+    });
   }
 
-  // Main Startup
-  document.addEventListener("DOMContentLoaded", () => {
-    initFlexibleField();
-    initHeaderActions();
-    setupGlobalMenuCloser();
-    initScriptRows();
-    measureAndStoreLatency();
-  });
+  // 7. Keyboard shortcuts (1-9 to run script, S to stop) inside Popup
+  function setupKeyboardShortcuts() {
+    document.addEventListener("keydown", (e) => {
+      const tag = (e.target?.tagName || "").toUpperCase();
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      if (e.ctrlKey || e.altKey || e.metaKey) return;
 
-  // If DOM is already loaded
-  if (document.readyState === "interactive" || document.readyState === "complete") {
+      if (e.key >= "1" && e.key <= "9") {
+        const index = Number(e.key) - 1;
+        const rows = document.querySelectorAll("#flexi-scripts-list .flexi-script-row");
+        const targetRow = rows[index];
+        if (targetRow) {
+          e.preventDefault();
+          const playBtn = targetRow.querySelector(".flexi-play-btn");
+          playBtn?.click();
+        }
+      }
+    });
+  }
+
+  // Single-execution bootstrap guard (fixes double event listener registration)
+  let isBooted = false;
+  function boot() {
+    if (isBooted) return;
+    isBooted = true;
     initFlexibleField();
+    initSpeedControl();
     initHeaderActions();
     setupGlobalMenuCloser();
     initScriptRows();
-    measureAndStoreLatency();
+    setupKeyboardShortcuts();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot, { once: true });
+  } else {
+    boot();
   }
 })();

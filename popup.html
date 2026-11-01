@@ -18,21 +18,26 @@
         </div>
         <div class="flexi-titles">
           <h1 class="flexi-title">Help Seif</h1>
-          <p class="flexi-subtitle">Salesforce scripts</p>
+          <p class="flexi-subtitle">Salesforce scripts <span class="flexi-version-badge">v1.17.25</span></p>
         </div>
       </div>
       <div class="flexi-header-actions">
-        <div class="flexi-status-pill">
+        <button type="button" class="flexi-speed-pill" id="flexi-speed-btn" title="تغيير سرعة التنفيذ (Fast / 1x / Slow)" aria-label="Execution speed">
           <span class="flexi-status-dot"></span>
-          <span class="flexi-status-text">Active</span>
-        </div>
-        <button type="button" class="flexi-icon-btn" id="flexi-settings-btn" title="Settings" aria-label="Settings">
+          <span class="flexi-status-text" id="flexi-speed-label">1x</span>
+        </button>
+        <button type="button" class="flexi-icon-btn flexi-stop-btn" id="flexi-stop-btn" title="إيقاف السكريبت الحالي فوراً (Stop)" aria-label="Stop running script">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+            <rect x="5" y="5" width="14" height="14" rx="2.5"></rect>
+          </svg>
+        </button>
+        <button type="button" class="flexi-icon-btn" id="flexi-settings-btn" title="الإعدادات (Settings)" aria-label="Settings">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#17231D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
             <circle cx="12" cy="12" r="3"/>
           </svg>
         </button>
-        <button type="button" class="flexi-icon-btn" id="flexi-close-btn" title="Close" aria-label="Close">
+        <button type="button" class="flexi-icon-btn" id="flexi-close-btn" title="إغلاق (Close)" aria-label="Close">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#17231D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -69,18 +74,22 @@
           </svg>
         </button>
       </div>
+      <!-- Inline Add Option Input Row -->
+      <div class="flexi-inline-add" id="qfe-flex-inline-add" hidden>
+        <input type="text" id="qfe-flex-new-input" class="flexi-inline-input" placeholder="اكتب الخيار الجديد..." autocomplete="off" />
+        <button type="button" id="qfe-flex-save-btn" class="flexi-inline-btn flexi-inline-save" title="حفظ">حفظ</button>
+        <button type="button" id="qfe-flex-cancel-btn" class="flexi-inline-btn flexi-inline-cancel" title="إلغاء">✕</button>
+      </div>
     </section>
 
     <!-- 3. Automation Scripts List -->
     <main class="flexi-scripts-list" id="flexi-scripts-list" aria-label="Automation scripts">
-      <!-- 5 script rows rendered dynamically by quickform-editor-controls.js -->
+      <!-- Script rows rendered dynamically by quickform-editor-controls.js -->
     </main>
 
     <div id="flexi-toast" class="flexi-toast" role="status" aria-live="polite"></div>
   </div>
 
-  <div id="__plasmo" style="display:none !important;" aria-hidden="true"></div>
   <script src="/quickform-editor-controls.js"></script>
-  <script src="/popup.100f6462.js" defer></script>
 </body>
 </html>

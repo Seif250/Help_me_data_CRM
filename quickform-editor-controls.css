@@ -26,7 +26,7 @@
 html, body {
   width: 380px;
   min-height: 460px;
-  max-height: 540px;
+  max-height: 560px;
   background-color: var(--color-page-bg);
   font-family: var(--font-family);
   color: var(--color-text-primary);
@@ -100,48 +100,69 @@ body::-webkit-scrollbar-thumb {
 }
 
 .flexi-subtitle {
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 400;
   color: var(--color-text-secondary);
   line-height: 1.2;
   margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.flexi-version-badge {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--color-primary-green);
+  background: var(--color-light-green-bg);
+  padding: 1px 5px;
+  border-radius: 6px;
 }
 
 .flexi-header-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
-/* Active Status Pill */
+/* Interactive Speed / Active Status Pill */
+.flexi-speed-pill,
 .flexi-status-pill {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   background-color: var(--color-light-green-bg);
-  padding: 5px 9px;
+  border: 1px solid var(--color-subtle-green-border);
+  padding: 4px 9px;
   border-radius: 9999px;
-  height: 30px;
+  height: 32px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.flexi-speed-pill:hover {
+  border-color: var(--color-primary-green);
+  transform: translateY(-1px);
 }
 
 .flexi-status-dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   background-color: var(--color-primary-green);
   border-radius: 50%;
   display: inline-block;
 }
 
 .flexi-status-text {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
   color: var(--color-primary-green);
 }
 
-/* Header Icon Buttons (Settings & Close) */
+/* Header Icon Buttons (Stop, Settings & Close) */
 .flexi-icon-btn {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   background-color: #FFFFFF;
   border: 1px solid var(--color-neutral-border);
   border-radius: 10px;
@@ -165,6 +186,17 @@ body::-webkit-scrollbar-thumb {
   transform: translateY(0);
 }
 
+.flexi-stop-btn {
+  color: #c53030;
+  border-color: #f5c6c6;
+  background-color: #fff8f8;
+}
+
+.flexi-stop-btn:hover {
+  background-color: #ffe8e8;
+  border-color: #c53030;
+}
+
 /* ==================================================
    2. Flexible Field 3 Value Section
    ================================================== */
@@ -180,7 +212,7 @@ body::-webkit-scrollbar-thumb {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 9px;
 }
 
 .flexi-dollar-icon {
@@ -219,7 +251,7 @@ body::-webkit-scrollbar-thumb {
 
 /* Add / Delete option buttons */
 .flexi-field-action-btn {
-  width: 34px;
+  min-width: 34px;
   height: 38px;
   border-radius: 10px;
   border: 1px solid var(--color-subtle-green-border);
@@ -230,7 +262,9 @@ body::-webkit-scrollbar-thumb {
   cursor: pointer;
   flex-shrink: 0;
   transition: all 0.15s ease;
-  padding: 0;
+  padding: 0 7px;
+  font-size: 11.5px;
+  font-weight: 700;
 }
 
 .flexi-field-add-btn {
@@ -240,7 +274,7 @@ body::-webkit-scrollbar-thumb {
 .flexi-field-add-btn:hover {
   background: var(--color-light-green-bg);
   border-color: var(--color-primary-green);
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 
 .flexi-field-del-btn {
@@ -248,14 +282,82 @@ body::-webkit-scrollbar-thumb {
   border-color: #f5c6c6;
 }
 
-.flexi-field-del-btn:hover {
+.flexi-field-del-btn:hover,
+.flexi-field-del-btn.confirming {
   background: #fff0f0;
   border-color: #c53030;
-  transform: scale(1.05);
+  transform: scale(1.04);
+}
+
+.flexi-field-del-btn.confirming {
+  background: #c53030;
+  color: #FFFFFF;
 }
 
 .flexi-field-action-btn:active {
   transform: scale(0.96);
+}
+
+/* Inline Add Option Form */
+.flexi-inline-add {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--color-neutral-border);
+}
+
+.flexi-inline-add[hidden] {
+  display: none !important;
+}
+
+.flexi-inline-input {
+  flex: 1;
+  height: 34px;
+  border: 1px solid var(--color-subtle-green-border);
+  border-radius: 8px;
+  padding: 0 10px;
+  font-size: 13px;
+  color: var(--color-text-primary);
+  outline: none;
+}
+
+.flexi-inline-input:focus {
+  border-color: var(--color-primary-green);
+  box-shadow: 0 0 0 2px rgba(18, 103, 71, 0.12);
+}
+
+.flexi-inline-btn {
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0 11px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.flexi-inline-save {
+  background: var(--color-primary-green);
+  color: #FFFFFF;
+}
+
+.flexi-inline-save:hover {
+  background: var(--color-primary-green-hover);
+}
+
+.flexi-inline-cancel {
+  background: var(--color-page-bg);
+  border-color: var(--color-neutral-border);
+  color: var(--color-text-secondary);
+  padding: 0 9px;
+}
+
+.flexi-inline-cancel:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-subtle-green-border);
 }
 
 .flexi-select {
@@ -360,7 +462,7 @@ body::-webkit-scrollbar-thumb {
   cursor: grabbing;
 }
 
-/* Highlighted Row for Sent Link (Row 5) */
+/* Highlighted Row for Sent Link & FL Payment */
 .flexi-script-row.flexi-row-highlight {
   background-color: var(--color-light-green-bg);
   border-color: var(--color-subtle-green-border);
@@ -382,6 +484,7 @@ body::-webkit-scrollbar-thumb {
 
 /* Pale-green square icon container */
 .flexi-row-icon {
+  position: relative;
   width: 36px;
   height: 36px;
   background-color: var(--color-light-green-bg);
@@ -391,6 +494,24 @@ body::-webkit-scrollbar-thumb {
   justify-content: center;
   flex-shrink: 0;
   color: var(--color-primary-green);
+}
+
+.flexi-shortcut-badge {
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  width: 15px;
+  height: 15px;
+  border-radius: 5px;
+  background: var(--color-primary-green);
+  color: #FFFFFF;
+  font-size: 9.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #FFFFFF;
+  line-height: 1;
 }
 
 /* Slightly different icon bg on the already light-green Sent Link row */
@@ -435,7 +556,7 @@ body::-webkit-scrollbar-thumb {
   margin-left: 10px;
 }
 
-/* Circular Green Play Button (42px) */
+/* Circular Green Play Button */
 .flexi-play-btn {
   width: 36px;
   height: 36px;
@@ -510,7 +631,7 @@ body::-webkit-scrollbar-thumb {
   border-radius: 12px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
   padding: 4px;
-  min-width: 150px;
+  min-width: 155px;
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -555,14 +676,10 @@ body::-webkit-scrollbar-thumb {
   pointer-events: none;
   transition: opacity 0.2s ease, transform 0.2s ease;
   z-index: 9999;
+  white-space: nowrap;
 }
 
 .flexi-toast.visible {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
-}
-
-/* Hide unneeded plasmo container */
-#__plasmo {
-  display: none !important;
 }

@@ -178,7 +178,7 @@
     {
       "id": "qfe-flp-stage-open",
       "type": "CLICK",
-      "key": "button[aria-label=\"Stage\"]",
+      "key": "button[aria-label=\"Stage\"], button.slds-combobox__input[aria-label=\"Stage\"], button[title=\"Edit Stage\"], [data-target-selection-name*=\"Stage\"] button",
       "searchType": "cssSelector",
       "fields": [
         {}
@@ -195,7 +195,7 @@
     {
       "id": "qfe-flp-stage-closed-lost",
       "type": "CLICK",
-      "key": "lightning-base-combobox-item[data-value=\"Not Registered (Closed Lost)\"]",
+      "key": "lightning-base-combobox-item[data-value=\"Not Registered (Closed Lost)\"], [role=\"option\"][data-value=\"Not Registered (Closed Lost)\"]",
       "searchType": "cssSelector",
       "fields": [
         {}
@@ -212,7 +212,7 @@
     {
       "id": "qfe-flp-reason-open",
       "type": "CLICK",
-      "key": "button[aria-label=\"Reason Opportunity Lost or Closed\"]",
+      "key": "button[aria-label=\"Reason Opportunity Lost or Closed\"], button[aria-label*=\"Reason Opportunity Lost\"]",
       "searchType": "cssSelector",
       "fields": [
         {}
@@ -229,7 +229,7 @@
     {
       "id": "qfe-flp-reason-other",
       "type": "CLICK",
-      "key": "lightning-base-combobox-item[data-value=\"Other\"]",
+      "key": "lightning-base-combobox-item[data-value=\"Other\"], [role=\"option\"][data-value=\"Other\"]",
       "searchType": "cssSelector",
       "fields": [
         {}
@@ -266,7 +266,7 @@
     {
       "id": "qfe-flp-stage-save",
       "type": "CLICK",
-      "key": "button[name=\"SaveEdit\"]",
+      "key": "button[name=\"SaveEdit\"], .slds-button_brand[name=\"SaveEdit\"]",
       "searchType": "cssSelector",
       "fields": [
         {}
@@ -281,6 +281,6 @@
       ]
     }
   ],
-  "updatedAt": "2026-10-24T04:37:27.756Z",
+  "updatedAt": "2026-10-25T00:00:00.000Z",
   "createdAt": "2026-10-15T07:48:39.737Z"
 }

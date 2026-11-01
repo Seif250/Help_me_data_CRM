@@ -132,7 +132,7 @@
     {
       "id": "qfe-followup-opp-save",
       "type": "CLICK",
-      "key": "button[name=\"SaveEdit\"]",
+      "key": "button[name=\"SaveEdit\"], .slds-button_brand[name=\"SaveEdit\"]",
       "searchType": "cssSelector",
       "fields": [
         {}
@@ -246,6 +246,6 @@
       ]
     }
   ],
-  "updatedAt": "2026-10-24T04:37:27.748Z",
+  "updatedAt": "2026-10-25T00:00:00.000Z",
   "createdAt": "2026-10-16T05:11:20.700Z"
 }
