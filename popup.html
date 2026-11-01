@@ -49,13 +49,14 @@
       </div>
     </header>
 
-    <!-- 1b. Customer Info Copy Card -->
-    <section class="flexi-customer-card" id="flexi-customer-card">
+    <!-- 1b. Customer Info Copy Card (Collapsible) -->
+    <section class="flexi-customer-card flexi-collapsible-sec" id="flexi-customer-card">
       <div class="flexi-customer-header">
-        <div class="flexi-customer-title-wrap">
+        <button type="button" class="flexi-sec-toggle-btn" id="flexi-sec-cust-toggle" title="Collapse / Expand Customer Queue" aria-expanded="true">
+          <span class="flexi-sec-chevron">▾</span>
           <span class="flexi-customer-title">Customer Queue</span>
-          <span class="flexi-customer-hint">(Win+V order)</span>
-        </div>
+          <span class="flexi-customer-hint">(Win+V)</span>
+        </button>
         <div class="flexi-customer-actions">
           <div class="flexi-suffix-box" title="Letters added after SMS ID (e.g. SE or MY)">
             <span class="flexi-suffix-lbl">ID+</span>
@@ -65,78 +66,106 @@
           <button type="button" id="flexi-cust-copy-all" class="flexi-cust-copy-all-btn" title="Copy ID, Email, Phone & Name separately into Clipboard Queue">📋 Copy All</button>
         </div>
       </div>
-      <div class="flexi-customer-grid">
-        <button type="button" class="flexi-cust-row" data-cust-field="name" title="Click to copy Name only">
-          <span class="flexi-cust-lbl">1. Name (Top)</span>
-          <span class="flexi-cust-val is-empty" id="flexi-cust-name">—</span>
-        </button>
-        <button type="button" class="flexi-cust-row" data-cust-field="phone" title="Click to copy Phone only">
-          <span class="flexi-cust-lbl">2. Phone</span>
-          <span class="flexi-cust-val is-empty" id="flexi-cust-phone">—</span>
-        </button>
-        <button type="button" class="flexi-cust-row" data-cust-field="email" title="Click to copy Email only">
-          <span class="flexi-cust-lbl">3. Email</span>
-          <span class="flexi-cust-val is-empty" id="flexi-cust-email">—</span>
-        </button>
-        <button type="button" class="flexi-cust-row" data-cust-field="smsId" title="Click to copy Student SMS ID + Suffix">
-          <span class="flexi-cust-lbl">4. SMS ID (Bottom)</span>
-          <span class="flexi-cust-val is-empty" id="flexi-cust-smsId">—</span>
-        </button>
+      <div class="flexi-sec-body" id="flexi-sec-cust-body">
+        <div class="flexi-customer-grid">
+          <button type="button" class="flexi-cust-row" data-cust-field="name" title="Click to copy Name only">
+            <span class="flexi-cust-lbl">1. Name (Top)</span>
+            <span class="flexi-cust-val is-empty" id="flexi-cust-name">—</span>
+          </button>
+          <button type="button" class="flexi-cust-row" data-cust-field="phone" title="Click to copy Phone only">
+            <span class="flexi-cust-lbl">2. Phone</span>
+            <span class="flexi-cust-val is-empty" id="flexi-cust-phone">—</span>
+          </button>
+          <button type="button" class="flexi-cust-row" data-cust-field="email" title="Click to copy Email only">
+            <span class="flexi-cust-lbl">3. Email</span>
+            <span class="flexi-cust-val is-empty" id="flexi-cust-email">—</span>
+          </button>
+          <button type="button" class="flexi-cust-row" data-cust-field="smsId" title="Click to copy Student SMS ID + Suffix">
+            <span class="flexi-cust-lbl">4. SMS ID (Bottom)</span>
+            <span class="flexi-cust-val is-empty" id="flexi-cust-smsId">—</span>
+          </button>
+        </div>
       </div>
     </section>
 
-    <!-- 2. Flexible Field 3 & 4 Values Section -->
-    <section class="flexi-field-card">
-      <div class="flexi-field-header">
-        <div class="flexi-dollar-icon">
-          <span>$</span>
-        </div>
-        <label for="qfe-flex-value" class="flexi-field-label">Flexible Field 3 Value</label>
+    <!-- 2. Flexible Fields & Owner Skip Section (Collapsible) -->
+    <section class="flexi-field-card flexi-collapsible-sec" id="flexi-field-card">
+      <div class="flexi-sec-header-bar">
+        <button type="button" class="flexi-sec-toggle-btn" id="flexi-sec-fields-toggle" title="Collapse / Expand Fields & Owner Settings" aria-expanded="true">
+          <span class="flexi-sec-chevron">▾</span>
+          <span class="flexi-field-label">Fields &amp; Owner Skip</span>
+        </button>
+        <span class="flexi-sec-summary-pill" id="flexi-fields-summary">Won: CC • Seif Ezz Eldin</span>
       </div>
-      <div class="flexi-field-row">
-        <div class="flexi-select-wrapper">
-          <select id="qfe-flex-value" class="flexi-select" aria-label="Flexible Field 3 Value"></select>
-          <div class="flexi-select-arrow" aria-hidden="true">
-            <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="#17231D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 7.5L10 12.5L15 7.5"/>
+
+      <div class="flexi-sec-body" id="flexi-sec-fields-body">
+        <div class="flexi-field-row">
+          <div class="flexi-select-wrapper">
+            <select id="qfe-flex-value" class="flexi-select" aria-label="Flexible Field 3 Value" title="Flexible Field 3 Value"></select>
+            <div class="flexi-select-arrow" aria-hidden="true">
+              <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="#17231D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 7.5L10 12.5L15 7.5"/>
+              </svg>
+            </div>
+          </div>
+          <button type="button" id="qfe-flex-add" class="flexi-field-action-btn flexi-field-add-btn" title="Add new Flex Field 3 option" aria-label="Add new option">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
             </svg>
+          </button>
+          <button type="button" id="qfe-flex-del" class="flexi-field-action-btn flexi-field-del-btn" title="Delete selected Flex Field 3 option" aria-label="Delete selected option">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+          </button>
+        </div>
+        <!-- Inline Add Option Input Row -->
+        <div class="flexi-inline-add" id="qfe-flex-inline-add" hidden>
+          <input type="text" id="qfe-flex-new-input" class="flexi-inline-input" placeholder="Enter new option..." autocomplete="off" />
+          <button type="button" id="qfe-flex-save-btn" class="flexi-inline-btn flexi-inline-save" title="Save">Save</button>
+          <button type="button" id="qfe-flex-cancel-btn" class="flexi-inline-btn flexi-inline-cancel" title="Cancel">✕</button>
+        </div>
+
+        <!-- Flexible Field 4 Value (Won: CC / CS) -->
+        <div class="flexi-field4-row">
+          <div class="flexi-field4-left">
+            <span class="flexi-field4-badge">Won</span>
+            <span class="flexi-field4-label">Flexible Field 4 Value</span>
+          </div>
+          <div class="flexi-seg-group" role="group" aria-label="Flexible Field 4 Value">
+            <button type="button" id="qfe-flex4-cc" class="flexi-seg-btn active" data-value="CC" title="Set Flexible Field 4 Value to CC">CC</button>
+            <button type="button" id="qfe-flex4-cs" class="flexi-seg-btn" data-value="CS" title="Set Flexible Field 4 Value to CS">CS</button>
           </div>
         </div>
-        <button type="button" id="qfe-flex-add" class="flexi-field-action-btn flexi-field-add-btn" title="Add new option" aria-label="Add new option">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-          </svg>
-        </button>
-        <button type="button" id="qfe-flex-del" class="flexi-field-action-btn flexi-field-del-btn" title="Delete selected option" aria-label="Delete selected option">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-            <line x1="5" y1="12" x2="19" y2="12"/>
-          </svg>
-        </button>
-      </div>
-      <!-- Inline Add Option Input Row -->
-      <div class="flexi-inline-add" id="qfe-flex-inline-add" hidden>
-        <input type="text" id="qfe-flex-new-input" class="flexi-inline-input" placeholder="Enter new option..." autocomplete="off" />
-        <button type="button" id="qfe-flex-save-btn" class="flexi-inline-btn flexi-inline-save" title="Save">Save</button>
-        <button type="button" id="qfe-flex-cancel-btn" class="flexi-inline-btn flexi-inline-cancel" title="Cancel">✕</button>
-      </div>
 
-      <!-- Flexible Field 4 Value (Won: CC / CS) -->
-      <div class="flexi-field4-row">
-        <div class="flexi-field4-left">
-          <span class="flexi-field4-badge">Won</span>
-          <span class="flexi-field4-label">Flexible Field 4 Value</span>
-        </div>
-        <div class="flexi-seg-group" role="group" aria-label="Flexible Field 4 Value">
-          <button type="button" id="qfe-flex4-cc" class="flexi-seg-btn active" data-value="CC" title="Set Flexible Field 4 Value to CC">CC</button>
-          <button type="button" id="qfe-flex4-cs" class="flexi-seg-btn" data-value="CS" title="Set Flexible Field 4 Value to CS">CS</button>
+        <!-- Skip Owner Change If Record Owner Matches -->
+        <div class="flexi-owner-skip-row" title="If the Opportunity is already owned by this name, Change Owner steps will be skipped automatically">
+          <div class="flexi-field4-left">
+            <span class="flexi-owner-badge">Owner</span>
+            <label for="qfe-owner-skip-input" class="flexi-field4-label">Skip If Owned By</label>
+          </div>
+          <input type="text" id="qfe-owner-skip-input" class="flexi-owner-skip-input" value="Seif Ezz Eldin" placeholder="Seif Ezz Eldin" autocomplete="off" />
         </div>
       </div>
     </section>
 
-    <!-- 3. Automation Scripts List -->
-    <main class="flexi-scripts-list" id="flexi-scripts-list" aria-label="Automation scripts">
-      <!-- Script rows rendered dynamically by quickform-editor-controls.js -->
-    </main>
+    <!-- 3. Automation Scripts Section (Collapsible + Compact Grid/List Toggle) -->
+    <section class="flexi-wf-section flexi-collapsible-sec" id="flexi-wf-section">
+      <div class="flexi-wf-sec-header">
+        <button type="button" class="flexi-sec-toggle-btn" id="flexi-sec-wf-toggle" title="Collapse / Expand Workflows" aria-expanded="true">
+          <span class="flexi-sec-chevron">▾</span>
+          <span class="flexi-customer-title">Workflows</span>
+        </button>
+        <button type="button" class="flexi-view-mode-btn" id="flexi-wf-view-toggle" title="Switch between Compact 2-Column Grid and Full List view">
+          ⊞ Compact Grid
+        </button>
+      </div>
+      <div class="flexi-sec-body" id="flexi-sec-wf-body">
+        <main class="flexi-scripts-list is-compact-grid" id="flexi-scripts-list" aria-label="Automation scripts">
+          <!-- Script rows rendered dynamically by quickform-editor-controls.js -->
+        </main>
+      </div>
+    </section>
 
     <div id="flexi-toast" class="flexi-toast" role="status" aria-live="polite"></div>
   </div>

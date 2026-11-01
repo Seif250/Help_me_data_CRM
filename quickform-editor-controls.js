@@ -938,7 +938,137 @@
     }
   }
 
-  // 8. Keyboard shortcuts (1-9 to run script, S to stop) inside Popup
+  // 8. Owner Skip Control & Collapsible Sections + Grid/List View Toggle
+  const TARGET_OWNER_KEY = "qfeTargetOwnerName";
+  const POPUP_SEC_CUST_KEY = "qfePopupSecCustCollapsed";
+  const POPUP_SEC_FIELDS_KEY = "qfePopupSecFieldsCollapsed";
+  const POPUP_SEC_WF_KEY = "qfePopupSecWfCollapsed";
+  const POPUP_GRID_MODE_KEY = "qfePopupGridMode";
+
+  async function initOwnerSkipControl() {
+    const ownerInput = document.getElementById("qfe-owner-skip-input");
+    const summaryEl = document.getElementById("flexi-fields-summary");
+    if (!ownerInput) return;
+
+    const refreshSummary = async () => {
+      if (!summaryEl) return;
+      try {
+        const st = await chrome.storage.local.get([WON_FIELD_4_KEY, TARGET_OWNER_KEY]);
+        const wonVal = String(st[WON_FIELD_4_KEY] || "CC").toUpperCase() === "CS" ? "CS" : "CC";
+        const ownerVal = String(st[TARGET_OWNER_KEY] ?? "Seif Ezz Eldin").trim();
+        summaryEl.textContent = ownerVal
+          ? `Won: ${wonVal} • ${ownerVal}`
+          : `Won: ${wonVal} • No Owner Skip`;
+      } catch {}
+    };
+
+    try {
+      const st = await chrome.storage.local.get(TARGET_OWNER_KEY);
+      if (st[TARGET_OWNER_KEY] === undefined) {
+        await chrome.storage.local.set({ [TARGET_OWNER_KEY]: "Seif Ezz Eldin" });
+        ownerInput.value = "Seif Ezz Eldin";
+      } else {
+        ownerInput.value = String(st[TARGET_OWNER_KEY]);
+      }
+    } catch {}
+
+    await refreshSummary();
+
+    ownerInput.addEventListener("input", async () => {
+      const val = ownerInput.value.trim();
+      try {
+        await chrome.storage.local.set({ [TARGET_OWNER_KEY]: val });
+        await refreshSummary();
+      } catch {}
+    });
+
+    if (typeof chrome !== "undefined" && chrome.storage?.onChanged) {
+      chrome.storage.onChanged.addListener((changes, area) => {
+        if (area !== "local") return;
+        if (changes[WON_FIELD_4_KEY] || changes[TARGET_OWNER_KEY]) {
+          refreshSummary();
+        }
+      });
+    }
+  }
+
+  async function initCollapsibleSectionsAndViewMode() {
+    const sections = [
+      {
+        btnId: "flexi-sec-cust-toggle",
+        secId: "flexi-customer-card",
+        key: POPUP_SEC_CUST_KEY,
+        defaultCollapsed: false,
+      },
+      {
+        btnId: "flexi-sec-fields-toggle",
+        secId: "flexi-field-card",
+        key: POPUP_SEC_FIELDS_KEY,
+        defaultCollapsed: false,
+      },
+      {
+        btnId: "flexi-sec-wf-toggle",
+        secId: "flexi-wf-section",
+        key: POPUP_SEC_WF_KEY,
+        defaultCollapsed: false,
+      },
+    ];
+
+    let stored = {};
+    try {
+      stored = await chrome.storage.local.get([
+        POPUP_SEC_CUST_KEY,
+        POPUP_SEC_FIELDS_KEY,
+        POPUP_SEC_WF_KEY,
+        POPUP_GRID_MODE_KEY,
+      ]);
+    } catch {}
+
+    for (const { btnId, secId, key, defaultCollapsed } of sections) {
+      const btn = document.getElementById(btnId);
+      const sec = document.getElementById(secId);
+      if (!btn || !sec) continue;
+
+      const isCollapsed =
+        stored[key] !== undefined ? Boolean(stored[key]) : defaultCollapsed;
+      sec.classList.toggle("is-collapsed", isCollapsed);
+      btn.setAttribute("aria-expanded", String(!isCollapsed));
+
+      btn.addEventListener("click", async () => {
+        const nextCollapsed = !sec.classList.contains("is-collapsed");
+        sec.classList.toggle("is-collapsed", nextCollapsed);
+        btn.setAttribute("aria-expanded", String(!nextCollapsed));
+        try {
+          await chrome.storage.local.set({ [key]: nextCollapsed });
+        } catch {}
+      });
+    }
+
+    const viewToggleBtn = document.getElementById("flexi-wf-view-toggle");
+    const scriptsList = document.getElementById("flexi-scripts-list");
+    if (viewToggleBtn && scriptsList) {
+      let isGrid =
+        stored[POPUP_GRID_MODE_KEY] !== undefined
+          ? Boolean(stored[POPUP_GRID_MODE_KEY])
+          : true;
+
+      const renderViewMode = () => {
+        scriptsList.classList.toggle("is-compact-grid", isGrid);
+        viewToggleBtn.textContent = isGrid ? "⊞ Compact Grid" : "☰ Full List";
+      };
+      renderViewMode();
+
+      viewToggleBtn.addEventListener("click", async () => {
+        isGrid = !isGrid;
+        renderViewMode();
+        try {
+          await chrome.storage.local.set({ [POPUP_GRID_MODE_KEY]: isGrid });
+        } catch {}
+      });
+    }
+  }
+
+  // 9. Keyboard shortcuts (1-9 to run script, S to stop) inside Popup
   function setupKeyboardShortcuts() {
     document.addEventListener("keydown", (e) => {
       const tag = (e.target?.tagName || "").toUpperCase();
@@ -965,6 +1095,8 @@
     isBooted = true;
     initFlexibleField();
     initFlexibleField4();
+    initOwnerSkipControl();
+    initCollapsibleSectionsAndViewMode();
     initSpeedControl();
     initFloatingBarToggle();
     initCustomerInfoCard();

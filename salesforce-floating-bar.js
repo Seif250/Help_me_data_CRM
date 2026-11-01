@@ -9,6 +9,10 @@
   const FLOAT_COLLAPSED_KEY = "qfeFloatingBarCollapsed";
   const FLOAT_TOP_KEY = "qfeFloatingBarTop";
   const SMS_ID_SUFFIX_KEY = "qfeSmsIdSuffix";
+  const TARGET_OWNER_KEY = "qfeTargetOwnerName";
+  const FLOAT_SEC_CUST_KEY = "qfeFloatSecCust";
+  const FLOAT_SEC_CTRL_KEY = "qfeFloatSecCtrl";
+  const FLOAT_SEC_WF_KEY = "qfeFloatSecWf";
 
   // Caches so once Account Phone/Email or Opportunity SMS ID is read, it stays available
   const accountDetailsCache = new Map();
@@ -960,6 +964,10 @@
       FLEX_FIELD_3_KEY,
       WON_FIELD_4_KEY,
       SMS_ID_SUFFIX_KEY,
+      TARGET_OWNER_KEY,
+      FLOAT_SEC_CUST_KEY,
+      FLOAT_SEC_CTRL_KEY,
+      FLOAT_SEC_WF_KEY,
       "resources",
     ]);
 
@@ -970,6 +978,13 @@
       state[SMS_ID_SUFFIX_KEY] !== undefined
         ? String(state[SMS_ID_SUFFIX_KEY])
         : "SE";
+    let currentTargetOwner =
+      state[TARGET_OWNER_KEY] !== undefined
+        ? String(state[TARGET_OWNER_KEY])
+        : "Seif Ezz Eldin";
+    let secCustCollapsed = Boolean(state[FLOAT_SEC_CUST_KEY]);
+    let secCtrlCollapsed = Boolean(state[FLOAT_SEC_CTRL_KEY]);
+    let secWfCollapsed = Boolean(state[FLOAT_SEC_WF_KEY]);
 
     hostEl = document.createElement("div");
     hostEl.id = "help-seif-floating-host";
@@ -1034,10 +1049,10 @@
           color: #ecfdf5;
         }
         .hs-panel {
-          width: 272px;
+          width: 266px;
           background: rgba(15, 23, 42, 0.96);
           border: 1px solid rgba(148, 163, 184, 0.25);
-          border-radius: 12px;
+          border-radius: 11px;
           box-shadow: 0 14px 34px rgba(2, 6, 23, 0.55);
           backdrop-filter: blur(12px);
           overflow: hidden;
@@ -1046,7 +1061,7 @@
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 7px 9px;
+          padding: 6px 8px;
           background: linear-gradient(90deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
           border-bottom: 1px solid rgba(148, 163, 184, 0.16);
           cursor: grab;
@@ -1057,7 +1072,7 @@
           align-items: center;
           gap: 5px;
           font-weight: 700;
-          font-size: 12px;
+          font-size: 11.5px;
           color: #f8fafc;
         }
         .hs-header-actions {
@@ -1070,7 +1085,7 @@
           cursor: pointer;
           padding: 2px 6px;
           border-radius: 5px;
-          font-size: 10.5px;
+          font-size: 10px;
           font-weight: 700;
           background: rgba(51, 65, 85, 0.7);
           color: #cbd5e1;
@@ -1091,32 +1106,52 @@
           color: #fff;
         }
         .hs-body {
-          padding: 8px;
+          padding: 6px;
           display: flex;
           flex-direction: column;
-          gap: 8px;
+          gap: 6px;
           max-height: calc(100vh - 90px);
           overflow-y: auto;
         }
         .hs-card {
           background: rgba(30, 41, 59, 0.65);
           border: 1px solid rgba(148, 163, 184, 0.18);
-          border-radius: 8px;
-          padding: 6px 7px;
+          border-radius: 7px;
+          padding: 5px 6px;
         }
         .hs-card-head {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          margin-bottom: 5px;
           gap: 4px;
         }
-        .hs-card-title {
+        .hs-sec-toggle {
+          all: unset;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
           font-size: 10px;
           font-weight: 700;
           text-transform: uppercase;
-          letter-spacing: 0.05em;
+          letter-spacing: 0.04em;
           color: #94a3b8;
+          padding: 1px 2px;
+        }
+        .hs-sec-toggle:hover { color: #f8fafc; }
+        .hs-sec-arrow {
+          display: inline-block;
+          font-size: 9px;
+          transition: transform 0.15s ease;
+        }
+        .hs-card.sec-collapsed .hs-sec-arrow {
+          transform: rotate(-90deg);
+        }
+        .hs-card-body {
+          margin-top: 5px;
+        }
+        .hs-card.sec-collapsed .hs-card-body {
+          display: none;
         }
         .hs-card-btns {
           display: flex;
@@ -1126,7 +1161,7 @@
         .hs-suffix-wrap {
           display: inline-flex;
           align-items: center;
-          gap: 3px;
+          gap: 2px;
           background: rgba(15, 23, 42, 0.85);
           border: 1px solid rgba(148, 163, 184, 0.28);
           border-radius: 4px;
@@ -1138,11 +1173,11 @@
           color: #94a3b8;
         }
         .hs-suffix-input {
-          width: 28px;
+          width: 26px;
           background: transparent;
           border: none;
           color: #6ee7b7;
-          font-size: 10.5px;
+          font-size: 10px;
           font-weight: 800;
           text-align: center;
           text-transform: uppercase;
@@ -1156,7 +1191,7 @@
           color: #ffffff;
           font-size: 10px;
           font-weight: 700;
-          padding: 2px 7px;
+          padding: 2px 6px;
           border-radius: 4px;
           box-shadow: 0 1px 4px rgba(16, 185, 129, 0.3);
           transition: opacity 0.12s ease;
@@ -1187,7 +1222,7 @@
           align-items: center;
           justify-content: space-between;
           gap: 6px;
-          padding: 3px 5px;
+          padding: 2.5px 5px;
           border-radius: 4px;
           background: rgba(15, 23, 42, 0.55);
           border: 1px solid transparent;
@@ -1198,14 +1233,14 @@
           background: rgba(30, 41, 59, 0.9);
         }
         .hs-info-lbl {
-          font-size: 10px;
+          font-size: 9.5px;
           font-weight: 600;
           color: #94a3b8;
           flex-shrink: 0;
-          width: 44px;
+          width: 42px;
         }
         .hs-info-val {
-          font-size: 11px;
+          font-size: 10.5px;
           font-weight: 600;
           color: #e2e8f0;
           overflow: hidden;
@@ -1222,7 +1257,7 @@
         .hs-controls-row {
           display: flex;
           flex-direction: column;
-          gap: 5px;
+          gap: 4px;
         }
         .hs-ctrl-item {
           display: flex;
@@ -1231,36 +1266,39 @@
           gap: 6px;
         }
         .hs-ctrl-lbl {
-          font-size: 10.5px;
+          font-size: 10px;
           font-weight: 600;
           color: #cbd5e1;
           white-space: nowrap;
         }
-        .hs-select {
+        .hs-select, .hs-text-input {
           flex: 1;
           min-width: 0;
           background: rgba(15, 23, 42, 0.85);
           color: #f8fafc;
           border: 1px solid rgba(148, 163, 184, 0.3);
-          border-radius: 5px;
-          padding: 3px 5px;
-          font-size: 10.5px;
+          border-radius: 4px;
+          padding: 2.5px 5px;
+          font-size: 10px;
           outline: none;
+        }
+        .hs-text-input:focus, .hs-select:focus {
+          border-color: #10b981;
         }
         .hs-seg {
           display: inline-flex;
           background: rgba(15, 23, 42, 0.85);
           border: 1px solid rgba(148, 163, 184, 0.28);
-          border-radius: 5px;
+          border-radius: 4px;
           padding: 1px;
           gap: 2px;
         }
         .hs-seg-btn {
           all: unset;
           cursor: pointer;
-          padding: 2px 10px;
-          border-radius: 4px;
-          font-size: 10.5px;
+          padding: 1.5px 9px;
+          border-radius: 3px;
+          font-size: 10px;
           font-weight: 700;
           color: #94a3b8;
           transition: all 0.12s ease;
@@ -1272,7 +1310,7 @@
         .hs-wf-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 5px;
+          gap: 4px;
         }
         .hs-wf-btn {
           all: unset;
@@ -1281,9 +1319,9 @@
           align-items: center;
           justify-content: center;
           text-align: center;
-          padding: 6px 6px;
-          border-radius: 6px;
-          font-size: 11px;
+          padding: 5px 5px;
+          border-radius: 5px;
+          font-size: 10.5px;
           font-weight: 700;
           line-height: 1.15;
           border: 1px solid rgba(148, 163, 184, 0.22);
@@ -1359,9 +1397,13 @@
           </div>
 
           <div class="hs-body">
-            <div class="hs-card">
+            <!-- Section 1: Customer Queue -->
+            <div class="hs-card ${secCustCollapsed ? "sec-collapsed" : ""}" id="hs-sec-cust">
               <div class="hs-card-head">
-                <span class="hs-card-title">Customer Queue</span>
+                <button type="button" class="hs-sec-toggle" id="hs-toggle-cust" title="Collapse / Expand Customer Queue">
+                  <span class="hs-sec-arrow">▾</span>
+                  <span>Customer</span>
+                </button>
                 <div class="hs-card-btns">
                   <div class="hs-suffix-wrap" title="Letters appended after SMS ID (e.g. SE or MY)">
                     <span class="hs-suffix-lbl">ID+</span>
@@ -1371,46 +1413,72 @@
                   <button class="hs-copy-all-btn" id="hs-copy-all" title="Copy ID, Email, Phone, Name separately into Win+V queue">📋 Copy All</button>
                 </div>
               </div>
-              <div class="hs-info-rows">
-                <button class="hs-info-row" data-field="name" title="Click to copy Name only">
-                  <span class="hs-info-lbl">Name</span>
-                  <span class="hs-info-val empty" id="hs-val-name">—</span>
-                </button>
-                <button class="hs-info-row" data-field="phone" title="Click to copy Phone only">
-                  <span class="hs-info-lbl">Phone</span>
-                  <span class="hs-info-val empty" id="hs-val-phone">—</span>
-                </button>
-                <button class="hs-info-row" data-field="email" title="Click to copy Email only">
-                  <span class="hs-info-lbl">Email</span>
-                  <span class="hs-info-val empty" id="hs-val-email">—</span>
-                </button>
-                <button class="hs-info-row" data-field="smsId" title="Click to copy SMS ID with suffix">
-                  <span class="hs-info-lbl">SMS ID</span>
-                  <span class="hs-info-val empty" id="hs-val-smsId">—</span>
-                </button>
-              </div>
-            </div>
-
-            <div class="hs-card hs-controls-row">
-              <div class="hs-ctrl-item">
-                <span class="hs-ctrl-lbl">Flex 3</span>
-                <select class="hs-select" id="hs-flex3-select">
-                  ${FLEX_3_OPTIONS.map(
-                    (opt) =>
-                      `<option value="${opt}">${opt || "--None--"}</option>`
-                  ).join("")}
-                </select>
-              </div>
-              <div class="hs-ctrl-item">
-                <span class="hs-ctrl-lbl">Won (Field 4)</span>
-                <div class="hs-seg" id="hs-won4-seg">
-                  <button type="button" class="hs-seg-btn" data-val="CC">CC</button>
-                  <button type="button" class="hs-seg-btn" data-val="CS">CS</button>
+              <div class="hs-card-body">
+                <div class="hs-info-rows">
+                  <button class="hs-info-row" data-field="name" title="Click to copy Name only">
+                    <span class="hs-info-lbl">Name</span>
+                    <span class="hs-info-val empty" id="hs-val-name">—</span>
+                  </button>
+                  <button class="hs-info-row" data-field="phone" title="Click to copy Phone only">
+                    <span class="hs-info-lbl">Phone</span>
+                    <span class="hs-info-val empty" id="hs-val-phone">—</span>
+                  </button>
+                  <button class="hs-info-row" data-field="email" title="Click to copy Email only">
+                    <span class="hs-info-lbl">Email</span>
+                    <span class="hs-info-val empty" id="hs-val-email">—</span>
+                  </button>
+                  <button class="hs-info-row" data-field="smsId" title="Click to copy SMS ID with suffix">
+                    <span class="hs-info-lbl">SMS ID</span>
+                    <span class="hs-info-val empty" id="hs-val-smsId">—</span>
+                  </button>
                 </div>
               </div>
             </div>
 
-            <div class="hs-wf-grid" id="hs-wf-grid"></div>
+            <!-- Section 2: Quick Settings (Flex 3, Won Field 4, Owner Skip) -->
+            <div class="hs-card ${secCtrlCollapsed ? "sec-collapsed" : ""}" id="hs-sec-ctrl">
+              <div class="hs-card-head">
+                <button type="button" class="hs-sec-toggle" id="hs-toggle-ctrl" title="Collapse / Expand Quick Settings">
+                  <span class="hs-sec-arrow">▾</span>
+                  <span>Fields & Owner Skip</span>
+                </button>
+              </div>
+              <div class="hs-card-body hs-controls-row">
+                <div class="hs-ctrl-item">
+                  <span class="hs-ctrl-lbl">Flex 3</span>
+                  <select class="hs-select" id="hs-flex3-select">
+                    ${FLEX_3_OPTIONS.map(
+                      (opt) =>
+                        `<option value="${opt}">${opt || "--None--"}</option>`
+                    ).join("")}
+                  </select>
+                </div>
+                <div class="hs-ctrl-item">
+                  <span class="hs-ctrl-lbl">Won (Field 4)</span>
+                  <div class="hs-seg" id="hs-won4-seg">
+                    <button type="button" class="hs-seg-btn" data-val="CC">CC</button>
+                    <button type="button" class="hs-seg-btn" data-val="CS">CS</button>
+                  </div>
+                </div>
+                <div class="hs-ctrl-item" title="If Record Owner matches this name, Change Owner steps are skipped automatically">
+                  <span class="hs-ctrl-lbl">Skip Owner</span>
+                  <input type="text" class="hs-text-input" id="hs-owner-skip" value="${currentTargetOwner.replace(/"/g, "&quot;")}" placeholder="Seif Ezz Eldin" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 3: Workflows -->
+            <div class="hs-card ${secWfCollapsed ? "sec-collapsed" : ""}" id="hs-sec-wf">
+              <div class="hs-card-head">
+                <button type="button" class="hs-sec-toggle" id="hs-toggle-wf" title="Collapse / Expand Workflows">
+                  <span class="hs-sec-arrow">▾</span>
+                  <span>Workflows</span>
+                </button>
+              </div>
+              <div class="hs-card-body">
+                <div class="hs-wf-grid" id="hs-wf-grid"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1425,12 +1493,34 @@
     const copyAllBtn = shadow.getElementById("hs-copy-all");
     const refreshBtn = shadow.getElementById("hs-refresh-info");
     const suffixInput = shadow.getElementById("hs-id-suffix");
+    const ownerSkipInput = shadow.getElementById("hs-owner-skip");
     const speedBtn = shadow.getElementById("hs-speed-btn");
     const stopBtn = shadow.getElementById("hs-stop-btn");
     const flex3Select = shadow.getElementById("hs-flex3-select");
     const won4Seg = shadow.getElementById("hs-won4-seg");
     const wfGrid = shadow.getElementById("hs-wf-grid");
     const dragHandle = shadow.getElementById("hs-drag-handle");
+
+    // Section collapse toggles
+    const bindSecToggle = (btnId, secId, storageKey) => {
+      const btn = shadow.getElementById(btnId);
+      const sec = shadow.getElementById(secId);
+      if (!btn || !sec) return;
+      btn.addEventListener("click", () => {
+        const nextCollapsed = !sec.classList.contains("sec-collapsed");
+        sec.classList.toggle("sec-collapsed", nextCollapsed);
+        chrome.storage.local.set({ [storageKey]: nextCollapsed });
+      });
+    };
+    bindSecToggle("hs-toggle-cust", "hs-sec-cust", FLOAT_SEC_CUST_KEY);
+    bindSecToggle("hs-toggle-ctrl", "hs-sec-ctrl", FLOAT_SEC_CTRL_KEY);
+    bindSecToggle("hs-toggle-wf", "hs-sec-wf", FLOAT_SEC_WF_KEY);
+
+    // Owner Skip input handler
+    ownerSkipInput.addEventListener("input", () => {
+      currentTargetOwner = ownerSkipInput.value;
+      chrome.storage.local.set({ [TARGET_OWNER_KEY]: currentTargetOwner.trim() });
+    });
 
     // Vertical Drag Support
     let dragging = false;
@@ -1680,6 +1770,12 @@
         currentSmsSuffix = String(changes[SMS_ID_SUFFIX_KEY].newValue ?? "");
         suffixInput.value = currentSmsSuffix;
         renderCustomerInfoValues();
+      }
+      if (changes[TARGET_OWNER_KEY]) {
+        currentTargetOwner = String(changes[TARGET_OWNER_KEY].newValue ?? "");
+        if (shadow.activeElement !== ownerSkipInput) {
+          ownerSkipInput.value = currentTargetOwner;
+        }
       }
     });
 
