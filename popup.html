@@ -22,22 +22,22 @@
         </div>
       </div>
       <div class="flexi-header-actions">
-        <button type="button" class="flexi-speed-pill" id="flexi-speed-btn" title="تغيير سرعة التنفيذ (Fast / 1x / Slow)" aria-label="Execution speed">
+        <button type="button" class="flexi-speed-pill" id="flexi-speed-btn" title="Change execution speed (Fast / 1x / Slow)" aria-label="Execution speed">
           <span class="flexi-status-dot"></span>
           <span class="flexi-status-text" id="flexi-speed-label">1x</span>
         </button>
-        <button type="button" class="flexi-icon-btn flexi-stop-btn" id="flexi-stop-btn" title="إيقاف السكريبت الحالي فوراً (Stop)" aria-label="Stop running script">
+        <button type="button" class="flexi-icon-btn flexi-stop-btn" id="flexi-stop-btn" title="Stop running script immediately" aria-label="Stop running script">
           <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
             <rect x="5" y="5" width="14" height="14" rx="2.5"></rect>
           </svg>
         </button>
-        <button type="button" class="flexi-icon-btn" id="flexi-settings-btn" title="الإعدادات (Settings)" aria-label="Settings">
+        <button type="button" class="flexi-icon-btn" id="flexi-settings-btn" title="Settings" aria-label="Settings">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#17231D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
             <circle cx="12" cy="12" r="3"/>
           </svg>
         </button>
-        <button type="button" class="flexi-icon-btn" id="flexi-close-btn" title="إغلاق (Close)" aria-label="Close">
+        <button type="button" class="flexi-icon-btn" id="flexi-close-btn" title="Close" aria-label="Close">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#17231D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -46,7 +46,7 @@
       </div>
     </header>
 
-    <!-- 2. Flexible Field 3 Value Section -->
+    <!-- 2. Flexible Field 3 & 4 Values Section -->
     <section class="flexi-field-card">
       <div class="flexi-field-header">
         <div class="flexi-dollar-icon">
@@ -63,12 +63,12 @@
             </svg>
           </div>
         </div>
-        <button type="button" id="qfe-flex-add" class="flexi-field-action-btn flexi-field-add-btn" title="إضافة خيار جديد" aria-label="Add new option">
+        <button type="button" id="qfe-flex-add" class="flexi-field-action-btn flexi-field-add-btn" title="Add new option" aria-label="Add new option">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
             <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
           </svg>
         </button>
-        <button type="button" id="qfe-flex-del" class="flexi-field-action-btn flexi-field-del-btn" title="حذف الخيار الحالي" aria-label="Delete current option">
+        <button type="button" id="qfe-flex-del" class="flexi-field-action-btn flexi-field-del-btn" title="Delete selected option" aria-label="Delete selected option">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
             <line x1="5" y1="12" x2="19" y2="12"/>
           </svg>
@@ -76,9 +76,21 @@
       </div>
       <!-- Inline Add Option Input Row -->
       <div class="flexi-inline-add" id="qfe-flex-inline-add" hidden>
-        <input type="text" id="qfe-flex-new-input" class="flexi-inline-input" placeholder="اكتب الخيار الجديد..." autocomplete="off" />
-        <button type="button" id="qfe-flex-save-btn" class="flexi-inline-btn flexi-inline-save" title="حفظ">حفظ</button>
-        <button type="button" id="qfe-flex-cancel-btn" class="flexi-inline-btn flexi-inline-cancel" title="إلغاء">✕</button>
+        <input type="text" id="qfe-flex-new-input" class="flexi-inline-input" placeholder="Enter new option..." autocomplete="off" />
+        <button type="button" id="qfe-flex-save-btn" class="flexi-inline-btn flexi-inline-save" title="Save">Save</button>
+        <button type="button" id="qfe-flex-cancel-btn" class="flexi-inline-btn flexi-inline-cancel" title="Cancel">✕</button>
+      </div>
+
+      <!-- Flexible Field 4 Value (Won: CC / CS) -->
+      <div class="flexi-field4-row">
+        <div class="flexi-field4-left">
+          <span class="flexi-field4-badge">Won</span>
+          <span class="flexi-field4-label">Flexible Field 4 Value</span>
+        </div>
+        <div class="flexi-seg-group" role="group" aria-label="Flexible Field 4 Value">
+          <button type="button" id="qfe-flex4-cc" class="flexi-seg-btn active" data-value="CC" title="Set Flexible Field 4 Value to CC">CC</button>
+          <button type="button" id="qfe-flex4-cs" class="flexi-seg-btn" data-value="CS" title="Set Flexible Field 4 Value to CS">CS</button>
+        </div>
       </div>
     </section>
 

@@ -1,0 +1,124 @@
+{
+  "id": "d4c8e9f0-1234-4a5b-9c8d-7e6f5a4b3c21",
+  "name": "Won",
+  "url": "https://britishcouncil.lightning.force.com/lightning/r/Opportunity/view",
+  "description": "Set Stage to Registered Paid (Closed Won), fill Flexible Field 4 Value (CC/CS), update Close Date & Flexible Field 3, clear loss reason, and save.",
+  "interactions": [
+    {
+      "id": "qfe-won-page-settle",
+      "type": "DELAY",
+      "value": "300",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-won-edit-btn",
+      "type": "CLICK",
+      "key": "button[title=\"Edit Stage\"], button[title=\"Edit Close Date\"], button.test-id__inline-edit-trigger[title*=\"Stage\"], button.test-id__inline-edit-trigger[title*=\"Close Date\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-won-edit-wait",
+      "type": "DELAY",
+      "value": "400",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-won-stage-open",
+      "type": "CLICK",
+      "key": "button[role=\"combobox\"][aria-label=\"Stage\"], button.slds-combobox__input[aria-label=\"Stage\"], [data-target-selection-name*=\"StageName\"] button[role=\"combobox\"], button[aria-label=\"Stage\"], button[title=\"Edit Stage\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-won-stage-wait",
+      "type": "DELAY",
+      "value": "350",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-won-stage-select",
+      "type": "CLICK",
+      "key": "lightning-base-combobox-item[data-value=\"Registered Paid (Closed Won)\"], [role=\"option\"][data-value=\"Registered Paid (Closed Won)\"], .slds-listbox__option[data-value=\"Registered Paid (Closed Won)\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-won-after-stage",
+      "type": "DELAY",
+      "value": "350",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-won-opp-fields",
+      "type": "MULTIPLE_FIELDS",
+      "fields": [
+        {
+          "key": "CloseDate",
+          "value": "{{TODAY}}",
+          "fieldType": "text",
+          "searchType": "name"
+        },
+        {
+          "key": "Flexible_Field_3_Value__c",
+          "value": "{{FLEXIBLE_FIELD_3}}",
+          "fieldType": "text",
+          "searchType": "name"
+        },
+        {
+          "key": "Flexible_Field_4_Value__c",
+          "value": "{{FLEXIBLE_FIELD_4}}",
+          "fieldType": "text",
+          "searchType": "name"
+        },
+        {
+          "key": "Reason_Opportunity_Lost_Other__c",
+          "value": "",
+          "fieldType": "text",
+          "searchType": "name"
+        }
+      ]
+    },
+    {
+      "id": "qfe-won-before-save",
+      "type": "DELAY",
+      "value": "350",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-won-save",
+      "type": "CLICK",
+      "key": "button[name=\"SaveEdit\"], button.slds-button_brand[name=\"SaveEdit\"], .slds-docked-form-footer button.slds-button_brand, button[title=\"Save\"]",
+      "searchType": "cssSelector",
+      "fields": [
+        {}
+      ]
+    },
+    {
+      "id": "qfe-won-save-wait",
+      "type": "DELAY",
+      "value": "400",
+      "fields": [
+        {}
+      ]
+    }
+  ],
+  "updatedAt": "2026-11-01T00:00:00.000Z",
+  "createdAt": "2026-11-01T00:00:00.000Z"
+}

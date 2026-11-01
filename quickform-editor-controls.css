@@ -393,6 +393,79 @@ body::-webkit-scrollbar-thumb {
   justify-content: center;
 }
 
+/* Flexible Field 4 Value (Won: CC / CS) Row */
+.flexi-field4-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--color-subtle-green-border);
+  gap: 8px;
+}
+
+.flexi-field4-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.flexi-field4-badge {
+  background-color: var(--color-primary-green);
+  color: #FFFFFF;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 5px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.flexi-field4-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.flexi-seg-group {
+  display: inline-flex;
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-subtle-green-border);
+  border-radius: 8px;
+  padding: 2px;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.flexi-seg-btn {
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1.2;
+}
+
+.flexi-seg-btn:hover {
+  color: var(--color-primary-green);
+  background-color: var(--color-page-bg);
+}
+
+.flexi-seg-btn.active {
+  background-color: var(--color-primary-green);
+  color: #FFFFFF;
+  box-shadow: 0 1px 4px rgba(18, 103, 71, 0.25);
+}
+
 /* ==================================================
    3. Automation Scripts List
    ================================================== */

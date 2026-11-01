@@ -3,14 +3,16 @@
 
   const OPTIONS_KEY = "qfeFlexibleFieldOptions";
   const VALUE_KEY = "qfeFlexibleFieldValue";
+  const FLEX4_VALUE_KEY = "qfeFlexibleField4Value";
+  const DEFAULT_FLEX4_VALUE = "CC";
   const DELAY_MULTIPLIER_KEY = "qfeDelayMultiplier";
   const ORDER_KEY = "flexiScriptOrder";
   const DEFAULTS = ["BEG 10% List", "ANR", "LED", "REG 10%", "BEG T1 RES"];
 
   const SPEED_PRESETS = [
-    { label: "1x", multiplier: 1.0, desc: "السرعة الطبيعية (1x)" },
-    { label: "Fast", multiplier: 0.7, desc: "السرعة العالية (Fast 0.7x)" },
-    { label: "Slow", multiplier: 1.5, desc: "السرعة الهادئة للاتصال البطيء (Slow 1.5x)" }
+    { label: "1x", multiplier: 1.0, desc: "Normal speed (1x)" },
+    { label: "Fast", multiplier: 0.7, desc: "Fast speed (0.7x)" },
+    { label: "Slow", multiplier: 1.5, desc: "Safe / slow speed (1.5x)" }
   ];
 
   // Script definitions strictly matching the design system
@@ -63,6 +65,15 @@
       isHighlighted: true,
       type: "resource",
       iconSvg: `<svg viewBox="0 0 24 24" width="22" height="22" fill="#126747"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>`
+    },
+    {
+      key: "won",
+      name: "Won",
+      desc: "Set Closed Won & Flexible Field 4 (CC/CS)",
+      defaultId: "d4c8e9f0-1234-4a5b-9c8d-7e6f5a4b3c21",
+      isHighlighted: true,
+      type: "resource",
+      iconSvg: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#126747" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>`
     },
     {
       key: "fl-payment",
@@ -141,13 +152,13 @@
       if (!newInput) return;
       const newOpt = newInput.value.trim();
       if (!newOpt) {
-        showToast("اكتب قيمة الخيار أولاً", true);
+        showToast("Please enter an option value first", true);
         newInput.focus();
         return;
       }
       const { options: current } = await loadOptions();
       if (current.includes(newOpt)) {
-        showToast("الخيار موجود بالفعل", true);
+        showToast("Option already exists", true);
         return;
       }
       const updated = [...current, newOpt];
@@ -155,7 +166,7 @@
       await renderOptions(updated, newOpt);
       newInput.value = "";
       if (inlineAddBox) inlineAddBox.hidden = true;
-      showToast(`✓ تمت إضافة: ${newOpt}`);
+      showToast(`✓ Added: ${newOpt}`);
     }
 
     try {
@@ -207,13 +218,13 @@
           if (!current) return;
           const { options: all } = await loadOptions();
           if (all.length <= 1) {
-            showToast("لازم يفضل خيار واحد على الأقل", true);
+            showToast("At least one option must remain", true);
             return;
           }
 
           if (!delBtn.classList.contains("confirming")) {
             delBtn.classList.add("confirming");
-            delBtn.textContent = "حذف؟";
+            delBtn.textContent = "Delete?";
             deleteConfirmTimer = setTimeout(resetDeleteConfirm, 2500);
             return;
           }
@@ -223,12 +234,52 @@
           const newSelected = updated[0];
           await save(updated, newSelected);
           await renderOptions(updated, newSelected);
-          showToast(`✓ تم حذف: ${current}`);
+          showToast(`✓ Deleted: ${current}`);
         });
       }
     } catch (e) {
       console.warn("Help Seif: Flexible field init error", e);
     }
+  }
+
+  // 1b. Initialize Flexible Field 4 Value (CC / CS toggle for Won script)
+  async function initFlexibleField4() {
+    const ccBtn = document.getElementById("qfe-flex4-cc");
+    const csBtn = document.getElementById("qfe-flex4-cs");
+    if (!ccBtn || !csBtn) return;
+
+    const buttons = [ccBtn, csBtn];
+    const renderActive = (val) => {
+      const normalized = String(val || DEFAULT_FLEX4_VALUE).trim().toUpperCase() === "CS" ? "CS" : "CC";
+      buttons.forEach(btn => {
+        const isMatch = btn.dataset.value === normalized;
+        btn.classList.toggle("active", isMatch);
+        btn.setAttribute("aria-pressed", isMatch ? "true" : "false");
+      });
+    };
+
+    try {
+      const stored = await chrome.storage.local.get([FLEX4_VALUE_KEY]);
+      let currentVal = typeof stored[FLEX4_VALUE_KEY] === "string" ? stored[FLEX4_VALUE_KEY].trim().toUpperCase() : "";
+      if (currentVal !== "CC" && currentVal !== "CS") {
+        currentVal = DEFAULT_FLEX4_VALUE;
+        await chrome.storage.local.set({ [FLEX4_VALUE_KEY]: currentVal });
+      }
+      renderActive(currentVal);
+    } catch {
+      renderActive(DEFAULT_FLEX4_VALUE);
+    }
+
+    buttons.forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const nextVal = btn.dataset.value === "CS" ? "CS" : "CC";
+        renderActive(nextVal);
+        try {
+          await chrome.storage.local.set({ [FLEX4_VALUE_KEY]: nextVal });
+          showToast(`✓ Field 4 (Won): ${nextVal}`);
+        } catch {}
+      });
+    });
   }
 
   // 2. Speed Preset Selector (Fast 0.7x / Normal 1.0x / Slow 1.5x)
@@ -281,9 +332,9 @@
               void chrome.runtime?.lastError;
             });
           }
-          showToast("⏹ تم إرسال أمر الإيقاف");
+          showToast("⏹ Stop signal sent");
         } catch {
-          showToast("تعذر إرسال أمر الإيقاف", true);
+          showToast("Could not send stop signal", true);
         }
       });
     }
@@ -341,7 +392,7 @@
       }, () => {
         if (chrome.runtime?.lastError) {
           console.warn("Help Seif: script message note:", chrome.runtime.lastError.message);
-          showToast("افتح صفحة Salesforce أو اعمل Refresh للصفحة", true);
+          showToast("Open a Salesforce page or refresh the tab", true);
         }
       });
     } catch (err) {
@@ -453,7 +504,7 @@
       refreshShortcutBadges();
       try {
         await chrome.storage.local.set({ [ORDER_KEY]: currentKeys });
-        showToast("✓ تم حفظ ترتيب السكريبتات");
+        showToast("✓ Script order saved");
       } catch (err) {
         console.warn("Help Seif: failed to save script order", err);
       }
@@ -485,7 +536,7 @@
 
       const dragHandle = document.createElement("div");
       dragHandle.className = "flexi-drag-handle";
-      dragHandle.title = "اسحب لتغيير الترتيب";
+      dragHandle.title = "Drag to reorder";
       dragHandle.setAttribute("aria-label", "Drag to reorder");
       dragHandle.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><circle cx="8" cy="6" r="1.8"></circle><circle cx="16" cy="6" r="1.8"></circle><circle cx="8" cy="12" r="1.8"></circle><circle cx="16" cy="12" r="1.8"></circle><circle cx="8" cy="18" r="1.8"></circle><circle cx="16" cy="18" r="1.8"></circle></svg>`;
 
@@ -495,7 +546,7 @@
 
       const shortcutBadge = document.createElement("span");
       shortcutBadge.className = "flexi-shortcut-badge";
-      shortcutBadge.title = `اختصار لوحة المفاتيح: اضغط رقم ${index + 1}`;
+      shortcutBadge.title = `Keyboard shortcut: Press ${index + 1}`;
       if (index < 9) {
         shortcutBadge.textContent = String(index + 1);
       } else {
@@ -589,7 +640,7 @@
           resetItem.addEventListener("click", () => {
             chrome.runtime.sendMessage({ name: "resetStarterResources", id: def.defaultId }, () => {
               void chrome.runtime?.lastError;
-              showToast(`✓ تمت استعادة ${def.name} للوضع الافتراضي`);
+              showToast(`✓ Restored ${def.name} to default`);
             });
             menu.remove();
           });
@@ -695,6 +746,7 @@
     if (isBooted) return;
     isBooted = true;
     initFlexibleField();
+    initFlexibleField4();
     initSpeedControl();
     initHeaderActions();
     setupGlobalMenuCloser();
