@@ -1,4 +1,0 @@
-Version 1.17.28
-- Faster default execution speed for new installations; saved speed preferences are retained.
-- Reduced adaptive element polling to 25 ms and post-detection settling to 25 ms for responsive workflow steps.
-- Removed an unreferenced 6.8 MB popup bundle and its unreferenced stylesheet.

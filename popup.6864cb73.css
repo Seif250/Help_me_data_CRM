@@ -1,0 +1,153 @@
+body {
+  border: none !important;
+  border-radius: 16px !important;
+  background: #f8fafc !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  overflow: hidden !important;
+  width: 420px !important;
+  margin: 0 !important;
+}
+
+/* QuickForm Editor: permanently use Advanced mode */
+[role="tablist"] > [role="tab"]:first-child {
+  display: none !important;
+}
+[role="tablist"] {
+  grid-template-columns: minmax(0, 1fr) !important;
+  background: #f1f5f9 !important;
+  border-radius: 10px !important;
+  padding: 3px !important;
+  margin-bottom: 8px !important;
+}
+[role="tablist"] > [role="tab"] {
+  font-weight: 700 !important;
+  font-size: 12.5px !important;
+  color: #475569 !important;
+  border-radius: 8px !important;
+  transition: all 0.2s ease !important;
+}
+[role="tablist"] > [role="tab"][data-state="active"] {
+  background: #ffffff !important;
+  color: #4f46e5 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Main workflow list container */
+[role="tabpanel"] > div {
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 14px !important;
+  background: #ffffff !important;
+  padding: 8px 6px !important;
+  height: 275px !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+}
+
+/* Custom modern scrollbar */
+[role="tabpanel"] > div::-webkit-scrollbar {
+  width: 5px;
+}
+[role="tabpanel"] > div::-webkit-scrollbar-track {
+  background: transparent;
+}
+[role="tabpanel"] > div::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+[role="tabpanel"] > div::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Workflow cards */
+[role="tabpanel"] ol > li {
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  margin-bottom: 7px !important;
+  padding: 8px 12px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  align-items: center !important;
+}
+
+[role="tabpanel"] ol > li:hover {
+  border-color: #a5b4fc !important;
+  background: #fafbff !important;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1) !important;
+  transform: translateY(-1.5px) !important;
+}
+
+/* Workflow Title */
+[role="tabpanel"] ol > li > span {
+  font-weight: 600 !important;
+  color: #1e293b !important;
+  font-size: 13px !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* Matched Badge */
+[role="tabpanel"] ol > li span.bg-primary\/10 {
+  background: #ecfdf5 !important;
+  color: #059669 !important;
+  border: 1px solid #a7f3d0 !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+  padding: 2px 7px !important;
+  font-size: 10px !important;
+  letter-spacing: 0.02em !important;
+  text-transform: uppercase !important;
+}
+
+/* Play/Run Autofill Button */
+[role="tabpanel"] ol > li button.rounded-full {
+  width: 34px !important;
+  height: 34px !important;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border: none !important;
+  margin-right: 6px !important;
+}
+
+[role="tabpanel"] ol > li button.rounded-full:hover {
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.5) !important;
+  transform: scale(1.08) !important;
+}
+
+[role="tabpanel"] ol > li button.rounded-full:active {
+  transform: scale(0.95) !important;
+}
+
+[role="tabpanel"] ol > li button.rounded-full svg {
+  width: 16px !important;
+  height: 16px !important;
+  margin-left: 2px !important;
+}
+
+/* Edit button */
+[role="tabpanel"] ol > li a {
+  border-radius: 8px !important;
+  border-color: #e2e8f0 !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.15s ease !important;
+}
+
+[role="tabpanel"] ol > li a:hover {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #4f46e5 !important;
+}
+
+/* Onload toggle label */
+[role="tabpanel"] ol > li label {
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  color: #64748b !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  margin-bottom: 3px !important;
+}
