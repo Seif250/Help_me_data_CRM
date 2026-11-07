@@ -10,8 +10,8 @@
   const DEFAULTS = ["BEG 10% List", "ANR", "LED", "REG 10%", "BEG T1 RES"];
 
   const SPEED_PRESETS = [
-    { label: "1x", multiplier: 1.0, desc: "Normal speed (1x)" },
     { label: "Fast", multiplier: 0.7, desc: "Fast speed (0.7x)" },
+    { label: "1x", multiplier: 1.0, desc: "Normal speed (1x)" },
     { label: "Slow", multiplier: 1.5, desc: "Safe / slow speed (1.5x)" }
   ];
 
@@ -288,14 +288,14 @@
     const speedLabel = document.getElementById("flexi-speed-label");
     if (!speedBtn || !speedLabel) return;
 
-    let currentMult = 1.0;
+    let currentMult = 0.7;
     try {
       const stored = await chrome.storage.local.get([DELAY_MULTIPLIER_KEY]);
       const val = Number(stored[DELAY_MULTIPLIER_KEY]);
       if (SPEED_PRESETS.some(p => p.multiplier === val)) {
         currentMult = val;
       } else {
-        await chrome.storage.local.set({ [DELAY_MULTIPLIER_KEY]: 1.0 });
+        await chrome.storage.local.set({ [DELAY_MULTIPLIER_KEY]: 0.7 });
       }
     } catch {}
 
@@ -315,6 +315,18 @@
         showToast(`⚡ ${nextPreset.desc}`);
       } catch {}
     });
+
+    if (typeof chrome !== "undefined" && chrome.storage?.onChanged) {
+      chrome.storage.onChanged.addListener((changes, area) => {
+        if (area === "local" && changes[DELAY_MULTIPLIER_KEY]) {
+          const nextVal = Number(changes[DELAY_MULTIPLIER_KEY].newValue);
+          if (SPEED_PRESETS.some(p => p.multiplier === nextVal)) {
+            currentMult = nextVal;
+            renderSpeed(currentMult);
+          }
+        }
+      });
+    }
   }
 
   // 3. Initialize Header Actions (Stop, Settings, Close)
@@ -903,7 +915,7 @@
           copyAllBtn.textContent = `Copying ${i + 1}/${queue.length}...`;
           await navigator.clipboard.writeText(queue[i].value);
           if (i < queue.length - 1) {
-            await new Promise((r) => setTimeout(r, 420));
+            await new Promise((r) => setTimeout(r, 320));
           }
         }
         copyAllBtn.textContent = `✓ Queued ${queue.length}!`;
@@ -926,10 +938,10 @@
       });
     }
 
-    // Live poll while popup stays open so UI updates automatically without closing/reopening
+    // Lightweight fallback poll while popup stays open (primary updates arrive via runtime message push)
     setInterval(() => {
       fetchFromActiveTab(false);
-    }, 550);
+    }, 1800);
 
     // Fetch immediately on popup open (and auto-scroll + auto-hover if smsId/phone/email missing)
     await fetchFromActiveTab(false);
@@ -953,8 +965,8 @@
     const refreshSummary = async () => {
       if (!summaryEl) return;
       try {
-        const st = await chrome.storage.local.get([WON_FIELD_4_KEY, TARGET_OWNER_KEY]);
-        const wonVal = String(st[WON_FIELD_4_KEY] || "CC").toUpperCase() === "CS" ? "CS" : "CC";
+        const st = await chrome.storage.local.get([FLEX4_VALUE_KEY, TARGET_OWNER_KEY]);
+        const wonVal = String(st[FLEX4_VALUE_KEY] || "CC").toUpperCase() === "CS" ? "CS" : "CC";
         const ownerVal = String(st[TARGET_OWNER_KEY] ?? "Seif Ezz Eldin").trim();
         summaryEl.textContent = ownerVal
           ? `Won: ${wonVal} • ${ownerVal}`
@@ -985,7 +997,7 @@
     if (typeof chrome !== "undefined" && chrome.storage?.onChanged) {
       chrome.storage.onChanged.addListener((changes, area) => {
         if (area !== "local") return;
-        if (changes[WON_FIELD_4_KEY] || changes[TARGET_OWNER_KEY]) {
+        if (changes[FLEX4_VALUE_KEY] || changes[TARGET_OWNER_KEY]) {
           refreshSummary();
         }
       });
@@ -1068,7 +1080,7 @@
     }
   }
 
-  // 9. Keyboard shortcuts (1-9 to run script, S to stop) inside Popup
+  // 9. Keyboard shortcuts (1-9 to run script, C to Copy All, S to Stop) inside Popup
   function setupKeyboardShortcuts() {
     document.addEventListener("keydown", (e) => {
       const tag = (e.target?.tagName || "").toUpperCase();
@@ -1084,6 +1096,12 @@
           const playBtn = targetRow.querySelector(".flexi-play-btn");
           playBtn?.click();
         }
+      } else if (e.key.toLowerCase() === "c") {
+        e.preventDefault();
+        document.getElementById("flexi-cust-copy-all")?.click();
+      } else if (e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        document.getElementById("flexi-stop-btn")?.click();
       }
     });
   }

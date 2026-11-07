@@ -25,7 +25,10 @@
         "salesforce-floating-bar.js"
       ],
       "matches": [
-        "<all_urls>"
+        "https://*.salesforce.com/*",
+        "https://*.force.com/*",
+        "https://*.cloudforce.com/*",
+        "https://*.salesforceliveagent.com/*"
       ],
       "run_at": "document_start"
     }
@@ -33,7 +36,10 @@
   "default_locale": "en",
   "description": "Help Seif - Faster Salesforce workflows with adaptive waits, live status HUD, and reliable Save/owner handling.",
   "host_permissions": [
-    "https://*/*"
+    "https://*.salesforce.com/*",
+    "https://*.force.com/*",
+    "https://*.cloudforce.com/*",
+    "https://*.salesforceliveagent.com/*"
   ],
   "icons": {
     "128": "icon128.plasmo.3c1ed2d2.png",
@@ -55,18 +61,5 @@
     "tabs",
     "contextMenus"
   ],
-  "version": "1.17.26",
-  "web_accessible_resources": [
-    {
-      "matches": [
-        "<all_urls>"
-      ],
-      "resources": [
-        "Inter.a6dc61af.woff2",
-        "content.b08964b6.css",
-        "content.642039fc.css",
-        "content.33e81aa6.svg"
-      ]
-    }
-  ]
+  "version": "1.17.29"
 }

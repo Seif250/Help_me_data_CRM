@@ -2,9 +2,11 @@
   if (window.__helpSeifFloatingBarLoaded) return;
   window.__helpSeifFloatingBarLoaded = true;
 
-  const FLEX_FIELD_3_KEY = "qfeFlexField3Value";
-  const WON_FIELD_4_KEY = "qfeWonField4Value";
-  const SPEED_STORAGE_KEY = "qfeExecutionSpeed";
+  const FLEX_OPTIONS_KEY = "qfeFlexibleFieldOptions";
+  const FLEX_FIELD_3_KEY = "qfeFlexibleFieldValue";
+  const WON_FIELD_4_KEY = "qfeFlexibleField4Value";
+  const SPEED_STORAGE_KEY = "qfeDelayMultiplier";
+  const ORDER_KEY = "flexiScriptOrder";
   const FLOAT_ENABLED_KEY = "qfeFloatingBarEnabled";
   const FLOAT_COLLAPSED_KEY = "qfeFloatingBarCollapsed";
   const FLOAT_TOP_KEY = "qfeFloatingBarTop";
@@ -31,14 +33,12 @@
     "sent link",
   ]);
 
-  const FLEX_3_OPTIONS = [
-    "",
-    "No Double Offers",
-    "Under Processing",
-    "Not Willing to Pay Now",
-    "Product Not Suitable",
-    "Technically Rejected",
-    "Duplicate",
+  const DEFAULT_FLEX_3_OPTIONS = [
+    "BEG 10% List",
+    "ANR",
+    "LED",
+    "REG 10%",
+    "BEG T1 RES",
   ];
 
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -80,30 +80,65 @@
     }
   };
 
+  // Cached shadow roots list (TTL 400ms) so multiple queryAllDeep calls per extraction don't re-walk the entire DOM
+  let cachedRoots = null;
+  let cachedRootsTime = 0;
+
+  const getSearchRoots = (root = document) => {
+    if (root !== document) {
+      const roots = [root];
+      const visit = (node) => {
+        try {
+          const all = node.querySelectorAll ? node.querySelectorAll("*") : [];
+          for (const el of all) {
+            if (el.shadowRoot && el.id !== "help-seif-floating-host") {
+              roots.push(el.shadowRoot);
+              visit(el.shadowRoot);
+            }
+          }
+        } catch {}
+      };
+      visit(root);
+      return roots;
+    }
+
+    const now = Date.now();
+    if (cachedRoots && now - cachedRootsTime < 400) {
+      return cachedRoots;
+    }
+    const roots = [document];
+    const visit = (node) => {
+      try {
+        const all = node.querySelectorAll ? node.querySelectorAll("*") : [];
+        for (const el of all) {
+          if (el.shadowRoot && el.id !== "help-seif-floating-host") {
+            roots.push(el.shadowRoot);
+            visit(el.shadowRoot);
+          }
+        }
+      } catch {}
+    };
+    visit(document);
+    cachedRoots = roots;
+    cachedRootsTime = now;
+    return roots;
+  };
+
   const queryAllDeep = (selector, root = document) => {
     const results = [];
     const seen = new Set();
-    const visit = (node) => {
-      if (!node) return;
+    const roots = getSearchRoots(root);
+    for (const r of roots) {
       try {
-        const matches = node.querySelectorAll
-          ? node.querySelectorAll(selector)
-          : [];
+        const matches = r.querySelectorAll ? r.querySelectorAll(selector) : [];
         for (const el of matches) {
           if (!seen.has(el)) {
             seen.add(el);
             results.push(el);
           }
         }
-        const all = node.querySelectorAll ? node.querySelectorAll("*") : [];
-        for (const el of all) {
-          if (el.shadowRoot && el.id !== "help-seif-floating-host") {
-            visit(el.shadowRoot);
-          }
-        }
       } catch {}
-    };
-    visit(root);
+    }
     return results;
   };
 
@@ -804,7 +839,7 @@
       const ok = await copyTextToClipboard(queue[i].value);
       if (ok) copiedCount++;
       if (i < queue.length - 1) {
-        await sleep(420);
+        await sleep(320);
       }
     }
     return copiedCount;
@@ -961,6 +996,7 @@
       FLOAT_COLLAPSED_KEY,
       FLOAT_TOP_KEY,
       SPEED_STORAGE_KEY,
+      FLEX_OPTIONS_KEY,
       FLEX_FIELD_3_KEY,
       WON_FIELD_4_KEY,
       SMS_ID_SUFFIX_KEY,
@@ -968,6 +1004,7 @@
       FLOAT_SEC_CUST_KEY,
       FLOAT_SEC_CTRL_KEY,
       FLOAT_SEC_WF_KEY,
+      ORDER_KEY,
       "resources",
     ]);
 
@@ -1446,12 +1483,7 @@
               <div class="hs-card-body hs-controls-row">
                 <div class="hs-ctrl-item">
                   <span class="hs-ctrl-lbl">Flex 3</span>
-                  <select class="hs-select" id="hs-flex3-select">
-                    ${FLEX_3_OPTIONS.map(
-                      (opt) =>
-                        `<option value="${opt}">${opt || "--None--"}</option>`
-                    ).join("")}
-                  </select>
+                  <select class="hs-select" id="hs-flex3-select"></select>
                 </div>
                 <div class="hs-ctrl-item">
                   <span class="hs-ctrl-lbl">Won (Field 4)</span>
@@ -1682,13 +1714,13 @@
       handleCopyAll(pillCopyBtn, "📋 Copy")
     );
 
-    // Speed Button
-    const speedLabels = { 1: "1x", 0.5: "Fast", 1.7: "Slow" };
-    const speedOrder = [1, 0.5, 1.7];
-    let currentSpeed = Number(state[SPEED_STORAGE_KEY]) || 1;
+    // Speed Button (synced with Popup qfeDelayMultiplier: 0.7 Fast, 1.0 1x, 1.5 Slow)
+    const speedLabels = { 0.7: "Fast", 1: "1x", 1.5: "Slow" };
+    const speedOrder = [0.7, 1, 1.5];
+    let currentSpeed = Number(state[SPEED_STORAGE_KEY]) || 0.7;
     const renderSpeed = (spd) => {
-      currentSpeed = speedLabels[spd] ? spd : 1;
-      speedBtn.textContent = speedLabels[currentSpeed] || "1x";
+      currentSpeed = speedLabels[spd] ? spd : 0.7;
+      speedBtn.textContent = speedLabels[currentSpeed] || "Fast";
     };
     renderSpeed(currentSpeed);
 
@@ -1705,8 +1737,18 @@
       window.__helpSeifFinishHud?.("stopped");
     });
 
-    // Flex Field 3 & Won Field 4 Controls
-    flex3Select.value = String(state[FLEX_FIELD_3_KEY] ?? "");
+    // Flex Field 3 & Won Field 4 Controls (synced with Popup)
+    const renderFlex3Options = (optsRaw, valRaw) => {
+      let opts = Array.isArray(optsRaw) && optsRaw.length ? [...optsRaw] : [...DEFAULT_FLEX_3_OPTIONS];
+      let val = typeof valRaw === "string" && valRaw.trim() ? valRaw.trim() : opts[0];
+      if (!opts.includes(val)) opts.unshift(val);
+      flex3Select.innerHTML = opts
+        .map((opt) => `<option value="${opt.replace(/"/g, "&quot;")}">${opt}</option>`)
+        .join("");
+      flex3Select.value = val;
+    };
+    renderFlex3Options(state[FLEX_OPTIONS_KEY], state[FLEX_FIELD_3_KEY]);
+
     flex3Select.addEventListener("change", () => {
       chrome.storage.local.set({ [FLEX_FIELD_3_KEY]: flex3Select.value });
     });
@@ -1727,9 +1769,45 @@
       });
     });
 
+    // Helper to parse resources (which may be a JSON string from @plasmohq/storage or an Array)
+    const parseResourcesList = (raw) => {
+      if (Array.isArray(raw)) return raw;
+      if (typeof raw === "string") {
+        try {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) return parsed;
+        } catch {}
+      }
+      return [];
+    };
+
+    let currentResourcesRaw = state.resources;
+    let currentOrder = Array.isArray(state[ORDER_KEY]) ? state[ORDER_KEY] : null;
+
     // Render Workflow Buttons
-    const renderWorkflows = (resources) => {
-      const list = Array.isArray(resources) ? resources : [];
+    const renderWorkflows = (resourcesRaw, orderList = currentOrder) => {
+      const list = [...parseResourcesList(resourcesRaw)];
+      if (Array.isArray(orderList) && orderList.length) {
+        const keyFor = (res) => {
+          const n = String(res?.name || "").trim().toLowerCase();
+          if (n === "no answer") return "no-answer";
+          if (n === "follow up") return "follow-up";
+          if (n === "will call us back") return "will-call-us-back";
+          if (n === "not interested") return "not-interested";
+          if (n === "crm autofill") return "crm-autofill";
+          if (n === "sent link") return "sent-link";
+          if (n === "won") return "won";
+          if (n === "fl payment") return "fl-payment";
+          return res?.id || "";
+        };
+        list.sort((a, b) => {
+          let idxA = orderList.indexOf(keyFor(a));
+          let idxB = orderList.indexOf(keyFor(b));
+          if (idxA === -1) idxA = 999;
+          if (idxB === -1) idxB = 999;
+          return idxA - idxB;
+        });
+      }
       wfGrid.innerHTML = "";
       for (const res of list) {
         if (!res || !res.name) continue;
@@ -1745,23 +1823,27 @@
       }
     };
 
-    renderWorkflows(state.resources || []);
+    renderWorkflows(currentResourcesRaw, currentOrder);
     refreshCustomerInfoUI();
 
     // Sync storage changes live
     chrome.storage.onChanged.addListener((changes, area) => {
       if (area !== "local") return;
-      if (changes.resources) {
-        renderWorkflows(changes.resources.newValue || []);
+      if (changes.resources || changes[ORDER_KEY]) {
+        if (changes.resources) currentResourcesRaw = changes.resources.newValue;
+        if (changes[ORDER_KEY]) currentOrder = changes[ORDER_KEY].newValue;
+        renderWorkflows(currentResourcesRaw, currentOrder);
       }
-      if (changes[FLEX_FIELD_3_KEY]) {
-        flex3Select.value = String(changes[FLEX_FIELD_3_KEY].newValue ?? "");
+      if (changes[FLEX_OPTIONS_KEY] || changes[FLEX_FIELD_3_KEY]) {
+        chrome.storage.local.get([FLEX_OPTIONS_KEY, FLEX_FIELD_3_KEY], (st) => {
+          renderFlex3Options(st[FLEX_OPTIONS_KEY], st[FLEX_FIELD_3_KEY]);
+        });
       }
       if (changes[WON_FIELD_4_KEY]) {
         renderWon4(changes[WON_FIELD_4_KEY].newValue || "CC");
       }
       if (changes[SPEED_STORAGE_KEY]) {
-        renderSpeed(Number(changes[SPEED_STORAGE_KEY].newValue) || 1);
+        renderSpeed(Number(changes[SPEED_STORAGE_KEY].newValue) || 0.7);
       }
       if (changes[FLOAT_ENABLED_KEY]) {
         setFloatingBarVisibility(changes[FLOAT_ENABLED_KEY].newValue !== false);
@@ -1801,12 +1883,26 @@
           currentCustomerInfo = await ensureCustomerInfoWithAutoHover();
           renderCustomerInfoValues();
         }
-      }, 260);
+      }, 350);
     };
 
     window.addEventListener("popstate", scheduleInfoRefresh);
     window.addEventListener("hashchange", scheduleInfoRefresh);
-    const obs = new MutationObserver(scheduleInfoRefresh);
+    const obs = new MutationObserver((mutations) => {
+      // Ignore mutations inside our own floating bar or HUD
+      const hasExternalMutation = mutations.some((m) => {
+        const t = m.target;
+        return (
+          t &&
+          t.id !== "help-seif-floating-host" &&
+          t.id !== "help-seif-hud" &&
+          !hostEl?.contains(t)
+        );
+      });
+      if (hasExternalMutation) {
+        scheduleInfoRefresh();
+      }
+    });
     obs.observe(document.body || document.documentElement, {
       childList: true,
       subtree: true,
