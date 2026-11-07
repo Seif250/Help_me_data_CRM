@@ -901,7 +901,9 @@
 
       if (targetGroup && Array.isArray(targetGroup.fields)) {
         targetGroup.fields = targetGroup.fields.filter(
-          (f) => !/Flexible_Field_4_Value/i.test(String(f?.key || ""))
+          (f) =>
+            !/Flexible_Field_4_Value/i.test(String(f?.key || "")) &&
+            !/Close[\s_-]?Date/i.test(String(f?.key || ""))
         );
         targetGroup.fields.push({
           key: FLEX_FIELD_4_SELECTOR,

@@ -2275,12 +2275,26 @@ const isOwnerStep = (st) =>
 /owner|Search Users|lookup__list|uiInputTextForAutocomplete|changeOwner/i.test(
 String(st?.id || "") + String(st?.key || "")
 );
+const isWonWorkflow =
+/^won$/i.test(String(resource?.name || "").trim()) ||
+resource?.id === "d4c8e9f0-1234-4a5b-9c8d-7e6f5a4b3c21";
 let inLogACallFlow = false;
 const totalSteps = resource.interactions.length;
 for (let idx = 0; idx < totalSteps; idx++) {
 if (window.__helpSeifAborted) break;
 checkDismiss();
-const step = normalizeStepDates(resource.interactions[idx]);
+let rawStep = resource.interactions[idx];
+if (isWonWorkflow && rawStep) {
+if (rawStep.type === "MULTIPLE_FIELDS" && Array.isArray(rawStep.fields)) {
+rawStep = {
+...rawStep,
+fields: rawStep.fields.filter((f) => !isCloseDateKey(f?.key)),
+};
+} else if (rawStep.type === "INPUT" && isCloseDateKey(rawStep.key || rawStep.name)) {
+continue;
+}
+}
+const step = normalizeStepDates(rawStep);
 if (
 (window.__helpSeifOwnerAlreadyCurrent || window.__helpSeifSaveFailed) &&
 (isOwnerStep(step) ||
