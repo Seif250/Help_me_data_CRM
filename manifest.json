@@ -16,10 +16,6 @@
   "content_scripts": [
     {
       "all_frames": false,
-      "css": [
-        "font.f64e3f04.css",
-        "content.5e152e98.css"
-      ],
       "js": [
         "content.883ade9e.js",
         "salesforce-floating-bar.js"
@@ -61,5 +57,5 @@
     "tabs",
     "contextMenus"
   ],
-  "version": "1.17.29"
+  "version": "1.17.30"
 }

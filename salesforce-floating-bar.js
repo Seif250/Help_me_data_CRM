@@ -1864,10 +1864,20 @@
     // Auto-refresh Customer Info when navigating records or when hover preview opens
     let refreshTimer = null;
     let lastAutoFetchedRecordKey = "";
+    let observedRecordContainer = null;
+
+    const findRecordContainerTarget = () => {
+      return (
+        document.querySelector(
+          "one-record-home-flexipage2, records-lwc-detail-panel, .windowViewMode-normal.active, .oneWorkspace.active, .workspaceManager"
+        ) || null
+      );
+    };
 
     const scheduleInfoRefresh = () => {
       if (refreshTimer) clearTimeout(refreshTimer);
       refreshTimer = setTimeout(async () => {
+        bindTargetedRecordObserver();
         refreshCustomerInfoUI();
         // When a record page finishes mounting its Account Name link, auto-preload SMS ID + Phone/Email once per record
         const recKey = getRecordCacheKey();
@@ -1886,10 +1896,7 @@
       }, 350);
     };
 
-    window.addEventListener("popstate", scheduleInfoRefresh);
-    window.addEventListener("hashchange", scheduleInfoRefresh);
-    const obs = new MutationObserver((mutations) => {
-      // Ignore mutations inside our own floating bar or HUD
+    const recordObserver = new MutationObserver((mutations) => {
       const hasExternalMutation = mutations.some((m) => {
         const t = m.target;
         return (
@@ -1903,10 +1910,70 @@
         scheduleInfoRefresh();
       }
     });
-    obs.observe(document.body || document.documentElement, {
-      childList: true,
-      subtree: true,
+
+    const bindTargetedRecordObserver = () => {
+      const nextContainer = findRecordContainerTarget();
+      if (nextContainer && nextContainer !== observedRecordContainer) {
+        recordObserver.disconnect();
+        observedRecordContainer = nextContainer;
+        recordObserver.observe(nextContainer, {
+          childList: true,
+          subtree: true,
+        });
+        if (nextContainer.shadowRoot) {
+          recordObserver.observe(nextContainer.shadowRoot, {
+            childList: true,
+            subtree: true,
+          });
+        }
+      }
+    };
+
+    // Lightweight shallow observer on body/desktop container (subtree: false)
+    // to detect hover preview panels (.uiPanel--preview, .forceHoverPrototype) and initial record mount
+    const shallowRootObserver = new MutationObserver((mutations) => {
+      if (!observedRecordContainer || !observedRecordContainer.isConnected) {
+        bindTargetedRecordObserver();
+      }
+      for (const m of mutations) {
+        for (const node of m.addedNodes) {
+          if (
+            node?.nodeType === 1 &&
+            node.id !== "help-seif-floating-host" &&
+            node.id !== "help-seif-hud"
+          ) {
+            scheduleInfoRefresh();
+            return;
+          }
+        }
+      }
     });
+
+    bindTargetedRecordObserver();
+    if (document.body) {
+      shallowRootObserver.observe(document.body, {
+        childList: true,
+        subtree: false,
+      });
+    }
+    const desktopRoot = document.querySelector(".desktop.container, .oneAlohaPage");
+    if (desktopRoot) {
+      shallowRootObserver.observe(desktopRoot, {
+        childList: true,
+        subtree: false,
+      });
+    }
+
+    const onRouteNavigate = () => {
+      observedRecordContainer = null;
+      bindTargetedRecordObserver();
+      scheduleInfoRefresh();
+    };
+    window.addEventListener("popstate", onRouteNavigate);
+    window.addEventListener("hashchange", onRouteNavigate);
+    try {
+      window.navigation?.addEventListener?.("navigatesuccess", onRouteNavigate);
+    } catch {}
   };
 
   if (document.readyState === "loading") {

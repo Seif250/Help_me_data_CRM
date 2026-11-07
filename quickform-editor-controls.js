@@ -938,11 +938,6 @@
       });
     }
 
-    // Lightweight fallback poll while popup stays open (primary updates arrive via runtime message push)
-    setInterval(() => {
-      fetchFromActiveTab(false);
-    }, 1800);
-
     // Fetch immediately on popup open (and auto-scroll + auto-hover if smsId/phone/email missing)
     await fetchFromActiveTab(false);
     if (!currentInfo.phone || !currentInfo.email || !currentInfo.smsId) {
