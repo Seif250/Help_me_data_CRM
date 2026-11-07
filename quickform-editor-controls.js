@@ -379,6 +379,53 @@
     });
   }
 
+  // Ensure the stored "Won" workflow never modifies Close Date
+  async function sanitizeWonResourceInStorage() {
+    try {
+      const res = await chrome.storage.local.get(["resources"]);
+      const rawRes = res?.resources;
+      let list = [];
+      const wasString = typeof rawRes === "string";
+      if (Array.isArray(rawRes)) {
+        list = rawRes;
+      } else if (wasString) {
+        try { list = JSON.parse(rawRes); } catch {}
+      }
+      if (!Array.isArray(list) || !list.length) return;
+      let modified = false;
+      for (const item of list) {
+        if (!item) continue;
+        const isWon =
+          item.id === "d4c8e9f0-1234-4a5b-9c8d-7e6f5a4b3c21" ||
+          String(item.name || "").trim().toLowerCase() === "won";
+        if (!isWon || !Array.isArray(item.interactions)) continue;
+        for (const step of item.interactions) {
+          if (step?.type === "CLICK" && /Close Date/i.test(String(step.key || ""))) {
+            step.key =
+              'button[title="Edit Stage"], button.test-id__inline-edit-trigger[title*="Stage"], [data-target-selection-name*="StageName"] button';
+            modified = true;
+          }
+          if (step?.type === "MULTIPLE_FIELDS" && Array.isArray(step.fields)) {
+            const nextFields = step.fields.filter(
+              (f) =>
+                !/Close[\s_-]?Date/i.test(String(f?.key || "")) &&
+                f?.value !== "{{TODAY}}"
+            );
+            if (nextFields.length !== step.fields.length) {
+              step.fields = nextFields;
+              modified = true;
+            }
+          }
+        }
+      }
+      if (modified) {
+        await chrome.storage.local.set({
+          resources: wasString ? JSON.stringify(list) : list
+        });
+      }
+    } catch {}
+  }
+
   // 5. Run Script on Salesforce Tab
   async function runScript(scriptId, scriptName, playBtn, scriptType = "resource") {
     if (playBtn) {
@@ -389,6 +436,7 @@
     showToast(`▶ Running ${scriptName}...`);
 
     try {
+      await sanitizeWonResourceInStorage();
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
       if (!tab?.id) {
         showToast("No active tab found", true);
@@ -417,6 +465,8 @@
   async function initScriptRows() {
     const container = document.getElementById("flexi-scripts-list");
     if (!container) return;
+
+    await sanitizeWonResourceInStorage();
 
     let storedResources = [];
     let storedProfiles = [];

@@ -886,6 +886,19 @@
         String(wonField4Value || "CC").trim().toUpperCase() === "CS"
           ? "CS"
           : "CC";
+      for (const step of cloned.interactions) {
+        if (step?.type === "CLICK" && /Close Date/i.test(String(step.key || ""))) {
+          step.key =
+            'button[title="Edit Stage"], button.test-id__inline-edit-trigger[title*="Stage"], [data-target-selection-name*="StageName"] button';
+        }
+        if (step?.type === "MULTIPLE_FIELDS" && Array.isArray(step.fields)) {
+          step.fields = step.fields.filter(
+            (f) =>
+              !/Close[\s_-]?Date/i.test(String(f?.key || "")) &&
+              f?.value !== "{{TODAY}}"
+          );
+        }
+      }
       const targetGroup =
         cloned.interactions.find(
           (step) =>
@@ -903,7 +916,8 @@
         targetGroup.fields = targetGroup.fields.filter(
           (f) =>
             !/Flexible_Field_4_Value/i.test(String(f?.key || "")) &&
-            !/Close[\s_-]?Date/i.test(String(f?.key || ""))
+            !/Close[\s_-]?Date/i.test(String(f?.key || "")) &&
+            f?.value !== "{{TODAY}}"
         );
         targetGroup.fields.push({
           key: FLEX_FIELD_4_SELECTOR,

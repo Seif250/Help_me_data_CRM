@@ -2278,6 +2278,53 @@ String(st?.id || "") + String(st?.key || "")
 const isWonWorkflow =
 /^won$/i.test(String(resource?.name || "").trim()) ||
 resource?.id === "d4c8e9f0-1234-4a5b-9c8d-7e6f5a4b3c21";
+const readCurrentCloseDateValue = () => {
+try {
+const all = queryAllElements();
+const existingInput = all.find(
+(el) =>
+el.tagName === "INPUT" &&
+attrEqualsCI(el, "name", "CloseDate") &&
+String(el.value || "").trim()
+);
+if (existingInput) return String(existingInput.value).trim();
+const container = all.find(
+(el) =>
+el &&
+isElementVisible(el) &&
+/CloseDate/i.test(
+String(el.getAttribute?.("data-target-selection-name") || "")
+)
+);
+if (container) {
+const formatted =
+container.querySelector?.(
+"lightning-formatted-text, lightning-formatted-date-time, .uiOutputDate, .test-id__field-value"
+) || container;
+const m = String(formatted.textContent || "").match(
+/\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/
+);
+if (m) return m[0];
+}
+for (const el of all) {
+if (!el || !isElementVisible(el)) continue;
+if (
+el.classList?.contains("test-id__field-label") &&
+/^close\s*date$/i.test(String(el.textContent || "").trim())
+) {
+const item = el.closest(
+"records-record-layout-item, .slds-form-element"
+);
+const m = String(item?.textContent || "").match(
+/\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/
+);
+if (m) return m[0];
+}
+}
+} catch {}
+return "";
+};
+const originalCloseDateForWon = isWonWorkflow ? readCurrentCloseDateValue() : "";
 let inLogACallFlow = false;
 const totalSteps = resource.interactions.length;
 for (let idx = 0; idx < totalSteps; idx++) {
@@ -2285,12 +2332,29 @@ if (window.__helpSeifAborted) break;
 checkDismiss();
 let rawStep = resource.interactions[idx];
 if (isWonWorkflow && rawStep) {
-if (rawStep.type === "MULTIPLE_FIELDS" && Array.isArray(rawStep.fields)) {
+if (
+rawStep.type === "CLICK" &&
+/Close Date/i.test(String(rawStep.key || ""))
+) {
 rawStep = {
 ...rawStep,
-fields: rawStep.fields.filter((f) => !isCloseDateKey(f?.key)),
+key: 'button[title="Edit Stage"], button.test-id__inline-edit-trigger[title*="Stage"], [data-target-selection-name*="StageName"] button',
 };
-} else if (rawStep.type === "INPUT" && isCloseDateKey(rawStep.key || rawStep.name)) {
+} else if (
+rawStep.type === "MULTIPLE_FIELDS" &&
+Array.isArray(rawStep.fields)
+) {
+rawStep = {
+...rawStep,
+fields: rawStep.fields.filter(
+(f) => !isCloseDateKey(f?.key) && f?.value !== "{{TODAY}}"
+),
+};
+} else if (
+rawStep.type === "INPUT" &&
+(isCloseDateKey(rawStep.key || rawStep.name) ||
+rawStep.value === "{{TODAY}}")
+) {
 continue;
 }
 }
@@ -2430,6 +2494,32 @@ break;
 break;
 }
 case "CLICK": {
+if (
+isWonWorkflow &&
+originalCloseDateForWon &&
+/SaveEdit|Save/i.test(String(step.key || ""))
+) {
+try {
+const closeInp = queryAllElements().find(
+(el) =>
+el.tagName === "INPUT" &&
+attrEqualsCI(el, "name", "CloseDate") &&
+isElementVisible(el)
+);
+if (
+closeInp &&
+String(closeInp.value || "").trim() !== originalCloseDateForWon
+) {
+setNativeValue(closeInp, originalCloseDateForWon);
+closeInp.dispatchEvent(
+new Event("input", { bubbles: true, composed: true })
+);
+closeInp.dispatchEvent(
+new Event("change", { bubbles: true, composed: true })
+);
+}
+} catch {}
+}
 const clicked = await onClickToElement(step);
 if (inLogACallFlow && isPublisherSaveClick(step)) {
 await onDelay({ value: "120" });
