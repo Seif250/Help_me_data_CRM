@@ -25,16 +25,15 @@
         "salesforce-floating-bar.js"
       ],
       "matches": [
-        "<all_urls>"
+        "https://*.salesforce.com/*",
+        "https://*.force.com/*"
       ],
       "run_at": "document_start"
     }
   ],
   "default_locale": "en",
-  "description": "Help Seif - Faster Salesforce workflows with adaptive waits, live status HUD, and reliable Save/owner handling.",
-  "host_permissions": [
-    "https://*/*"
-  ],
+  "description": "Help Seif - Lightweight Salesforce workflow shortcuts with configurable field values.",
+  "host_permissions": [],
   "icons": {
     "128": "icon128.plasmo.3c1ed2d2.png",
     "16": "icon16.plasmo.6c567d50.png",
@@ -55,11 +54,12 @@
     "tabs",
     "contextMenus"
   ],
-  "version": "1.17.26",
+  "version": "1.17.28",
   "web_accessible_resources": [
     {
       "matches": [
-        "<all_urls>"
+        "https://*.salesforce.com/*",
+        "https://*.force.com/*"
       ],
       "resources": [
         "Inter.a6dc61af.woff2",

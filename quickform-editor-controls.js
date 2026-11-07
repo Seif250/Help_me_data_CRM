@@ -343,9 +343,9 @@
     if (settingsBtn) {
       settingsBtn.addEventListener("click", () => {
         try {
-          chrome.tabs.create({ url: chrome.runtime.getURL("/options.html#/settings/") });
+          chrome.tabs.create({ url: chrome.runtime.getURL("/settings.html") });
         } catch (e) {
-          window.open("/options.html#/settings/", "_blank");
+          window.open("/settings.html", "_blank");
         }
       });
     }
@@ -1094,12 +1094,12 @@
     if (isBooted) return;
     isBooted = true;
     initFlexibleField();
-    initFlexibleField4();
-    initOwnerSkipControl();
-    initCollapsibleSectionsAndViewMode();
-    initSpeedControl();
-    initFloatingBarToggle();
-    initCustomerInfoCard();
+
+
+
+
+
+
     initHeaderActions();
     setupGlobalMenuCloser();
     initScriptRows();
@@ -1112,3 +1112,7 @@
     boot();
   }
 })();
+
+
+
+

@@ -17,7 +17,8 @@
 - **Dynamic Currency & Ownership Handlers**:
   - Automatically selects `EGP` currency and switches owners smoothly.
   - Integrated Call Log automation (`EG / Sales`) with zero extra delays.
-- **Modern Minimal UI**: Designed with clean aesthetic styling for speed and focus.
+- **Separate settings tab**: Configure execution speed, Won Field 4, owner skip, SMS ID suffix, and the floating bar.
+- **Lighter page impact**: Content scripts run only on Salesforce and Force.com pages.
 
 ---
 
@@ -42,7 +43,7 @@
 
 1. Open your Salesforce record page.
 2. Click on the **Help Seif** extension icon in your browser toolbar.
-3. Select or add your **Flexible Field 3 Value** at the top.
+3. Select or add your **Flexible Field 3 Value** in the popup. Use the gear button for other settings.
 4. Drag and drop any workflow card to arrange your preferred order.
 5. Click on the desired workflow to run the automated sequence.
 
@@ -68,3 +69,10 @@ This project is licensed under the terms of the [LICENSE](LICENSE) file.
 - Change Owner detects Salesforce’s “already owns this record” toast and closes the dialog with Cancel.
 - Not Interested is seeded into the actual resources store and fills the Other detail only after the loss reason is selected.
 - Popup spacing and controls are more compact while retaining the green/white/gray palette.
+
+
+
+## v1.17.28
+- Faster default for new installs and shorter adaptive waits.
+- Removed the unused popup bundle to reduce extension size.
+
