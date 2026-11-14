@@ -1256,12 +1256,99 @@
     });
   }
 
+  // License Gate Controller
+  function initLicenseGate() {
+    const popupEl = document.getElementById("flexi-popup");
+    const keyInput = document.getElementById("flexi-license-input");
+    const serverInput = document.getElementById("flexi-license-server");
+    const activateBtn = document.getElementById("flexi-activate-btn");
+    const errorEl = document.getElementById("flexi-license-error");
+    const badgeEl = document.getElementById("flexi-license-badge");
+    const deactivateBtn = document.getElementById("flexi-deactivate-btn");
+
+    const applyLicenseUI = (lic) => {
+      const active = lic?.status === "active";
+      if (popupEl) popupEl.classList.toggle("is-locked", !active);
+      if (!active && errorEl && lic?.error) {
+        errorEl.textContent = lic.error;
+      }
+      if (serverInput && lic?.apiUrl) serverInput.value = lic.apiUrl;
+      if (badgeEl && active) {
+        let label = lic.plan || "PRO";
+        if (lic.expiresAt) {
+          const days = Math.max(0, Math.ceil((new Date(lic.expiresAt).getTime() - Date.now()) / 86400000));
+          label += ` • ${days}d`;
+        }
+        badgeEl.textContent = label;
+      }
+    };
+
+    chrome.storage.local.get(["qfeLicense", "qfeApiUrl"], (st) => {
+      if (serverInput && st?.qfeApiUrl && !serverInput.value) {
+        serverInput.value = st.qfeApiUrl;
+      }
+      applyLicenseUI(st?.qfeLicense);
+      if (st?.qfeLicense?.status === "active") {
+        chrome.runtime.sendMessage({ name: "verifyLicense", force: true }, (res) => {
+          if (res && res.ok === false) {
+            applyLicenseUI({ status: "locked", error: res.error });
+          }
+        });
+      }
+    });
+
+    chrome.storage.onChanged.addListener((changes, area) => {
+      if (area === "local" && changes.qfeLicense) {
+        applyLicenseUI(changes.qfeLicense.newValue);
+        if (changes.qfeLicense.newValue?.status === "active") {
+          initScriptRows();
+        }
+      }
+    });
+
+    activateBtn?.addEventListener("click", () => {
+      const key = (keyInput?.value || "").trim();
+      const apiUrl = (serverInput?.value || "").trim();
+      if (!key) {
+        if (errorEl) errorEl.textContent = "Please enter your license key.";
+        return;
+      }
+      if (apiUrl) chrome.storage.local.set({ qfeApiUrl: apiUrl });
+      if (errorEl) errorEl.textContent = "";
+      activateBtn.disabled = true;
+      activateBtn.textContent = "Activating...";
+      chrome.runtime.sendMessage(
+        { name: "activateLicense", body: { key, apiUrl } },
+        (res) => {
+          activateBtn.disabled = false;
+          activateBtn.textContent = "Activate License";
+          if (!res?.ok) {
+            if (errorEl) errorEl.textContent = res?.error || "Activation failed.";
+            return;
+          }
+          if (keyInput) keyInput.value = "";
+          applyLicenseUI(res.license);
+          initScriptRows();
+          showToast("✓ SalesSnap Activated!");
+        }
+      );
+    });
+
+    deactivateBtn?.addEventListener("click", () => {
+      chrome.runtime.sendMessage({ name: "deactivateLicense" }, () => {
+        applyLicenseUI(null);
+        showToast("License locked on this device");
+      });
+    });
+  }
+
   // Single-execution bootstrap guard (fixes double event listener registration)
   let isBooted = false;
   function boot() {
     if (isBooted) return;
     isBooted = true;
     initThemeControl();
+    initLicenseGate();
     initFlexibleField();
     initFlexibleField4();
     initOwnerSkipControl();

@@ -1294,3 +1294,120 @@ body.theme-dark .flexi-menu-btn svg[fill="#17231D"] {
   stroke: #e2e8f0;
   fill: #e2e8f0;
 }
+
+/* License Gate */
+.flexi-popup.is-locked > section,
+.flexi-popup.is-locked > footer {
+  display: none !important;
+}
+
+.flexi-popup:not(.is-locked) #flexi-license-gate {
+  display: none !important;
+}
+
+.flexi-license-gate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 22px 16px;
+  margin-top: 8px;
+  background: var(--color-page-bg);
+  border: 1px solid var(--color-subtle-green-border);
+  border-radius: 14px;
+  gap: 10px;
+}
+
+.flexi-gate-icon {
+  font-size: 30px;
+}
+
+.flexi-gate-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.flexi-gate-desc {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+  max-width: 320px;
+}
+
+.flexi-gate-input {
+  width: 100%;
+  padding: 9px 11px;
+  border-radius: 9px;
+  border: 1px solid var(--color-subtle-green-border);
+  background: var(--color-card-bg);
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+.flexi-gate-server-wrap {
+  width: 100%;
+  text-align: left;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.flexi-gate-server-wrap summary {
+  cursor: pointer;
+  margin-bottom: 6px;
+}
+
+.flexi-gate-btn {
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 9px;
+  background: var(--color-primary-green);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.flexi-gate-btn:hover {
+  background: var(--color-primary-green-hover);
+}
+
+.flexi-gate-btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.flexi-gate-error {
+  font-size: 11.5px;
+  color: #dc2626;
+  font-weight: 600;
+  min-height: 16px;
+}
+
+.flexi-lic-badge {
+  display: inline-block;
+  background: var(--color-light-green-bg);
+  color: var(--color-primary-green);
+  border: 1px solid var(--color-subtle-green-border);
+  border-radius: 5px;
+  padding: 1px 5px;
+  font-size: 9.5px;
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+body.theme-dark .flexi-license-gate {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+body.theme-dark .flexi-gate-input {
+  background: #0f172a;
+  color: #f8fafc;
+  border-color: #475569;
+}

@@ -1,0 +1,10 @@
+name = "salessnap-license-api"
+main = "worker.js"
+compatibility_date = "2026-01-01"
+
+[[kv_namespaces]]
+binding = "LICENSES"
+id = "8a05ca210cf149309d38653b89acc9a8"
+
+# Set your admin secret via: npx wrangler secret put ADMIN_SECRET
+

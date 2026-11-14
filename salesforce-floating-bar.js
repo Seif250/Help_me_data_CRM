@@ -1023,11 +1023,13 @@
       ORDER_KEY,
       "qfeTheme",
       "qfePauseBeforeSave",
+      "qfeLicense",
       "resources",
     ]);
 
     let isLightTheme = state.qfeTheme === "light";
     let isReviewMode = Boolean(state.qfePauseBeforeSave);
+    let isLicensed = state.qfeLicense?.status === "active";
 
     const isEnabled = state[FLOAT_ENABLED_KEY] !== false;
     let isCollapsed = Boolean(state[FLOAT_COLLAPSED_KEY]);
@@ -1968,12 +1970,24 @@
       });
     });
 
-    renderWorkflows(currentResourcesRaw, currentOrder);
+    const renderWorkflowsGate = (raw, order) => {
+      if (!isLicensed) {
+        wfGrid.innerHTML = `<div style="grid-column:1/-1;padding:10px;border-radius:8px;background:rgba(245,158,11,0.14);border:1px solid rgba(245,158,11,0.45);color:#fde68a;font-size:11px;text-align:center;line-height:1.4;">🔒 <strong>SalesSnap Locked</strong><br/>Open the extension popup to activate your license key.</div>`;
+        return;
+      }
+      renderWorkflows(raw, order);
+    };
+
+    renderWorkflowsGate(currentResourcesRaw, currentOrder);
     refreshCustomerInfoUI();
 
     // Sync storage changes live
     chrome.storage.onChanged.addListener((changes, area) => {
       if (area !== "local") return;
+      if (changes.qfeLicense) {
+        isLicensed = changes.qfeLicense.newValue?.status === "active";
+        renderWorkflowsGate(currentResourcesRaw, currentOrder);
+      }
       if (changes.qfeTheme) {
         applyThemeUI(changes.qfeTheme.newValue === "light");
       }
@@ -1983,7 +1997,7 @@
       if (changes.resources || changes[ORDER_KEY]) {
         if (changes.resources) currentResourcesRaw = changes.resources.newValue;
         if (changes[ORDER_KEY]) currentOrder = changes[ORDER_KEY].newValue;
-        renderWorkflows(currentResourcesRaw, currentOrder);
+        renderWorkflowsGate(currentResourcesRaw, currentOrder);
       }
       if (changes[FLEX_OPTIONS_KEY] || changes[FLEX_FIELD_3_KEY]) {
         chrome.storage.local.get([FLEX_OPTIONS_KEY, FLEX_FIELD_3_KEY], (st) => {

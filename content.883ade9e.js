@@ -2677,6 +2677,28 @@ return false;
 }
 (async () => {
 try {
+const licData = await chrome.storage.local.get(["qfeLicense"]);
+if (licData?.qfeLicense?.status !== "active") {
+try {
+updateProgressHud(0, 1, "🔒 Activate SalesSnap license in popup", "stopped");
+} catch {}
+sendResponse?.("locked");
+return;
+}
+const verifyRes = await new Promise((resolve) => {
+try {
+chrome.runtime.sendMessage({ name: "verifyLicense", force: true }, (r) => resolve(r));
+} catch {
+resolve(null);
+}
+});
+if (verifyRes && verifyRes.ok === false) {
+try {
+updateProgressHud(0, 1, `🔒 ${verifyRes.error || "License revoked"}`, "stopped");
+} catch {}
+sendResponse?.("locked");
+return;
+}
 if (type === "profile") {
 const profiles = await getStoredArray("profiles");
 const profile = profiles.find((p) => p.id === id);

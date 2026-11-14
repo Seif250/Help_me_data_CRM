@@ -1,0 +1,14 @@
+{
+  "name": "salessnap-extension",
+  "version": "1.18.0",
+  "private": true,
+  "description": "SalesSnap CRM Automation Extension & Protected Build Pipeline",
+  "scripts": {
+    "build": "node scripts/build-dist.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.2",
+    "javascript-obfuscator": "^4.1.1"
+  }
+}
+

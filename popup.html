@@ -50,6 +50,20 @@
       </div>
     </header>
 
+    <!-- License Gate (shown when subscription is not active) -->
+    <div class="flexi-license-gate" id="flexi-license-gate">
+      <div class="flexi-gate-icon">🔐</div>
+      <h2 class="flexi-gate-title">Activate SalesSnap</h2>
+      <p class="flexi-gate-desc">Enter your subscription license key to unlock CRM workflows and the floating quick bar.</p>
+      <input type="text" id="flexi-license-input" class="flexi-gate-input" placeholder="SNAP-XXXX-XXXX-XXXX" autocomplete="off" />
+      <details class="flexi-gate-server-wrap">
+        <summary>License Server URL (Advanced)</summary>
+        <input type="url" id="flexi-license-server" class="flexi-gate-input" placeholder="https://salessnap-license-api.your-subdomain.workers.dev" />
+      </details>
+      <button type="button" id="flexi-activate-btn" class="flexi-gate-btn">Activate License</button>
+      <div id="flexi-license-error" class="flexi-gate-error"></div>
+    </div>
+
     <!-- 1b. Customer Info Copy Card (Collapsible) -->
     <section class="flexi-customer-card flexi-collapsible-sec" id="flexi-customer-card">
       <div class="flexi-customer-header">
@@ -178,10 +192,14 @@
     </section>
 
     <footer class="flexi-footer">
-      <div class="flexi-footer-hint">Keys: <b>1-9</b> Run • <b>C</b> Copy All • <b>S</b> Stop</div>
+      <div class="flexi-footer-hint">
+        <span id="flexi-license-badge" class="flexi-lic-badge">PRO</span>
+        <span>Keys: <b>1-9</b> Run • <b>C</b> Copy • <b>S</b> Stop</span>
+      </div>
       <div class="flexi-footer-actions">
         <button type="button" id="flexi-export-btn" class="flexi-mini-btn" title="Export workflows & settings as JSON">⬇ Export</button>
         <button type="button" id="flexi-import-btn" class="flexi-mini-btn" title="Import workflows & settings from JSON">⬆ Import</button>
+        <button type="button" id="flexi-deactivate-btn" class="flexi-mini-btn" title="Deactivate license on this device">🔓 Lock</button>
         <input type="file" id="flexi-import-file" accept=".json,application/json" hidden />
       </div>
     </footer>
