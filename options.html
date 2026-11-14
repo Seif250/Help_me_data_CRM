@@ -1,1 +1,82 @@
-<!DOCTYPE html><html><head><link rel="stylesheet" href="/tabs/smart-autofill-show.850787d0.css"><link rel="stylesheet" href="/options.e7f3eb54.css"><title>SalesSnap</title><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><script>(()=>{document.title="SalesSnap";const r=e=>{if(e.nodeType===Node.TEXT_NODE){if(/quickform/i.test(e.textContent)){e.textContent=e.textContent.replace(/quickform\s*editor/gi,"SalesSnap").replace(/quickform\s*pro/gi,"SalesSnap").replace(/quickform/gi,"SalesSnap")}}else if(e.nodeType===Node.ELEMENT_NODE){if(e.title&&/quickform/i.test(e.title))e.title=e.title.replace(/quickform/gi,"SalesSnap");if(e.alt&&/quickform/i.test(e.alt))e.alt=e.alt.replace(/quickform/gi,"SalesSnap");for(const t of e.childNodes)r(t)}};const o=new MutationObserver(e=>{for(const t of e){if("childList"===t.type){for(const e of t.addedNodes)r(e)}else if("characterData"===t.type&&/quickform/i.test(t.target.textContent)){t.target.textContent=t.target.textContent.replace(/quickform\s*editor/gi,"SalesSnap").replace(/quickform\s*pro/gi,"SalesSnap").replace(/quickform/gi,"SalesSnap")}}if(document.title!=="SalesSnap")document.title="SalesSnap"});document.addEventListener("DOMContentLoaded",()=>{replaceText=r;r(document.body);o.observe(document.body,{childList:!0,subtree:!0,characterData:!0})});if(document.body){r(document.body);o.observe(document.body,{childList:!0,subtree:!0,characterData:!0})}})();</script></head><body> <div id="__plasmo"></div> <script src="/options.95eda3f3.js" defer></script> </body></html>
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="/tabs/smart-autofill-show.850787d0.css">
+  <link rel="stylesheet" href="/options.e7f3eb54.css">
+  <title>SalesSnap</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Hide unused legacy QuickForm links (Lite, Documentation, Support, Changelog) */
+    a[href="#/lite"],
+    a[href*="#/documentation"],
+    a[href*="#/support"],
+    a[href*="#/changelog"],
+    a[href*="quickform"],
+    a[href*="twitter.com"],
+    a[href*="x.com"] {
+      display: none !important;
+    }
+  </style>
+  <script>
+    (() => {
+      document.title = "SalesSnap";
+
+      // Redirect unused #/lite or empty hash directly to Workflows (#/advanced)
+      const redirectLiteToAdvanced = () => {
+        const h = location.hash || "";
+        if (!h || h === "#" || h === "#/" || /^#\/lite\/?$/i.test(h)) {
+          location.replace("#/advanced");
+        }
+      };
+      redirectLiteToAdvanced();
+      window.addEventListener("hashchange", redirectLiteToAdvanced);
+
+      const rebrandText = (txt) =>
+        txt
+          .replace(/quickform\s*editor/gi, "SalesSnap")
+          .replace(/quickform\s*pro/gi, "SalesSnap")
+          .replace(/quickform/gi, "SalesSnap")
+          .replace(/help\s*seif/gi, "SalesSnap");
+
+      const needsRebrand = (txt) => /quickform|help\s*seif/i.test(txt);
+
+      const r = (e) => {
+        if (e.nodeType === Node.TEXT_NODE) {
+          if (needsRebrand(e.textContent)) {
+            e.textContent = rebrandText(e.textContent);
+          }
+        } else if (e.nodeType === Node.ELEMENT_NODE) {
+          if (e.title && needsRebrand(e.title)) e.title = rebrandText(e.title);
+          if (e.alt && needsRebrand(e.alt)) e.alt = rebrandText(e.alt);
+          for (const t of e.childNodes) r(t);
+        }
+      };
+
+      const o = new MutationObserver((e) => {
+        for (const t of e) {
+          if (t.type === "childList") {
+            for (const node of t.addedNodes) r(node);
+          } else if (t.type === "characterData" && needsRebrand(t.target.textContent)) {
+            t.target.textContent = rebrandText(t.target.textContent);
+          }
+        }
+        if (document.title !== "SalesSnap") document.title = "SalesSnap";
+      });
+
+      const startObserver = () => {
+        if (!document.body) return;
+        r(document.body);
+        o.observe(document.body, { childList: true, subtree: true, characterData: true });
+      };
+
+      document.addEventListener("DOMContentLoaded", startObserver);
+      if (document.body) startObserver();
+    })();
+  </script>
+</head>
+<body>
+  <div id="__plasmo"></div>
+  <script src="/options.95eda3f3.js" defer></script>
+</body>
+</html>

@@ -24,9 +24,10 @@
 }
 
 html, body {
-  width: 380px;
+  width: 440px;
+  min-width: 440px;
   min-height: 460px;
-  max-height: 560px;
+  max-height: 580px;
   background-color: var(--color-page-bg);
   font-family: var(--font-family);
   color: var(--color-text-primary);
@@ -71,7 +72,8 @@ body::-webkit-scrollbar-thumb {
 .flexi-brand {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
+  min-width: 0;
 }
 
 .flexi-logo {
@@ -100,18 +102,19 @@ body::-webkit-scrollbar-thumb {
 }
 
 .flexi-subtitle {
-  font-size: 12.5px;
+  font-size: 11.5px;
   font-weight: 400;
   color: var(--color-text-secondary);
   line-height: 1.2;
   margin-top: 2px;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
+  white-space: nowrap;
 }
 
 .flexi-version-badge {
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 600;
   color: var(--color-primary-green);
   background: var(--color-light-green-bg);
@@ -122,7 +125,8 @@ body::-webkit-scrollbar-thumb {
 .flexi-header-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  flex-shrink: 0;
 }
 
 /* Interactive Speed / Active Status Pill */
@@ -130,13 +134,14 @@ body::-webkit-scrollbar-thumb {
 .flexi-status-pill {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   background-color: var(--color-light-green-bg);
   border: 1px solid var(--color-subtle-green-border);
-  padding: 4px 9px;
+  padding: 3px 8px;
   border-radius: 9999px;
-  height: 32px;
+  height: 30px;
   cursor: pointer;
+  white-space: nowrap;
   transition: all 0.15s ease;
 }
 
@@ -161,11 +166,11 @@ body::-webkit-scrollbar-thumb {
 
 /* Header Icon Buttons (Stop, Settings & Close) */
 .flexi-icon-btn {
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
   background-color: #FFFFFF;
   border: 1px solid var(--color-neutral-border);
-  border-radius: 10px;
+  border-radius: 9px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -522,6 +527,7 @@ body::-webkit-scrollbar-thumb {
   font-size: 12px;
   font-weight: 700;
   color: var(--color-text-primary);
+  white-space: nowrap;
 }
 
 .flexi-customer-hint {
@@ -592,9 +598,11 @@ body::-webkit-scrollbar-thumb {
   color: #FFFFFF;
   font-size: 11px;
   font-weight: 700;
-  padding: 3px 9px;
+  padding: 4px 10px;
   border-radius: 6px;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: background-color 0.14s ease;
 }
 
@@ -1056,13 +1064,15 @@ body::-webkit-scrollbar-thumb {
 /* Compact 2-Column Grid Mode for Workflows */
 .flexi-scripts-list.is-compact-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 6px;
 }
 
 .flexi-scripts-list.is-compact-grid .flexi-script-row {
   padding: 6px 7px;
   border-radius: 10px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .flexi-scripts-list.is-compact-grid .flexi-drag-handle,
@@ -1072,6 +1082,8 @@ body::-webkit-scrollbar-thumb {
 
 .flexi-scripts-list.is-compact-grid .flexi-row-left {
   gap: 6px;
+  min-width: 0;
+  flex: 1;
 }
 
 .flexi-scripts-list.is-compact-grid .flexi-row-icon {
@@ -1096,11 +1108,15 @@ body::-webkit-scrollbar-thumb {
 .flexi-scripts-list.is-compact-grid .flexi-row-title {
   font-size: 11.5px;
   font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .flexi-scripts-list.is-compact-grid .flexi-row-actions {
-  gap: 4px;
+  gap: 3px;
   margin-left: 4px;
+  flex-shrink: 0;
 }
 
 .flexi-scripts-list.is-compact-grid .flexi-play-btn {
