@@ -1089,11 +1089,11 @@
           display: none;
           align-items: center;
           gap: 6px;
-          background: rgba(15, 23, 42, 0.96);
+          background: rgba(6, 9, 19, 0.97);
           border: 1px solid rgba(99, 102, 241, 0.45);
           border-radius: 999px;
           padding: 5px 8px 5px 11px;
-          box-shadow: 0 8px 24px rgba(2, 6, 23, 0.45);
+          box-shadow: 0 10px 28px rgba(0, 0, 0, 0.65);
           backdrop-filter: blur(10px);
         }
         .hs-wrap.collapsed .hs-pill { display: inline-flex; }
@@ -1131,10 +1131,10 @@
         }
         .hs-panel {
           width: 266px;
-          background: rgba(15, 23, 42, 0.96);
-          border: 1px solid rgba(148, 163, 184, 0.25);
+          background: rgba(6, 9, 19, 0.97);
+          border: 1px solid rgba(148, 163, 184, 0.16);
           border-radius: 11px;
-          box-shadow: 0 14px 34px rgba(2, 6, 23, 0.55);
+          box-shadow: 0 16px 38px rgba(0, 0, 0, 0.72);
           backdrop-filter: blur(12px);
           overflow: hidden;
         }
@@ -1143,8 +1143,8 @@
           align-items: center;
           justify-content: space-between;
           padding: 6px 8px;
-          background: linear-gradient(90deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
-          border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+          background: linear-gradient(90deg, rgba(13, 18, 32, 0.98), rgba(7, 10, 20, 0.98));
+          border-bottom: 1px solid rgba(148, 163, 184, 0.12);
           cursor: grab;
         }
         .hs-header:active { cursor: grabbing; }
@@ -1155,7 +1155,12 @@
           font-weight: 700;
           font-size: 11.5px;
           color: #f8fafc;
+          cursor: pointer;
+          padding: 2px 4px;
+          border-radius: 5px;
+          transition: opacity 0.12s ease;
         }
+        .hs-brand:hover { opacity: 0.85; }
         .hs-header-actions {
           display: flex;
           align-items: center;
@@ -1168,13 +1173,13 @@
           border-radius: 5px;
           font-size: 10px;
           font-weight: 700;
-          background: rgba(51, 65, 85, 0.7);
+          background: rgba(23, 31, 48, 0.85);
           color: #cbd5e1;
-          border: 1px solid rgba(148, 163, 184, 0.2);
+          border: 1px solid rgba(148, 163, 184, 0.16);
           transition: all 0.12s ease;
         }
         .hs-icon-btn:hover {
-          background: rgba(71, 85, 105, 0.9);
+          background: rgba(38, 49, 71, 0.95);
           color: #fff;
         }
         .hs-stop-btn {
@@ -1195,8 +1200,8 @@
           overflow-y: auto;
         }
         .hs-card {
-          background: rgba(30, 41, 59, 0.65);
-          border: 1px solid rgba(148, 163, 184, 0.18);
+          background: rgba(12, 17, 30, 0.82);
+          border: 1px solid rgba(148, 163, 184, 0.14);
           border-radius: 7px;
           padding: 5px 6px;
         }
@@ -1243,8 +1248,8 @@
           display: inline-flex;
           align-items: center;
           gap: 2px;
-          background: rgba(15, 23, 42, 0.85);
-          border: 1px solid rgba(148, 163, 184, 0.28);
+          background: rgba(6, 9, 19, 0.92);
+          border: 1px solid rgba(148, 163, 184, 0.22);
           border-radius: 4px;
           padding: 1px 4px;
         }
@@ -1305,13 +1310,13 @@
           gap: 6px;
           padding: 2.5px 5px;
           border-radius: 4px;
-          background: rgba(15, 23, 42, 0.55);
+          background: rgba(6, 9, 19, 0.72);
           border: 1px solid transparent;
           transition: all 0.12s ease;
         }
         .hs-info-row:hover {
           border-color: rgba(99, 102, 241, 0.45);
-          background: rgba(30, 41, 59, 0.9);
+          background: rgba(17, 24, 39, 0.95);
         }
         .hs-info-lbl {
           font-size: 9.5px;
@@ -1368,8 +1373,8 @@
         }
         .hs-seg {
           display: inline-flex;
-          background: rgba(15, 23, 42, 0.85);
-          border: 1px solid rgba(148, 163, 184, 0.28);
+          background: rgba(6, 9, 19, 0.92);
+          border: 1px solid rgba(148, 163, 184, 0.22);
           border-radius: 4px;
           padding: 1px;
           gap: 2px;
@@ -1675,7 +1680,7 @@
 
         <div class="hs-panel">
           <div class="hs-header" id="hs-drag-handle" title="Drag to move anywhere">
-            <div class="hs-brand">
+            <div class="hs-brand" id="hs-brand-collapse" title="Click to minimize to side pill">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="#10b981" aria-hidden="true"><path d="M13 2L3 14h8l-2 8 10-12h-8l2-8z"/></svg>
               <span>SalesSnap</span>
             </div>
@@ -1880,6 +1885,12 @@
 
     expandBtn.addEventListener("click", () => setCollapsed(false));
     collapseBtn.addEventListener("click", () => setCollapsed(true));
+    const brandCollapse = shadow.getElementById("hs-brand-collapse");
+    if (brandCollapse) {
+      brandCollapse.addEventListener("click", () => {
+        if (!didDrag) setCollapsed(true);
+      });
+    }
 
     // Customer Info UI Refresh
     const renderCustomerInfoValues = () => {
