@@ -10,6 +10,8 @@
   const FLOAT_ENABLED_KEY = "qfeFloatingBarEnabled";
   const FLOAT_COLLAPSED_KEY = "qfeFloatingBarCollapsed";
   const FLOAT_TOP_KEY = "qfeFloatingBarTop";
+  const FLOAT_LEFT_KEY = "qfeFloatingBarLeft";
+  const FLOAT_THEME_KEY = "qfeFloatingBarTheme";
   const SMS_ID_SUFFIX_KEY = "qfeSmsIdSuffix";
   const TARGET_OWNER_KEY = "qfeTargetOwnerName";
   const FLOAT_SEC_CUST_KEY = "qfeFloatSecCust";
@@ -34,11 +36,8 @@
   ]);
 
   const DEFAULT_FLEX_3_OPTIONS = [
-    "BEG 10% List",
-    "ANR",
     "LED",
-    "REG 10%",
-    "BEG T1 RES",
+    "ANR",
   ];
 
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -957,6 +956,10 @@
   if (typeof chrome !== "undefined" && chrome.runtime?.onMessage) {
     chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
       if (msg?.name === "getCustomerInfo") {
+        if (!isLicensedGlobal) {
+          sendResponse({ ok: false, error: "License required" });
+          return false;
+        }
         (async () => {
           try {
             const info = msg.autoHover
@@ -982,14 +985,17 @@
   let shadow = null;
   let currentCustomerInfo = { name: "", phone: "", email: "", smsId: "" };
   let currentSmsSuffix = "SE";
+  let isBarEnabledGlobal = true;
+  let isLicensedGlobal = false;
 
   const setFloatingBarVisibility = (enabled) => {
-    if (!hostEl && enabled && isSalesforcePage()) {
+    isBarEnabledGlobal = Boolean(enabled);
+    if (!hostEl && isBarEnabledGlobal && isLicensedGlobal && isSalesforcePage()) {
       initFloatingBar();
       return;
     }
     if (hostEl) {
-      hostEl.style.display = enabled ? "block" : "none";
+      hostEl.style.display = (isBarEnabledGlobal && isLicensedGlobal) ? "block" : "none";
     }
   };
 
@@ -997,8 +1003,12 @@
     const n = String(name || "").toLowerCase();
     if (n.includes("won")) return "btn-won";
     if (n.includes("not interested")) return "btn-danger";
-    if (n.includes("follow up") || n.includes("sent link")) return "btn-primary";
-    if (n.includes("crm") || n.includes("payment")) return "btn-accent";
+    if (n.includes("follow up")) return "btn-followup";
+    if (n.includes("sent link")) return "btn-sentlink";
+    if (n.includes("no answer")) return "btn-noanswer";
+    if (n.includes("will call")) return "btn-callback";
+    if (n.includes("payment")) return "btn-payment";
+    if (n.includes("crm")) return "btn-crm";
     return "btn-neutral";
   };
 
@@ -1011,6 +1021,7 @@
       FLOAT_ENABLED_KEY,
       FLOAT_COLLAPSED_KEY,
       FLOAT_TOP_KEY,
+      FLOAT_LEFT_KEY,
       SPEED_STORAGE_KEY,
       FLEX_OPTIONS_KEY,
       FLEX_FIELD_3_KEY,
@@ -1021,19 +1032,26 @@
       FLOAT_SEC_CTRL_KEY,
       FLOAT_SEC_WF_KEY,
       ORDER_KEY,
-      "qfeTheme",
+      FLOAT_THEME_KEY,
       "qfePauseBeforeSave",
       "qfeLicense",
       "resources",
     ]);
 
-    let isLightTheme = state.qfeTheme === "light";
+    let isLightTheme = state[FLOAT_THEME_KEY] === "light";
     let isReviewMode = Boolean(state.qfePauseBeforeSave);
     let isLicensed = state.qfeLicense?.status === "active";
+    isLicensedGlobal = isLicensed;
 
     const isEnabled = state[FLOAT_ENABLED_KEY] !== false;
+    isBarEnabledGlobal = isEnabled;
     let isCollapsed = Boolean(state[FLOAT_COLLAPSED_KEY]);
     const savedTop = Number(state[FLOAT_TOP_KEY]) || 110;
+    const rawSavedLeft = state[FLOAT_LEFT_KEY];
+    const hasSavedLeft = rawSavedLeft !== undefined && rawSavedLeft !== null && !Number.isNaN(Number(rawSavedLeft));
+    const clampedLeft = hasSavedLeft
+      ? Math.max(10, Math.min(window.innerWidth - 120, Number(rawSavedLeft)))
+      : null;
     currentSmsSuffix =
       state[SMS_ID_SUFFIX_KEY] !== undefined
         ? String(state[SMS_ID_SUFFIX_KEY])
@@ -1051,9 +1069,9 @@
     hostEl.style.cssText = `
       position: fixed;
       top: ${Math.max(12, Math.min(window.innerHeight - 80, savedTop))}px;
-      right: 12px;
+      ${clampedLeft !== null ? `left: ${clampedLeft}px; right: auto;` : "right: 12px;"}
       z-index: 2147483646;
-      display: ${isEnabled ? "block" : "none"};
+      display: ${isEnabled && isLicensed ? "block" : "none"};
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     `;
 
@@ -1095,12 +1113,15 @@
         .hs-pill-copy {
           all: unset;
           cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
           background: rgba(16, 185, 129, 0.2);
           border: 1px solid rgba(16, 185, 129, 0.45);
           color: #6ee7b7;
           font-size: 10.5px;
           font-weight: 700;
-          padding: 3px 8px;
+          padding: 3px 9px;
           border-radius: 999px;
           transition: all 0.14s ease;
         }
@@ -1396,7 +1417,7 @@
         }
         .hs-wf-btn:active { transform: translateY(0); }
         .hs-wf-btn.btn-won {
-          background: linear-gradient(135deg, rgba(16, 185, 129, 0.28), rgba(5, 150, 105, 0.38));
+          background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.35));
           border-color: rgba(16, 185, 129, 0.55);
           color: #6ee7b7;
         }
@@ -1404,30 +1425,66 @@
           background: linear-gradient(135deg, rgba(16, 185, 129, 0.42), rgba(5, 150, 105, 0.52));
           color: #ecfdf5;
         }
-        .hs-wf-btn.btn-primary {
-          background: rgba(79, 70, 229, 0.25);
-          border-color: rgba(99, 102, 241, 0.5);
+        .hs-wf-btn.btn-followup {
+          background: rgba(59, 130, 246, 0.22);
+          border-color: rgba(96, 165, 250, 0.48);
+          color: #bfdbfe;
+        }
+        .hs-wf-btn.btn-followup:hover {
+          background: rgba(59, 130, 246, 0.36);
+          color: #fff;
+        }
+        .hs-wf-btn.btn-sentlink {
+          background: rgba(99, 102, 241, 0.24);
+          border-color: rgba(129, 140, 248, 0.5);
           color: #c7d2fe;
         }
-        .hs-wf-btn.btn-primary:hover {
-          background: rgba(79, 70, 229, 0.4);
+        .hs-wf-btn.btn-sentlink:hover {
+          background: rgba(99, 102, 241, 0.4);
+          color: #fff;
+        }
+        .hs-wf-btn.btn-noanswer {
+          background: rgba(245, 158, 11, 0.2);
+          border-color: rgba(251, 191, 36, 0.45);
+          color: #fde68a;
+        }
+        .hs-wf-btn.btn-noanswer:hover {
+          background: rgba(245, 158, 11, 0.34);
+          color: #fff;
+        }
+        .hs-wf-btn.btn-callback {
+          background: rgba(20, 184, 166, 0.22);
+          border-color: rgba(45, 212, 191, 0.45);
+          color: #99f6e4;
+        }
+        .hs-wf-btn.btn-callback:hover {
+          background: rgba(20, 184, 166, 0.36);
           color: #fff;
         }
         .hs-wf-btn.btn-danger {
-          background: rgba(239, 68, 68, 0.16);
-          border-color: rgba(239, 68, 68, 0.4);
+          background: rgba(239, 68, 68, 0.2);
+          border-color: rgba(248, 113, 113, 0.45);
           color: #fca5a5;
         }
         .hs-wf-btn.btn-danger:hover {
-          background: rgba(239, 68, 68, 0.3);
+          background: rgba(239, 68, 68, 0.34);
           color: #fff;
         }
-        .hs-wf-btn.btn-accent {
+        .hs-wf-btn.btn-payment {
+          background: rgba(168, 85, 247, 0.22);
+          border-color: rgba(192, 132, 252, 0.48);
+          color: #e9d5ff;
+        }
+        .hs-wf-btn.btn-payment:hover {
+          background: rgba(168, 85, 247, 0.36);
+          color: #fff;
+        }
+        .hs-wf-btn.btn-crm {
           background: rgba(14, 165, 233, 0.2);
           border-color: rgba(56, 189, 248, 0.45);
           color: #bae6fd;
         }
-        .hs-wf-btn.btn-accent:hover {
+        .hs-wf-btn.btn-crm:hover {
           background: rgba(14, 165, 233, 0.34);
           color: #fff;
         }
@@ -1467,60 +1524,168 @@
         }
         .hs-wrap.theme-light .hs-panel,
         .hs-wrap.theme-light .hs-pill {
-          background: rgba(255, 255, 255, 0.96);
-          color: #0f172a;
-          border-color: #cbd5e1;
-          box-shadow: 0 10px 28px rgba(15, 23, 42, 0.16);
+          background: #FFFFFF;
+          color: #17231D;
+          border-color: #D5E9DE;
+          box-shadow: 0 6px 20px rgba(18, 103, 71, 0.14);
+        }
+        .hs-wrap.theme-light .hs-pill-expand {
+          color: #17231D;
+        }
+        .hs-wrap.theme-light .hs-pill-expand:hover {
+          color: #126747;
+        }
+        .hs-wrap.theme-light .hs-pill-copy {
+          background: #126747;
+          border-color: #126747;
+          color: #FFFFFF;
+        }
+        .hs-wrap.theme-light .hs-pill-copy:hover {
+          background: #0d5037;
+          border-color: #0d5037;
+          color: #FFFFFF;
         }
         .hs-wrap.theme-light .hs-header {
-          background: #f1f5f9;
-          border-bottom-color: #e2e8f0;
+          background: #FFFFFF;
+          border-bottom-color: #E3EBE6;
         }
         .hs-wrap.theme-light .hs-brand {
-          color: #0f172a;
+          color: #17231D;
+        }
+        .hs-wrap.theme-light .hs-card {
+          background: #FFFFFF;
+          border-color: #E3EBE6;
+          box-shadow: 0 1px 4px rgba(18, 103, 71, 0.04);
+        }
+        .hs-wrap.theme-light .hs-sec-toggle {
+          color: #17231D;
+        }
+        .hs-wrap.theme-light .hs-ctrl-lbl {
+          color: #4b5b52;
+        }
+        .hs-wrap.theme-light .hs-select,
+        .hs-wrap.theme-light .hs-text-input,
+        .hs-wrap.theme-light .hs-seg,
+        .hs-wrap.theme-light .hs-info-row {
+          background: #F8FAF9;
+          color: #17231D;
+          border-color: #D5E9DE;
+        }
+        .hs-wrap.theme-light .hs-info-val {
+          color: #17231D;
+        }
+        .hs-wrap.theme-light .hs-suffix-wrap {
+          background: #E8F5EE;
+          border-color: #D5E9DE;
+        }
+        .hs-wrap.theme-light .hs-suffix-input {
+          color: #126747;
+        }
+        .hs-wrap.theme-light .hs-refresh-btn {
+          background: #F8FAF9;
+          color: #17231D;
+          border-color: #D5E9DE;
         }
         .hs-wrap.theme-light .hs-icon-btn,
         .hs-wrap.theme-light .hs-review-btn {
-          background: #f8fafc;
-          color: #334155;
-          border-color: #cbd5e1;
+          background: #FFFFFF;
+          color: #17231D;
+          border-color: #E3EBE6;
+        }
+        .hs-wrap.theme-light .hs-icon-btn:hover,
+        .hs-wrap.theme-light .hs-review-btn:hover {
+          background: #E8F5EE;
+          border-color: #126747;
+        }
+        .hs-wrap.theme-light .hs-stop-btn {
+          background: #fff5f5;
+          color: #c53030;
+          border-color: #feb2b2;
         }
         .hs-wrap.theme-light .hs-review-btn.is-active {
           background: #fef3c7;
           color: #92400e;
           border-color: #f59e0b;
         }
-        .hs-wrap.theme-light .hs-wf-btn {
-          background: #f8fafc;
-          color: #1e293b;
-          border-color: #cbd5e1;
+        .hs-wrap.theme-light .hs-wf-btn.btn-neutral {
+          background: #F8FAF9;
+          color: #17231D;
+          border-color: #D5E9DE;
         }
-        .hs-wrap.theme-light .hs-wf-btn:hover {
-          background: #e2e8f0;
-          color: #0f172a;
+        .hs-wrap.theme-light .hs-wf-btn.btn-won {
+          background: #ECFDF5;
+          border-color: #6EE7B7;
+          color: #065F46;
         }
+        .hs-wrap.theme-light .hs-wf-btn.btn-won:hover { background: #D1FAE5; }
+        .hs-wrap.theme-light .hs-wf-btn.btn-followup {
+          background: #EFF6FF;
+          border-color: #93C5FD;
+          color: #1E40AF;
+        }
+        .hs-wrap.theme-light .hs-wf-btn.btn-followup:hover { background: #DBEAFE; }
+        .hs-wrap.theme-light .hs-wf-btn.btn-sentlink {
+          background: #EEF2FF;
+          border-color: #A5B4FC;
+          color: #3730A3;
+        }
+        .hs-wrap.theme-light .hs-wf-btn.btn-sentlink:hover { background: #E0E7FF; }
+        .hs-wrap.theme-light .hs-wf-btn.btn-noanswer {
+          background: #FFFBEB;
+          border-color: #FCD34D;
+          color: #92400E;
+        }
+        .hs-wrap.theme-light .hs-wf-btn.btn-noanswer:hover { background: #FEF3C7; }
+        .hs-wrap.theme-light .hs-wf-btn.btn-callback {
+          background: #F0FDFA;
+          border-color: #5EEAD4;
+          color: #115E59;
+        }
+        .hs-wrap.theme-light .hs-wf-btn.btn-callback:hover { background: #CCFBF1; }
+        .hs-wrap.theme-light .hs-wf-btn.btn-danger {
+          background: #FEF2F2;
+          border-color: #FCA5A5;
+          color: #991B1B;
+        }
+        .hs-wrap.theme-light .hs-wf-btn.btn-danger:hover { background: #FEE2E2; }
+        .hs-wrap.theme-light .hs-wf-btn.btn-payment {
+          background: #FAF5FF;
+          border-color: #D8B4FE;
+          color: #6B21A8;
+        }
+        .hs-wrap.theme-light .hs-wf-btn.btn-payment:hover { background: #F3E8FF; }
+        .hs-wrap.theme-light .hs-wf-btn.btn-crm {
+          background: #F0F9FF;
+          border-color: #7DD3FC;
+          color: #075985;
+        }
+        .hs-wrap.theme-light .hs-wf-btn.btn-crm:hover { background: #E0F2FE; }
       </style>
       <div class="hs-wrap ${isCollapsed ? "collapsed" : ""} ${isLightTheme ? "theme-light" : ""}" id="hs-wrap">
         <div class="hs-pill" id="hs-pill">
           <button class="hs-pill-expand" id="hs-expand-btn" title="Expand SalesSnap Quick Bar">
-            <span>⚡</span>
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="#10b981" aria-hidden="true"><path d="M13 2L3 14h8l-2 8 10-12h-8l2-8z"/></svg>
             <span>SalesSnap</span>
           </button>
           <button class="hs-pill-copy" id="hs-pill-copy-btn" title="Copy Name, Phone, Email & SMS ID separately to Clipboard Queue">
-            📋 Copy
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span>Copy</span>
           </button>
         </div>
 
         <div class="hs-panel">
-          <div class="hs-header" id="hs-drag-handle" title="Drag up or down">
+          <div class="hs-header" id="hs-drag-handle" title="Drag to move anywhere">
             <div class="hs-brand">
-              <span>⚡</span>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="#10b981" aria-hidden="true"><path d="M13 2L3 14h8l-2 8 10-12h-8l2-8z"/></svg>
               <span>SalesSnap</span>
             </div>
             <div class="hs-header-actions">
-              <button class="hs-icon-btn" id="hs-theme-btn" title="Toggle Light/Dark Theme">${isLightTheme ? "☀️" : "🌙"}</button>
+              <button class="hs-icon-btn" id="hs-theme-btn" title="Toggle Light/Dark Theme"></button>
               <button class="hs-icon-btn" id="hs-speed-btn" title="Cycle execution speed (Normal / Fast / Slow)">1x</button>
-              <button class="hs-icon-btn hs-stop-btn" id="hs-stop-btn" title="Stop running workflow (Esc)">⏹ Stop</button>
+              <button class="hs-icon-btn hs-stop-btn" id="hs-stop-btn" title="Stop running workflow (Esc)">
+                <svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>
+                <span>Stop</span>
+              </button>
               <button class="hs-icon-btn" id="hs-collapse-btn" title="Minimize to side pill">—</button>
             </div>
           </div>
@@ -1538,8 +1703,13 @@
                     <span class="hs-suffix-lbl">ID+</span>
                     <input type="text" class="hs-suffix-input" id="hs-id-suffix" maxlength="6" value="${currentSmsSuffix}" placeholder="SE" />
                   </div>
-                  <button class="hs-refresh-btn" id="hs-refresh-info" title="Auto-load SMS ID & Account Phone/Email">↻</button>
-                  <button class="hs-copy-all-btn" id="hs-copy-all" title="Copy ID, Email, Phone, Name separately into Win+V queue">📋 Copy All</button>
+                  <button class="hs-refresh-btn" id="hs-refresh-info" title="Auto-load SMS ID & Account Phone/Email">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                  </button>
+                  <button class="hs-copy-all-btn" id="hs-copy-all" title="Copy ID, Email, Phone, Name separately into Win+V queue">
+                    <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    <span>Copy All</span>
+                  </button>
                 </div>
               </div>
               <div class="hs-card-body">
@@ -1562,37 +1732,6 @@
                   </button>
                 </div>
               </div>
-            </div>
-
-            <!-- Section 2: Quick Settings (Flex 3, Won Field 4, Owner Skip) -->
-            <div class="hs-card ${secCtrlCollapsed ? "sec-collapsed" : ""}" id="hs-sec-ctrl">
-              <div class="hs-card-head">
-                <button type="button" class="hs-sec-toggle" id="hs-toggle-ctrl" title="Collapse / Expand Quick Settings">
-                  <span class="hs-sec-arrow">▾</span>
-                  <span>Fields & Owner Skip</span>
-                </button>
-              </div>
-              <div class="hs-card-body hs-controls-row">
-                <div class="hs-ctrl-item">
-                  <span class="hs-ctrl-lbl">Flex 3</span>
-                  <select class="hs-select" id="hs-flex3-select"></select>
-                </div>
-                <div class="hs-ctrl-item">
-                  <span class="hs-ctrl-lbl">Won (Field 4)</span>
-                  <div class="hs-seg" id="hs-won4-seg">
-                    <button type="button" class="hs-seg-btn" data-val="CC">CC</button>
-                    <button type="button" class="hs-seg-btn" data-val="CS">CS</button>
-                  </div>
-                </div>
-                <div class="hs-ctrl-item" title="If Record Owner matches this name, Change Owner steps are skipped automatically">
-                  <span class="hs-ctrl-lbl">Skip Owner</span>
-                  <input type="text" class="hs-text-input" id="hs-owner-skip" value="${currentTargetOwner.replace(/"/g, "&quot;")}" placeholder="Seif Ezz Eldin" />
-                </div>
-              </div>
-              <button type="button" class="hs-review-btn ${isReviewMode ? "is-active" : ""}" id="hs-review-btn" title="Pause before clicking Save so you can review fields">
-                <span>⏸ Review Before Save</span>
-                <span id="hs-review-state">${isReviewMode ? "ON" : "OFF"}</span>
-              </button>
             </div>
 
             <!-- Section 3: Workflows -->
@@ -1621,13 +1760,17 @@
     const copyAllBtn = shadow.getElementById("hs-copy-all");
     const refreshBtn = shadow.getElementById("hs-refresh-info");
     const suffixInput = shadow.getElementById("hs-id-suffix");
-    const ownerSkipInput = shadow.getElementById("hs-owner-skip");
     const speedBtn = shadow.getElementById("hs-speed-btn");
     const stopBtn = shadow.getElementById("hs-stop-btn");
-    const flex3Select = shadow.getElementById("hs-flex3-select");
-    const won4Seg = shadow.getElementById("hs-won4-seg");
     const wfGrid = shadow.getElementById("hs-wf-grid");
     const dragHandle = shadow.getElementById("hs-drag-handle");
+
+    const safeStorageSet = (data) => {
+      try {
+        if (!chrome?.runtime?.id) return;
+        chrome.storage.local.set(data);
+      } catch {}
+    };
 
     // Section collapse toggles
     const bindSecToggle = (btnId, secId, storageKey) => {
@@ -1637,58 +1780,102 @@
       btn.addEventListener("click", () => {
         const nextCollapsed = !sec.classList.contains("sec-collapsed");
         sec.classList.toggle("sec-collapsed", nextCollapsed);
-        chrome.storage.local.set({ [storageKey]: nextCollapsed });
+        safeStorageSet({ [storageKey]: nextCollapsed });
       });
     };
     bindSecToggle("hs-toggle-cust", "hs-sec-cust", FLOAT_SEC_CUST_KEY);
-    bindSecToggle("hs-toggle-ctrl", "hs-sec-ctrl", FLOAT_SEC_CTRL_KEY);
     bindSecToggle("hs-toggle-wf", "hs-sec-wf", FLOAT_SEC_WF_KEY);
 
-    // Owner Skip input handler
-    ownerSkipInput.addEventListener("input", () => {
-      currentTargetOwner = ownerSkipInput.value;
-      chrome.storage.local.set({ [TARGET_OWNER_KEY]: currentTargetOwner.trim() });
-    });
-
-    // Vertical Drag Support
+    // Free 2D Drag Support (horizontal + vertical anywhere on screen)
     let dragging = false;
+    let didDrag = false;
+    let startX = 0;
     let startY = 0;
+    let startLeft = 0;
     let startTop = 0;
 
+    const pillEl = shadow.getElementById("hs-pill");
+
     const onPointerDown = (e) => {
-      if (e.target.closest("button, input, select")) return;
+      if (e.button !== 0) return;
+      const inPill = Boolean(e.target.closest("#hs-pill"));
+      if (!inPill && e.target.closest("button, input, select")) return;
       dragging = true;
+      didDrag = false;
+      startX = e.clientX;
       startY = e.clientY;
-      startTop = hostEl.getBoundingClientRect().top;
-      e.preventDefault();
+      const rect = hostEl.getBoundingClientRect();
+      startLeft = rect.left;
+      startTop = rect.top;
+      if (!inPill) e.preventDefault();
     };
 
     const onPointerMove = (e) => {
       if (!dragging) return;
-      const nextTop = Math.max(
-        10,
-        Math.min(window.innerHeight - 60, startTop + (e.clientY - startY))
-      );
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      if (!didDrag && Math.abs(dx) < 4 && Math.abs(dy) < 4) return;
+      didDrag = true;
+      const rect = hostEl.getBoundingClientRect();
+      const maxLeft = Math.max(10, window.innerWidth - rect.width - 10);
+      const maxTop = Math.max(10, window.innerHeight - rect.height - 10);
+      const nextLeft = Math.max(10, Math.min(maxLeft, startLeft + dx));
+      const nextTop = Math.max(10, Math.min(maxTop, startTop + dy));
+      hostEl.style.left = `${nextLeft}px`;
+      hostEl.style.right = "auto";
       hostEl.style.top = `${nextTop}px`;
     };
 
     const onPointerUp = () => {
       if (!dragging) return;
       dragging = false;
-      const finalTop = Math.round(hostEl.getBoundingClientRect().top);
-      chrome.storage.local.set({ [FLOAT_TOP_KEY]: finalTop });
+      if (!didDrag) return;
+      const rect = hostEl.getBoundingClientRect();
+      safeStorageSet({
+        [FLOAT_TOP_KEY]: Math.round(rect.top),
+        [FLOAT_LEFT_KEY]: Math.round(rect.left),
+      });
+      setTimeout(() => { didDrag = false; }, 0);
     };
 
     dragHandle.addEventListener("mousedown", onPointerDown);
+    if (pillEl) {
+      pillEl.addEventListener("mousedown", onPointerDown);
+      pillEl.addEventListener("click", (e) => {
+        if (didDrag) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }, true);
+    }
     window.addEventListener("mousemove", onPointerMove);
     window.addEventListener("mouseup", onPointerUp);
+
+    const clampHostToViewport = () => {
+      if (!hostEl) return;
+      const rect = hostEl.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      if (hostEl.style.left && hostEl.style.left !== "auto") {
+        const maxLeft = Math.max(10, window.innerWidth - rect.width - 12);
+        const clampedX = Math.max(10, Math.min(maxLeft, rect.left));
+        hostEl.style.left = `${Math.round(clampedX)}px`;
+        hostEl.style.right = "auto";
+      }
+      const maxTop = Math.max(10, window.innerHeight - rect.height - 12);
+      const clampedY = Math.max(10, Math.min(maxTop, rect.top));
+      hostEl.style.top = `${Math.round(clampedY)}px`;
+    };
+
+    window.addEventListener("resize", clampHostToViewport);
+    requestAnimationFrame(clampHostToViewport);
 
     // Collapse / Expand
     const setCollapsed = (collapsed) => {
       isCollapsed = collapsed;
       wrapEl.classList.toggle("collapsed", isCollapsed);
-      chrome.storage.local.set({ [FLOAT_COLLAPSED_KEY]: isCollapsed });
+      safeStorageSet({ [FLOAT_COLLAPSED_KEY]: isCollapsed });
       if (!isCollapsed) refreshCustomerInfoUI();
+      requestAnimationFrame(clampHostToViewport);
     };
 
     expandBtn.addEventListener("click", () => setCollapsed(false));
@@ -1720,14 +1907,15 @@
       currentSmsSuffix = suffixInput.value.trim().toUpperCase();
       suffixInput.value = currentSmsSuffix;
       renderCustomerInfoValues();
-      chrome.storage.local.set({ [SMS_ID_SUFFIX_KEY]: currentSmsSuffix });
+      safeStorageSet({ [SMS_ID_SUFFIX_KEY]: currentSmsSuffix });
     });
 
     refreshBtn.addEventListener("click", async () => {
+      const prevHtml = refreshBtn.innerHTML;
       refreshBtn.textContent = "…";
       currentCustomerInfo = await ensureCustomerInfoWithAutoHover();
       renderCustomerInfoValues();
-      refreshBtn.textContent = "↻";
+      refreshBtn.innerHTML = prevHtml;
     });
 
     // Individual Field Click-to-Copy (copies raw value without label prefix)
@@ -1770,7 +1958,8 @@
     });
 
     // Copy All into Windows Clipboard Queue (1. SMS ID + Suffix -> 2. Email -> 3. Phone -> 4. Name)
-    const handleCopyAll = async (btnEl, defaultText) => {
+    const handleCopyAll = async (btnEl) => {
+      const defaultHtml = btnEl.innerHTML;
       btnEl.textContent = "Reading...";
       currentCustomerInfo = await ensureCustomerInfoWithAutoHover();
       renderCustomerInfoValues();
@@ -1784,7 +1973,7 @@
       if (!hasAny) {
         btnEl.textContent = "No Data Found";
         setTimeout(() => {
-          btnEl.textContent = defaultText;
+          btnEl.innerHTML = defaultHtml;
         }, 1100);
         return;
       }
@@ -1797,18 +1986,14 @@
         }
       );
 
-      btnEl.textContent = count > 0 ? `✓ Queued ${count} items!` : "Copy Failed";
+      btnEl.textContent = count > 0 ? `Queued ${count} items!` : "Copy Failed";
       setTimeout(() => {
-        btnEl.textContent = defaultText;
+        btnEl.innerHTML = defaultHtml;
       }, 1300);
     };
 
-    copyAllBtn.addEventListener("click", () =>
-      handleCopyAll(copyAllBtn, "📋 Copy All")
-    );
-    pillCopyBtn.addEventListener("click", () =>
-      handleCopyAll(pillCopyBtn, "📋 Copy")
-    );
+    copyAllBtn.addEventListener("click", () => handleCopyAll(copyAllBtn));
+    pillCopyBtn.addEventListener("click", () => handleCopyAll(pillCopyBtn));
 
     // Speed Button (synced with Popup qfeDelayMultiplier: 0.7 Fast, 1.0 1x, 1.5 Slow)
     const speedLabels = { 0.7: "Fast", 1: "1x", 1.5: "Slow" };
@@ -1824,45 +2009,13 @@
       const idx = speedOrder.indexOf(currentSpeed);
       const next = speedOrder[(idx + 1) % speedOrder.length];
       renderSpeed(next);
-      chrome.storage.local.set({ [SPEED_STORAGE_KEY]: next });
+      safeStorageSet({ [SPEED_STORAGE_KEY]: next });
     });
 
     // Stop Button
     stopBtn.addEventListener("click", () => {
       window.__helpSeifAborted = true;
       window.__helpSeifFinishHud?.("stopped");
-    });
-
-    // Flex Field 3 & Won Field 4 Controls (synced with Popup)
-    const renderFlex3Options = (optsRaw, valRaw) => {
-      let opts = Array.isArray(optsRaw) && optsRaw.length ? [...optsRaw] : [...DEFAULT_FLEX_3_OPTIONS];
-      let val = typeof valRaw === "string" && valRaw.trim() ? valRaw.trim() : opts[0];
-      if (!opts.includes(val)) opts.unshift(val);
-      flex3Select.innerHTML = opts
-        .map((opt) => `<option value="${opt.replace(/"/g, "&quot;")}">${opt}</option>`)
-        .join("");
-      flex3Select.value = val;
-    };
-    renderFlex3Options(state[FLEX_OPTIONS_KEY], state[FLEX_FIELD_3_KEY]);
-
-    flex3Select.addEventListener("change", () => {
-      chrome.storage.local.set({ [FLEX_FIELD_3_KEY]: flex3Select.value });
-    });
-
-    const renderWon4 = (val) => {
-      const normalized = String(val || "CC").toUpperCase() === "CS" ? "CS" : "CC";
-      won4Seg.querySelectorAll(".hs-seg-btn").forEach((btn) => {
-        btn.classList.toggle("active", btn.dataset.val === normalized);
-      });
-    };
-    renderWon4(state[WON_FIELD_4_KEY] || "CC");
-
-    won4Seg.querySelectorAll(".hs-seg-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const val = btn.dataset.val || "CC";
-        renderWon4(val);
-        chrome.storage.local.set({ [WON_FIELD_4_KEY]: val });
-      });
     });
 
     // Helper to parse resources (which may be a JSON string from @plasmohq/storage or an Array)
@@ -1924,11 +2077,15 @@
     const reviewBtn = shadow.getElementById("hs-review-btn");
     const reviewStateEl = shadow.getElementById("hs-review-state");
 
+    const hsSunSvg = `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>`;
+    const hsMoonSvg = `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+
     const applyThemeUI = (light) => {
       isLightTheme = Boolean(light);
-      wrap.classList.toggle("theme-light", isLightTheme);
-      if (themeBtn) themeBtn.textContent = isLightTheme ? "☀️" : "🌙";
+      wrapEl.classList.toggle("theme-light", isLightTheme);
+      if (themeBtn) themeBtn.innerHTML = isLightTheme ? hsSunSvg : hsMoonSvg;
     };
+    applyThemeUI(isLightTheme);
 
     const applyReviewUI = (active) => {
       isReviewMode = Boolean(active);
@@ -1940,7 +2097,7 @@
       themeBtn.addEventListener("click", () => {
         const nextTheme = isLightTheme ? "dark" : "light";
         applyThemeUI(nextTheme === "light");
-        chrome.storage.local.set({ qfeTheme: nextTheme });
+        safeStorageSet({ [FLOAT_THEME_KEY]: nextTheme });
       });
     }
 
@@ -1948,7 +2105,7 @@
       reviewBtn.addEventListener("click", () => {
         const nextReview = !isReviewMode;
         applyReviewUI(nextReview);
-        chrome.storage.local.set({ qfePauseBeforeSave: nextReview });
+        safeStorageSet({ qfePauseBeforeSave: nextReview });
       });
     }
 
@@ -1979,17 +2136,28 @@
     };
 
     renderWorkflowsGate(currentResourcesRaw, currentOrder);
-    refreshCustomerInfoUI();
+    if (isLicensed) {
+      refreshCustomerInfoUI();
+    }
 
     // Sync storage changes live
     chrome.storage.onChanged.addListener((changes, area) => {
       if (area !== "local") return;
       if (changes.qfeLicense) {
         isLicensed = changes.qfeLicense.newValue?.status === "active";
+        isLicensedGlobal = isLicensed;
+        if (hostEl) {
+          hostEl.style.display = (isBarEnabledGlobal && isLicensed) ? "block" : "none";
+        }
         renderWorkflowsGate(currentResourcesRaw, currentOrder);
+        if (isLicensed) {
+          refreshCustomerInfoUI();
+          scheduleInfoRefresh();
+          requestAnimationFrame(clampHostToViewport);
+        }
       }
-      if (changes.qfeTheme) {
-        applyThemeUI(changes.qfeTheme.newValue === "light");
+      if (changes[FLOAT_THEME_KEY]) {
+        applyThemeUI(changes[FLOAT_THEME_KEY].newValue === "light");
       }
       if (changes.qfePauseBeforeSave) {
         applyReviewUI(Boolean(changes.qfePauseBeforeSave.newValue));
@@ -1999,19 +2167,14 @@
         if (changes[ORDER_KEY]) currentOrder = changes[ORDER_KEY].newValue;
         renderWorkflowsGate(currentResourcesRaw, currentOrder);
       }
-      if (changes[FLEX_OPTIONS_KEY] || changes[FLEX_FIELD_3_KEY]) {
-        chrome.storage.local.get([FLEX_OPTIONS_KEY, FLEX_FIELD_3_KEY], (st) => {
-          renderFlex3Options(st[FLEX_OPTIONS_KEY], st[FLEX_FIELD_3_KEY]);
-        });
-      }
-      if (changes[WON_FIELD_4_KEY]) {
-        renderWon4(changes[WON_FIELD_4_KEY].newValue || "CC");
-      }
       if (changes[SPEED_STORAGE_KEY]) {
         renderSpeed(Number(changes[SPEED_STORAGE_KEY].newValue) || 0.7);
       }
       if (changes[FLOAT_ENABLED_KEY]) {
         setFloatingBarVisibility(changes[FLOAT_ENABLED_KEY].newValue !== false);
+        if (isBarEnabledGlobal && isLicensed) {
+          requestAnimationFrame(clampHostToViewport);
+        }
       }
       if (changes[SMS_ID_SUFFIX_KEY]) {
         currentSmsSuffix = String(changes[SMS_ID_SUFFIX_KEY].newValue ?? "");
@@ -2020,9 +2183,6 @@
       }
       if (changes[TARGET_OWNER_KEY]) {
         currentTargetOwner = String(changes[TARGET_OWNER_KEY].newValue ?? "");
-        if (shadow.activeElement !== ownerSkipInput) {
-          ownerSkipInput.value = currentTargetOwner;
-        }
       }
     });
 
@@ -2040,8 +2200,10 @@
     };
 
     const scheduleInfoRefresh = () => {
+      if (!isLicensed) return;
       if (refreshTimer) clearTimeout(refreshTimer);
       refreshTimer = setTimeout(async () => {
+        if (!isLicensed) return;
         bindTargetedRecordObserver();
         refreshCustomerInfoUI();
         // When a record page finishes mounting its Account Name link, auto-preload SMS ID + Phone/Email once per record
@@ -2062,6 +2224,7 @@
     };
 
     const recordObserver = new MutationObserver((mutations) => {
+      if (!isLicensed) return;
       const hasExternalMutation = mutations.some((m) => {
         const t = m.target;
         return (
@@ -2097,6 +2260,7 @@
     // Lightweight shallow observer on body/desktop container (subtree: false)
     // to detect hover preview panels (.uiPanel--preview, .forceHoverPrototype) and initial record mount
     const shallowRootObserver = new MutationObserver((mutations) => {
+      if (!isLicensed) return;
       if (!observedRecordContainer || !observedRecordContainer.isConnected) {
         bindTargetedRecordObserver();
       }
@@ -2130,6 +2294,7 @@
     }
 
     const onRouteNavigate = () => {
+      if (!isLicensed) return;
       observedRecordContainer = null;
       bindTargetedRecordObserver();
       scheduleInfoRefresh();

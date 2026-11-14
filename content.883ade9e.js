@@ -963,7 +963,7 @@ if (field.value === "{{TODAY}}") {
 field.value = formatTodayDate();
 }
 if (field.value === "{{FLEXIBLE_FIELD_3}}") {
-field.value = "BEG 10% List";
+field.value = "LED";
 }
 if (
 (rawField?.value === "{{FLEXIBLE_FIELD_3}}" ||
@@ -2678,27 +2678,18 @@ return false;
 (async () => {
 try {
 const licData = await chrome.storage.local.get(["qfeLicense"]);
-if (licData?.qfeLicense?.status !== "active") {
+const lic = licData?.qfeLicense;
+if (lic?.status !== "active") {
 try {
 updateProgressHud(0, 1, "🔒 Activate SalesSnap license in popup", "stopped");
 } catch {}
 sendResponse?.("locked");
 return;
 }
-const verifyRes = await new Promise((resolve) => {
+// Non-blocking background check for instant 0ms start over VPN / slow internet
 try {
-chrome.runtime.sendMessage({ name: "verifyLicense", force: true }, (r) => resolve(r));
-} catch {
-resolve(null);
-}
-});
-if (verifyRes && verifyRes.ok === false) {
-try {
-updateProgressHud(0, 1, `🔒 ${verifyRes.error || "License revoked"}`, "stopped");
+chrome.runtime.sendMessage({ name: "verifyLicense", force: true }, () => void chrome.runtime?.lastError);
 } catch {}
-sendResponse?.("locked");
-return;
-}
 if (type === "profile") {
 const profiles = await getStoredArray("profiles");
 const profile = profiles.find((p) => p.id === id);

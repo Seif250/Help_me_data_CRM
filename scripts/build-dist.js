@@ -14,6 +14,7 @@ const PROTECTED_JS = [
   "content.883ade9e.js",
   "salesforce-floating-bar.js",
   "quickform-editor-controls.js",
+  "options-page.js",
   "static/background/index.js"
 ];
 
@@ -66,17 +67,19 @@ async function build() {
       target: ["chrome116"]
     });
 
+    const isServiceWorker = relPath.includes("background/");
     const code = minified.outputFiles[0].text;
     const obfuscated = JavaScriptObfuscator.obfuscate(code, {
+      target: isServiceWorker ? "service-worker" : "browser-no-eval",
       compact: true,
       controlFlowFlattening: true,
       controlFlowFlatteningThreshold: 0.45,
       deadCodeInjection: false,
       debugProtection: false,
-      disableConsoleOutput: true,
+      disableConsoleOutput: !isServiceWorker,
       identifierNamesGenerator: "hexadecimal",
       renameGlobals: false,
-      selfDefending: true,
+      selfDefending: !isServiceWorker,
       splitStrings: true,
       splitStringsChunkLength: 8,
       stringArray: true,

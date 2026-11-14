@@ -7,7 +7,8 @@
   const DEFAULT_FLEX4_VALUE = "CC";
   const DELAY_MULTIPLIER_KEY = "qfeDelayMultiplier";
   const ORDER_KEY = "flexiScriptOrder";
-  const DEFAULTS = ["BEG 10% List", "ANR", "LED", "REG 10%", "BEG T1 RES"];
+  const DEFAULTS = ["LED", "ANR"];
+  const LEGACY_REMOVED = new Set(["BEG 10% List", "REG 10%", "BEG T1 RES"]);
 
   const SPEED_PRESETS = [
     { label: "Fast", multiplier: 0.7, desc: "Fast speed (0.7x)" },
@@ -126,10 +127,19 @@
     async function loadOptions() {
       const stored = await chrome.storage.local.get([OPTIONS_KEY, VALUE_KEY]);
       let options = Array.isArray(stored[OPTIONS_KEY]) ? stored[OPTIONS_KEY] : [...DEFAULTS];
+      const hadLegacy = options.some((o) => LEGACY_REMOVED.has(o));
+      if (hadLegacy) {
+        options = options.filter((o) => !LEGACY_REMOVED.has(o));
+        if (!options.includes("LED")) options.unshift("LED");
+        if (!options.includes("ANR")) options.push("ANR");
+      }
       if (!options.length) options = [...DEFAULTS];
       let value = typeof stored[VALUE_KEY] === "string" ? stored[VALUE_KEY].trim() : DEFAULTS[0];
-      if (!value) value = DEFAULTS[0];
+      if (!value || LEGACY_REMOVED.has(value)) value = DEFAULTS[0];
       if (!options.includes(value)) options.unshift(value);
+      if (hadLegacy || stored[VALUE_KEY] !== value) {
+        await save(options, value);
+      }
       return { options, value };
     }
 
@@ -669,31 +679,6 @@
         const menu = document.createElement("div");
         menu.className = "flexi-dropdown-menu";
 
-        const editItem = document.createElement("button");
-        editItem.type = "button";
-        editItem.className = "flexi-dropdown-item";
-        editItem.textContent = scriptType === "profile" ? "Edit profile" : "Edit workflow";
-        editItem.addEventListener("click", () => {
-          const editPath = scriptType === "profile"
-            ? `/options.html#/profiles/edit/${activeId}`
-            : `/options.html#/advanced/edit/${activeId}`;
-          chrome.tabs.create({ url: chrome.runtime.getURL(editPath) });
-          menu.remove();
-        });
-
-        const viewItem = document.createElement("button");
-        viewItem.type = "button";
-        viewItem.className = "flexi-dropdown-item";
-        viewItem.textContent = "Open in options";
-        viewItem.addEventListener("click", () => {
-          const viewPath = scriptType === "profile" ? "/options.html#/profiles" : "/options.html#/advanced";
-          chrome.tabs.create({ url: chrome.runtime.getURL(viewPath) });
-          menu.remove();
-        });
-
-        menu.appendChild(editItem);
-        menu.appendChild(viewItem);
-
         if (!def.isCustom) {
           const resetItem = document.createElement("button");
           resetItem.type = "button";
@@ -815,7 +800,7 @@
             enabled: isEnabled,
           }).catch(() => {});
         }
-        showToast(isEnabled ? "⚡ Floating Bar enabled" : "Floating Bar hidden");
+        showToast(isEnabled ? "Floating Bar enabled" : "Floating Bar hidden");
       } catch {}
     });
   }
@@ -875,6 +860,8 @@
 
     const fetchFromActiveTab = async (autoHover = false) => {
       try {
+        const licSt = await chrome.storage.local.get("qfeLicense");
+        if (licSt?.qfeLicense?.status !== "active") return;
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
         if (!tab?.id || !tab.url || /^(?:chrome|edge|about):/i.test(tab.url)) {
           return;
@@ -904,10 +891,11 @@
     };
 
     refreshBtn?.addEventListener("click", async () => {
+      const prevHtml = refreshBtn.innerHTML;
       refreshBtn.textContent = "…";
       await fetchFromActiveTab(true);
-      refreshBtn.textContent = "↻";
-      showToast("↻ Customer data refreshed");
+      refreshBtn.innerHTML = prevHtml;
+      showToast("Customer data refreshed");
     });
 
     rows.forEach((row) => {
@@ -942,7 +930,7 @@
     // 3rd copied (above Email):     Phone
     // 4th copied (top of Win+V):    Name
     copyAllBtn.addEventListener("click", async () => {
-      const defaultLabel = "📋 Copy All";
+      const defaultHtml = copyAllBtn.innerHTML;
       copyAllBtn.textContent = "Reading...";
       await fetchFromActiveTab(true);
 
@@ -955,7 +943,7 @@
       ].filter((item) => Boolean(item.value));
 
       if (queue.length === 0) {
-        copyAllBtn.textContent = defaultLabel;
+        copyAllBtn.innerHTML = defaultHtml;
         showToast("No customer info found on active tab");
         return;
       }
@@ -968,13 +956,13 @@
             await new Promise((r) => setTimeout(r, 320));
           }
         }
-        copyAllBtn.textContent = `✓ Queued ${queue.length}!`;
-        showToast(`✓ Queued ${queue.length} items to Win+V (Name on top, ID on bottom)`);
+        copyAllBtn.textContent = `Queued ${queue.length}!`;
+        showToast(`Queued ${queue.length} items to Win+V (Name on top, ID on bottom)`);
         setTimeout(() => {
-          copyAllBtn.textContent = defaultLabel;
+          copyAllBtn.innerHTML = defaultHtml;
         }, 1200);
       } catch {
-        copyAllBtn.textContent = defaultLabel;
+        copyAllBtn.innerHTML = defaultHtml;
         showToast("Failed to copy to clipboard");
       }
     });
@@ -1109,9 +1097,14 @@
           ? Boolean(stored[POPUP_GRID_MODE_KEY])
           : true;
 
+      const gridIcon = `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>`;
+      const listIcon = `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg>`;
+
       const renderViewMode = () => {
         scriptsList.classList.toggle("is-compact-grid", isGrid);
-        viewToggleBtn.textContent = isGrid ? "⊞ Compact Grid" : "☰ Full List";
+        viewToggleBtn.innerHTML = isGrid
+          ? `${gridIcon}<span>Compact Grid</span>`
+          : `${listIcon}<span>Full List</span>`;
       };
       renderViewMode();
 
@@ -1155,11 +1148,13 @@
   const THEME_KEY = "qfeTheme";
   async function initThemeControl() {
     const themeBtn = document.getElementById("flexi-theme-btn");
+    const sunIcon = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>`;
+    const moonIcon = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
     const applyTheme = (theme) => {
       const isDark = theme === "dark";
       document.body.classList.toggle("theme-dark", isDark);
       if (themeBtn) {
-        themeBtn.textContent = isDark ? "☀" : "🌙";
+        themeBtn.innerHTML = isDark ? sunIcon : moonIcon;
         themeBtn.title = isDark ? "Switch to Light mode" : "Switch to Dark mode";
       }
     };
@@ -1217,11 +1212,16 @@
     exportBtn?.addEventListener("click", async () => {
       try {
         const allData = await chrome.storage.local.get(null);
+        const safeData = { ...allData };
+        delete safeData.resources;
+        delete safeData.profiles;
+        delete safeData.qfeLicense;
+        delete safeData.qfeDeviceId;
         const payload = {
           app: "SalesSnap",
           version: "1.18.0",
           exportedAt: new Date().toISOString(),
-          data: allData
+          data: safeData
         };
         const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
         const url = URL.createObjectURL(blob);

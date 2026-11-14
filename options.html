@@ -1,82 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <link rel="stylesheet" href="/tabs/smart-autofill-show.850787d0.css">
-  <link rel="stylesheet" href="/options.e7f3eb54.css">
-  <title>SalesSnap</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SalesSnap — Settings & License</title>
   <style>
-    /* Hide unused legacy QuickForm links (Lite, Documentation, Support, Changelog) */
-    a[href="#/lite"],
-    a[href*="#/documentation"],
-    a[href*="#/support"],
-    a[href*="#/changelog"],
-    a[href*="quickform"],
-    a[href*="twitter.com"],
-    a[href*="x.com"] {
-      display: none !important;
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      margin: 0;
+      padding: 36px 16px;
     }
+    .card {
+      max-width: 520px;
+      margin: 0 auto;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 14px;
+      padding: 22px;
+    }
+    h1 { margin: 0 0 6px; font-size: 20px; color: #34d399; }
+    p.sub { margin: 0 0 18px; font-size: 13px; color: #94a3b8; }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #334155;
+      font-size: 14px;
+    }
+    .badge { padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+    .badge.ok { background: #064e3b; color: #6ee7b7; }
+    .badge.bad { background: #7f1d1d; color: #fca5a5; }
+    .actions { display: flex; gap: 10px; margin-top: 18px; }
+    button {
+      flex: 1;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 9px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .btn-primary { background: #10b981; color: #052e16; }
+    .btn-danger { background: #334155; color: #fca5a5; }
+    .msg { margin-top: 12px; font-size: 13px; font-weight: 600; min-height: 18px; }
   </style>
-  <script>
-    (() => {
-      document.title = "SalesSnap";
-
-      // Redirect unused #/lite or empty hash directly to Workflows (#/advanced)
-      const redirectLiteToAdvanced = () => {
-        const h = location.hash || "";
-        if (!h || h === "#" || h === "#/" || /^#\/lite\/?$/i.test(h)) {
-          location.replace("#/advanced");
-        }
-      };
-      redirectLiteToAdvanced();
-      window.addEventListener("hashchange", redirectLiteToAdvanced);
-
-      const rebrandText = (txt) =>
-        txt
-          .replace(/quickform\s*editor/gi, "SalesSnap")
-          .replace(/quickform\s*pro/gi, "SalesSnap")
-          .replace(/quickform/gi, "SalesSnap")
-          .replace(/help\s*seif/gi, "SalesSnap");
-
-      const needsRebrand = (txt) => /quickform|help\s*seif/i.test(txt);
-
-      const r = (e) => {
-        if (e.nodeType === Node.TEXT_NODE) {
-          if (needsRebrand(e.textContent)) {
-            e.textContent = rebrandText(e.textContent);
-          }
-        } else if (e.nodeType === Node.ELEMENT_NODE) {
-          if (e.title && needsRebrand(e.title)) e.title = rebrandText(e.title);
-          if (e.alt && needsRebrand(e.alt)) e.alt = rebrandText(e.alt);
-          for (const t of e.childNodes) r(t);
-        }
-      };
-
-      const o = new MutationObserver((e) => {
-        for (const t of e) {
-          if (t.type === "childList") {
-            for (const node of t.addedNodes) r(node);
-          } else if (t.type === "characterData" && needsRebrand(t.target.textContent)) {
-            t.target.textContent = rebrandText(t.target.textContent);
-          }
-        }
-        if (document.title !== "SalesSnap") document.title = "SalesSnap";
-      });
-
-      const startObserver = () => {
-        if (!document.body) return;
-        r(document.body);
-        o.observe(document.body, { childList: true, subtree: true, characterData: true });
-      };
-
-      document.addEventListener("DOMContentLoaded", startObserver);
-      if (document.body) startObserver();
-    })();
-  </script>
 </head>
 <body>
-  <div id="__plasmo"></div>
-  <script src="/options.95eda3f3.js" defer></script>
+  <div class="card">
+    <h1>⚡ SalesSnap Settings</h1>
+    <p class="sub">Workflows are cloud-managed and protected. Use the extension popup to activate or run automations.</p>
+    <div class="row"><span>License Status</span><span id="opt-lic-status" class="badge bad">Checking...</span></div>
+    <div class="row"><span>Plan</span><strong id="opt-lic-plan">-</strong></div>
+    <div class="row"><span>Expires</span><strong id="opt-lic-exp">-</strong></div>
+    <div class="actions">
+      <button id="opt-sync-btn" type="button" class="btn-primary">↻ Sync Workflows</button>
+      <button id="opt-lock-btn" type="button" class="btn-danger">🔓 Lock Device</button>
+    </div>
+    <div id="opt-msg" class="msg"></div>
+  </div>
+  <script src="/options-page.js"></script>
 </body>
 </html>

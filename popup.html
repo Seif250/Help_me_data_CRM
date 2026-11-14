@@ -17,14 +17,24 @@
           </svg>
         </div>
         <div class="flexi-titles">
-          <h1 class="flexi-title">SalesSnap</h1>
-          <p class="flexi-subtitle">CRM Automation <span class="flexi-version-badge">v1.18.0</span></p>
+          <div class="flexi-title-row">
+            <h1 class="flexi-title">SalesSnap</h1>
+            <span class="flexi-version-badge">v1.18.0</span>
+          </div>
+          <p class="flexi-subtitle">CRM Automation</p>
         </div>
       </div>
       <div class="flexi-header-actions">
-        <button type="button" class="flexi-icon-btn" id="flexi-theme-btn" title="Switch Light / Dark theme" aria-label="Toggle theme">🌙</button>
+        <button type="button" class="flexi-icon-btn" id="flexi-theme-btn" title="Switch Light / Dark theme" aria-label="Toggle theme">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
         <button type="button" class="flexi-float-toggle active" id="flexi-float-toggle-btn" title="Show/Hide Floating Quick-Action Bar on Salesforce page" aria-label="Toggle Floating Bar">
-          <span>⚡ Bar</span>
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true">
+            <path d="M13 2L3 14h8l-2 8 10-12h-8l2-8z"/>
+          </svg>
+          <span>Bar</span>
         </button>
         <button type="button" class="flexi-speed-pill" id="flexi-speed-btn" title="Change execution speed (Fast / 1x / Slow)" aria-label="Execution speed">
           <span class="flexi-status-dot"></span>
@@ -52,16 +62,38 @@
 
     <!-- License Gate (shown when subscription is not active) -->
     <div class="flexi-license-gate" id="flexi-license-gate">
-      <div class="flexi-gate-icon">🔐</div>
-      <h2 class="flexi-gate-title">Activate SalesSnap</h2>
-      <p class="flexi-gate-desc">Enter your subscription license key to unlock CRM workflows and the floating quick bar.</p>
-      <input type="text" id="flexi-license-input" class="flexi-gate-input" placeholder="SNAP-XXXX-XXXX-XXXX" autocomplete="off" />
-      <details class="flexi-gate-server-wrap">
-        <summary>License Server URL (Advanced)</summary>
-        <input type="url" id="flexi-license-server" class="flexi-gate-input" placeholder="https://salessnap-license-api.your-subdomain.workers.dev" />
-      </details>
-      <button type="button" id="flexi-activate-btn" class="flexi-gate-btn">Activate License</button>
-      <div id="flexi-license-error" class="flexi-gate-error"></div>
+      <div class="flexi-gate-badge" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="11" width="16" height="10" rx="3"/>
+          <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+          <circle cx="12" cy="16" r="1.25" fill="currentColor" stroke="none"/>
+        </svg>
+      </div>
+      <div class="flexi-gate-copy">
+        <h2 class="flexi-gate-title">Activate SalesSnap</h2>
+        <p class="flexi-gate-desc">Enter your subscription license key to unlock CRM workflows and the floating quick bar.</p>
+      </div>
+      <div class="flexi-gate-form">
+        <div class="flexi-gate-input-wrap">
+          <svg class="flexi-gate-input-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+          </svg>
+          <input type="text" id="flexi-license-input" class="flexi-gate-input" placeholder="SNAP-XXXX-XXXX-XXXX" autocomplete="off" spellcheck="false" />
+        </div>
+        <details class="flexi-gate-advanced">
+          <summary>License Server URL (Advanced)</summary>
+          <input type="url" id="flexi-license-server" class="flexi-gate-server-input" placeholder="https://api.yourdomain.com" autocomplete="off" spellcheck="false" />
+        </details>
+        <button type="button" id="flexi-activate-btn" class="flexi-gate-btn">Activate License</button>
+        <div id="flexi-license-error" class="flexi-gate-error" role="alert"></div>
+      </div>
+      <div class="flexi-gate-foot">
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <path d="M9 12l2 2 4-4"/>
+        </svg>
+        <span>Protected by SalesSnap Cloud Licensing</span>
+      </div>
     </div>
 
     <!-- 1b. Customer Info Copy Card (Collapsible) -->
@@ -77,8 +109,19 @@
             <span class="flexi-suffix-lbl">ID+</span>
             <input type="text" id="flexi-id-suffix" class="flexi-suffix-input" maxlength="6" value="SE" placeholder="SE" aria-label="SMS ID Suffix" />
           </div>
-          <button type="button" id="flexi-cust-refresh" class="flexi-cust-refresh-btn" title="Auto-hover Account & refresh customer data" aria-label="Refresh customer data">↻</button>
-          <button type="button" id="flexi-cust-copy-all" class="flexi-cust-copy-all-btn" title="Copy ID, Email, Phone & Name separately into Clipboard Queue">📋 Copy All</button>
+          <button type="button" id="flexi-cust-refresh" class="flexi-cust-refresh-btn" title="Auto-hover Account & refresh customer data" aria-label="Refresh customer data">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="23 4 23 10 17 10"/>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+            </svg>
+          </button>
+          <button type="button" id="flexi-cust-copy-all" class="flexi-cust-copy-all-btn" title="Copy ID, Email, Phone & Name separately into Clipboard Queue">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            <span>Copy All</span>
+          </button>
         </div>
       </div>
       <div class="flexi-sec-body" id="flexi-sec-cust-body">
@@ -181,7 +224,13 @@
           <span class="flexi-customer-title">Workflows</span>
         </button>
         <button type="button" class="flexi-view-mode-btn" id="flexi-wf-view-toggle" title="Switch between Compact 2-Column Grid and Full List view">
-          ⊞ Compact Grid
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/>
+          </svg>
+          <span>Compact Grid</span>
         </button>
       </div>
       <div class="flexi-sec-body" id="flexi-sec-wf-body">
@@ -192,15 +241,9 @@
     </section>
 
     <footer class="flexi-footer">
+      <span id="flexi-license-badge" class="flexi-lic-badge">PRO</span>
       <div class="flexi-footer-hint">
-        <span id="flexi-license-badge" class="flexi-lic-badge">PRO</span>
         <span>Keys: <b>1-9</b> Run • <b>C</b> Copy • <b>S</b> Stop</span>
-      </div>
-      <div class="flexi-footer-actions">
-        <button type="button" id="flexi-export-btn" class="flexi-mini-btn" title="Export workflows & settings as JSON">⬇ Export</button>
-        <button type="button" id="flexi-import-btn" class="flexi-mini-btn" title="Import workflows & settings from JSON">⬆ Import</button>
-        <button type="button" id="flexi-deactivate-btn" class="flexi-mini-btn" title="Deactivate license on this device">🔓 Lock</button>
-        <input type="file" id="flexi-import-file" accept=".json,application/json" hidden />
       </div>
     </footer>
 
