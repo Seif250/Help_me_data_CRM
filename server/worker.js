@@ -196,7 +196,8 @@ const ADMIN_HTML = `<!doctype html>
 
     <div class="card">
       <div class="row">
-        <input id="cust" placeholder="Customer Name (e.g. Ahmed)" style="flex:1;min-width:170px" />
+        <input id="cust" placeholder="Customer Name (e.g. Ahmed)" style="flex:1;min-width:150px" />
+        <input id="notes" placeholder="Notes (optional, e.g. phone)" style="flex:1;min-width:140px" />
         <select id="plan"><option value="PRO">PRO</option><option value="TRIAL">TRIAL</option></select>
         <input id="days" type="number" value="30" min="1" style="width:85px" title="Duration (Days)" placeholder="Days" />
         <input id="maxDev" type="number" value="1" min="1" style="width:80px" title="Max Devices" placeholder="Devices" />
@@ -206,7 +207,7 @@ const ADMIN_HTML = `<!doctype html>
 
     <div class="card">
       <div class="row" style="margin-bottom:12px;">
-        <input id="search" placeholder="Search by key or customer name..." style="flex:1;min-width:200px" oninput="renderTable()" />
+        <input id="search" placeholder="Search by key, customer, or notes..." style="flex:1;min-width:200px" oninput="renderTable()" />
         <select id="filter-status" onchange="renderTable()">
           <option value="all">All Statuses</option>
           <option value="active">Active Only</option>
@@ -214,6 +215,8 @@ const ADMIN_HTML = `<!doctype html>
           <option value="expired">Expired</option>
           <option value="revoked">Revoked</option>
         </select>
+        <button type="button" class="sec" onclick="exportKeys('json')" title="Download backup as JSON">Export JSON</button>
+        <button type="button" class="sec" onclick="exportKeys('csv')" title="Download spreadsheet as CSV">Export CSV</button>
       </div>
       <div style="overflow-x:auto">
         <table>
@@ -512,6 +515,21 @@ const ADMIN_HTML = `<!doctype html>
       }
     }
 
+    function upsertLocalRecord(rec) {
+      if (!rec || !rec.key) return;
+      const idx = allKeys.findIndex((x) => x.key === rec.key);
+      if (idx >= 0) allKeys[idx] = rec;
+      else allKeys.unshift(rec);
+      updateStats();
+      renderTable();
+    }
+
+    function removeLocalRecord(key) {
+      allKeys = allKeys.filter((x) => x.key !== key);
+      updateStats();
+      renderTable();
+    }
+
     async function createKey() {
       const btn = document.getElementById("btn-create");
       btn.disabled = true;
@@ -522,7 +540,7 @@ const ADMIN_HTML = `<!doctype html>
           method: "POST",
           body: JSON.stringify({
             customerName: document.getElementById("cust").value,
-            notes: document.getElementById("notes").value,
+            notes: (document.getElementById("notes") && document.getElementById("notes").value) || "",
             plan: document.getElementById("plan").value,
             days: Number(document.getElementById("days").value) || 30,
             maxDevices: Number(document.getElementById("maxDev").value) || 1
@@ -533,10 +551,10 @@ const ADMIN_HTML = `<!doctype html>
         if (createdKey) {
           newKeyVal.textContent = createdKey;
           newKeyBox.classList.add("show");
+          upsertLocalRecord(d.record);
         }
         document.getElementById("cust").value = "";
-        document.getElementById("notes").value = "";
-        await loadKeys();
+        if (document.getElementById("notes")) document.getElementById("notes").value = "";
         showStatus("Key created: " + (createdKey || ""), "ok");
       } catch (err) {
         showStatus(err.message || "Failed to create key", "err");
@@ -569,7 +587,7 @@ const ADMIN_HTML = `<!doctype html>
           const maxDevices = Math.max(1, Number(document.getElementById("edit-maxdev").value) || 1);
           try {
             showStatus("Saving changes...", "info");
-            await api("/api/admin/edit", {
+            const d = await api("/api/admin/edit", {
               method: "POST",
               body: JSON.stringify({
                 key,
@@ -579,7 +597,7 @@ const ADMIN_HTML = `<!doctype html>
                 maxDevices
               })
             });
-            await loadKeys();
+            if (d && d.record) upsertLocalRecord(d.record);
             showStatus("Updated " + key, "ok");
           } catch (err) {
             showStatus(err.message, "err");
@@ -642,8 +660,8 @@ const ADMIN_HTML = `<!doctype html>
           }
           try {
             showStatus("Renewing license for +" + days + " days...", "info");
-            await api("/api/admin/renew", { method: "POST", body: JSON.stringify({ key, days }) });
-            await loadKeys();
+            const d = await api("/api/admin/renew", { method: "POST", body: JSON.stringify({ key, days }) });
+            if (d && d.record) upsertLocalRecord(d.record);
             showStatus("Renewed " + key + " by +" + days + " days.", "ok");
           } catch (err) {
             showStatus(err.message, "err");
@@ -666,8 +684,8 @@ const ADMIN_HTML = `<!doctype html>
         onConfirm: async () => {
           try {
             showStatus(revoked ? "Revoking key..." : "Restoring key...", "info");
-            await api("/api/admin/revoke", { method: "POST", body: JSON.stringify({ key, revoked }) });
-            await loadKeys();
+            const d = await api("/api/admin/revoke", { method: "POST", body: JSON.stringify({ key, revoked }) });
+            if (d && d.record) upsertLocalRecord(d.record);
             showStatus((revoked ? "Revoked " : "Restored ") + key, "ok");
           } catch (err) {
             showStatus(err.message, "err");
@@ -687,8 +705,8 @@ const ADMIN_HTML = `<!doctype html>
         onConfirm: async () => {
           try {
             showStatus("Resetting devices...", "info");
-            await api("/api/admin/reset-devices", { method: "POST", body: JSON.stringify({ key }) });
-            await loadKeys();
+            const d = await api("/api/admin/reset-devices", { method: "POST", body: JSON.stringify({ key }) });
+            if (d && d.record) upsertLocalRecord(d.record);
             showStatus("Devices reset for " + key + ". Previous devices have been logged out.", "ok");
           } catch (err) {
             showStatus(err.message, "err");
@@ -709,7 +727,7 @@ const ADMIN_HTML = `<!doctype html>
           try {
             showStatus("Deleting key...", "info");
             await api("/api/admin/delete", { method: "POST", body: JSON.stringify({ key }) });
-            await loadKeys();
+            removeLocalRecord(key);
             showStatus("Deleted key " + key, "ok");
           } catch (err) {
             showStatus(err.message, "err");
@@ -735,7 +753,12 @@ export default {
     const path = url.pathname;
 
     if (path === "/admin" && request.method === "GET") {
-      return new Response(ADMIN_HTML, { headers: { "Content-Type": "text/html; charset=utf-8" } });
+      return new Response(ADMIN_HTML, {
+        headers: {
+          "Content-Type": "text/html; charset=utf-8",
+          "Cache-Control": "no-store"
+        }
+      });
     }
 
     if (path === "/api/activate" && request.method === "POST") {
