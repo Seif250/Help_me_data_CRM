@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Help Seif</title>
+  <title>SalesSnap</title>
   <link rel="stylesheet" href="/quickform-editor-controls.css">
 </head>
 <body class="flexi-body">
@@ -17,11 +17,12 @@
           </svg>
         </div>
         <div class="flexi-titles">
-          <h1 class="flexi-title">Help Seif</h1>
-          <p class="flexi-subtitle">Salesforce scripts <span class="flexi-version-badge">v1.17.32</span></p>
+          <h1 class="flexi-title">SalesSnap</h1>
+          <p class="flexi-subtitle">CRM Automation <span class="flexi-version-badge">v1.18.0</span></p>
         </div>
       </div>
       <div class="flexi-header-actions">
+        <button type="button" class="flexi-icon-btn" id="flexi-theme-btn" title="Switch Light / Dark theme" aria-label="Toggle theme">🌙</button>
         <button type="button" class="flexi-float-toggle active" id="flexi-float-toggle-btn" title="Show/Hide Floating Quick-Action Bar on Salesforce page" aria-label="Toggle Floating Bar">
           <span>⚡ Bar</span>
         </button>
@@ -144,7 +145,16 @@
             <span class="flexi-owner-badge">Owner</span>
             <label for="qfe-owner-skip-input" class="flexi-field4-label">Skip If Owned By</label>
           </div>
-          <input type="text" id="qfe-owner-skip-input" class="flexi-owner-skip-input" value="Seif Ezz Eldin" placeholder="Seif Ezz Eldin" autocomplete="off" />
+          <input type="text" id="qfe-owner-skip-input" class="flexi-owner-skip-input" value="Seif Ezz Eldin" placeholder="Owner name..." autocomplete="off" />
+        </div>
+
+        <!-- Review Mode (Pause Before Final Save) -->
+        <div class="flexi-review-row" title="Fill all fields and pause right before clicking Save so you can review">
+          <div class="flexi-field4-left">
+            <span class="flexi-review-badge">Safe</span>
+            <span class="flexi-field4-label">Review Before Save</span>
+          </div>
+          <button type="button" id="qfe-review-toggle" class="flexi-switch-btn" role="switch" aria-checked="false">OFF</button>
         </div>
       </div>
     </section>
@@ -166,6 +176,15 @@
         </main>
       </div>
     </section>
+
+    <footer class="flexi-footer">
+      <div class="flexi-footer-hint">Keys: <b>1-9</b> Run • <b>C</b> Copy All • <b>S</b> Stop</div>
+      <div class="flexi-footer-actions">
+        <button type="button" id="flexi-export-btn" class="flexi-mini-btn" title="Export workflows & settings as JSON">⬇ Export</button>
+        <button type="button" id="flexi-import-btn" class="flexi-mini-btn" title="Import workflows & settings from JSON">⬆ Import</button>
+        <input type="file" id="flexi-import-file" accept=".json,application/json" hidden />
+      </div>
+    </footer>
 
     <div id="flexi-toast" class="flexi-toast" role="status" aria-live="polite"></div>
   </div>

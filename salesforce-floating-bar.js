@@ -1021,8 +1021,13 @@
       FLOAT_SEC_CTRL_KEY,
       FLOAT_SEC_WF_KEY,
       ORDER_KEY,
+      "qfeTheme",
+      "qfePauseBeforeSave",
       "resources",
     ]);
+
+    let isLightTheme = state.qfeTheme === "light";
+    let isReviewMode = Boolean(state.qfePauseBeforeSave);
 
     const isEnabled = state[FLOAT_ENABLED_KEY] !== false;
     let isCollapsed = Boolean(state[FLOAT_COLLAPSED_KEY]);
@@ -1424,12 +1429,80 @@
           background: rgba(14, 165, 233, 0.34);
           color: #fff;
         }
+        .hs-wf-btn.is-running {
+          outline: 2px solid #38bdf8;
+          box-shadow: 0 0 12px rgba(56, 189, 248, 0.55);
+          animation: hsPulse 1s ease-in-out infinite;
+        }
+        .hs-wf-btn.is-done {
+          outline: 2px solid #22c55e;
+          box-shadow: 0 0 10px rgba(34, 197, 94, 0.45);
+        }
+        @keyframes hsPulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.03); }
+        }
+        .hs-review-btn {
+          width: 100%;
+          margin-top: 6px;
+          padding: 5px 8px;
+          border-radius: 7px;
+          border: 1px solid rgba(148, 163, 184, 0.3);
+          background: rgba(30, 41, 59, 0.7);
+          color: #cbd5e1;
+          font-size: 11px;
+          font-weight: 600;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          transition: all 0.15s ease;
+        }
+        .hs-review-btn.is-active {
+          background: rgba(245, 158, 11, 0.22);
+          border-color: rgba(245, 158, 11, 0.65);
+          color: #fde68a;
+        }
+        .hs-wrap.theme-light .hs-panel,
+        .hs-wrap.theme-light .hs-pill {
+          background: rgba(255, 255, 255, 0.96);
+          color: #0f172a;
+          border-color: #cbd5e1;
+          box-shadow: 0 10px 28px rgba(15, 23, 42, 0.16);
+        }
+        .hs-wrap.theme-light .hs-header {
+          background: #f1f5f9;
+          border-bottom-color: #e2e8f0;
+        }
+        .hs-wrap.theme-light .hs-brand {
+          color: #0f172a;
+        }
+        .hs-wrap.theme-light .hs-icon-btn,
+        .hs-wrap.theme-light .hs-review-btn {
+          background: #f8fafc;
+          color: #334155;
+          border-color: #cbd5e1;
+        }
+        .hs-wrap.theme-light .hs-review-btn.is-active {
+          background: #fef3c7;
+          color: #92400e;
+          border-color: #f59e0b;
+        }
+        .hs-wrap.theme-light .hs-wf-btn {
+          background: #f8fafc;
+          color: #1e293b;
+          border-color: #cbd5e1;
+        }
+        .hs-wrap.theme-light .hs-wf-btn:hover {
+          background: #e2e8f0;
+          color: #0f172a;
+        }
       </style>
-      <div class="hs-wrap ${isCollapsed ? "collapsed" : ""}" id="hs-wrap">
+      <div class="hs-wrap ${isCollapsed ? "collapsed" : ""} ${isLightTheme ? "theme-light" : ""}" id="hs-wrap">
         <div class="hs-pill" id="hs-pill">
-          <button class="hs-pill-expand" id="hs-expand-btn" title="Expand Help Seif Quick Bar">
+          <button class="hs-pill-expand" id="hs-expand-btn" title="Expand SalesSnap Quick Bar">
             <span>⚡</span>
-            <span>Help Seif</span>
+            <span>SalesSnap</span>
           </button>
           <button class="hs-pill-copy" id="hs-pill-copy-btn" title="Copy Name, Phone, Email & SMS ID separately to Clipboard Queue">
             📋 Copy
@@ -1440,9 +1513,10 @@
           <div class="hs-header" id="hs-drag-handle" title="Drag up or down">
             <div class="hs-brand">
               <span>⚡</span>
-              <span>Help Seif</span>
+              <span>SalesSnap</span>
             </div>
             <div class="hs-header-actions">
+              <button class="hs-icon-btn" id="hs-theme-btn" title="Toggle Light/Dark Theme">${isLightTheme ? "☀️" : "🌙"}</button>
               <button class="hs-icon-btn" id="hs-speed-btn" title="Cycle execution speed (Normal / Fast / Slow)">1x</button>
               <button class="hs-icon-btn hs-stop-btn" id="hs-stop-btn" title="Stop running workflow (Esc)">⏹ Stop</button>
               <button class="hs-icon-btn" id="hs-collapse-btn" title="Minimize to side pill">—</button>
@@ -1513,6 +1587,10 @@
                   <input type="text" class="hs-text-input" id="hs-owner-skip" value="${currentTargetOwner.replace(/"/g, "&quot;")}" placeholder="Seif Ezz Eldin" />
                 </div>
               </div>
+              <button type="button" class="hs-review-btn ${isReviewMode ? "is-active" : ""}" id="hs-review-btn" title="Pause before clicking Save so you can review fields">
+                <span>⏸ Review Before Save</span>
+                <span id="hs-review-state">${isReviewMode ? "ON" : "OFF"}</span>
+              </button>
             </div>
 
             <!-- Section 3: Workflows -->
@@ -1830,6 +1908,7 @@
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = `hs-wf-btn ${getButtonTheme(res.name)}`;
+        btn.dataset.wfName = res.name;
         btn.textContent = res.name;
         btn.title = `Run "${res.name}"`;
         btn.addEventListener("click", () => {
@@ -1839,12 +1918,68 @@
       }
     };
 
+    const themeBtn = shadow.getElementById("hs-theme-btn");
+    const reviewBtn = shadow.getElementById("hs-review-btn");
+    const reviewStateEl = shadow.getElementById("hs-review-state");
+
+    const applyThemeUI = (light) => {
+      isLightTheme = Boolean(light);
+      wrap.classList.toggle("theme-light", isLightTheme);
+      if (themeBtn) themeBtn.textContent = isLightTheme ? "☀️" : "🌙";
+    };
+
+    const applyReviewUI = (active) => {
+      isReviewMode = Boolean(active);
+      if (reviewBtn) reviewBtn.classList.toggle("is-active", isReviewMode);
+      if (reviewStateEl) reviewStateEl.textContent = isReviewMode ? "ON" : "OFF";
+    };
+
+    if (themeBtn) {
+      themeBtn.addEventListener("click", () => {
+        const nextTheme = isLightTheme ? "dark" : "light";
+        applyThemeUI(nextTheme === "light");
+        chrome.storage.local.set({ qfeTheme: nextTheme });
+      });
+    }
+
+    if (reviewBtn) {
+      reviewBtn.addEventListener("click", () => {
+        const nextReview = !isReviewMode;
+        applyReviewUI(nextReview);
+        chrome.storage.local.set({ qfePauseBeforeSave: nextReview });
+      });
+    }
+
+    window.addEventListener("salessnap:workflow-state", (ev) => {
+      const detail = (ev && ev.detail) || {};
+      const stateName = detail.state;
+      const wfName = detail.name;
+      const buttons = wfGrid.querySelectorAll(".hs-wf-btn");
+      buttons.forEach((b) => {
+        b.classList.remove("is-running", "is-done");
+        if (wfName && b.dataset.wfName === wfName) {
+          if (stateName === "running" || stateName === "review") {
+            b.classList.add("is-running");
+          } else if (stateName === "done") {
+            b.classList.add("is-done");
+            setTimeout(() => b.classList.remove("is-done"), 1800);
+          }
+        }
+      });
+    });
+
     renderWorkflows(currentResourcesRaw, currentOrder);
     refreshCustomerInfoUI();
 
     // Sync storage changes live
     chrome.storage.onChanged.addListener((changes, area) => {
       if (area !== "local") return;
+      if (changes.qfeTheme) {
+        applyThemeUI(changes.qfeTheme.newValue === "light");
+      }
+      if (changes.qfePauseBeforeSave) {
+        applyReviewUI(Boolean(changes.qfePauseBeforeSave.newValue));
+      }
       if (changes.resources || changes[ORDER_KEY]) {
         if (changes.resources) currentResourcesRaw = changes.resources.newValue;
         if (changes[ORDER_KEY]) currentOrder = changes[ORDER_KEY].newValue;

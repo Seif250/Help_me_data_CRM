@@ -30,7 +30,7 @@
     }
   ],
   "default_locale": "en",
-  "description": "Help Seif - Faster Salesforce workflows with adaptive waits, live status HUD, and reliable Save/owner handling.",
+  "description": "SalesSnap - High-speed Salesforce CRM workflow automation, live HUD, Review mode, and 1-click customer clipboard queue.",
   "host_permissions": [
     "https://*.salesforce.com/*",
     "https://*.force.com/*",
@@ -45,7 +45,7 @@
     "64": "icon64.plasmo.8bb5e6e0.png"
   },
   "manifest_version": 3,
-  "name": "Help Seif",
+  "name": "SalesSnap",
   "options_ui": {
     "open_in_tab": true,
     "page": "options.html"
@@ -57,5 +57,5 @@
     "tabs",
     "contextMenus"
   ],
-  "version": "1.17.32"
+  "version": "1.18.0"
 }

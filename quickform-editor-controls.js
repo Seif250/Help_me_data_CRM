@@ -1151,19 +1151,127 @@
     });
   }
 
+  // 10. Theme Toggle (Light / Dark)
+  const THEME_KEY = "qfeTheme";
+  async function initThemeControl() {
+    const themeBtn = document.getElementById("flexi-theme-btn");
+    const applyTheme = (theme) => {
+      const isDark = theme === "dark";
+      document.body.classList.toggle("theme-dark", isDark);
+      if (themeBtn) {
+        themeBtn.textContent = isDark ? "☀" : "🌙";
+        themeBtn.title = isDark ? "Switch to Light mode" : "Switch to Dark mode";
+      }
+    };
+    let current = "light";
+    try {
+      const st = await chrome.storage.local.get(THEME_KEY);
+      if (st[THEME_KEY] === "dark") current = "dark";
+    } catch {}
+    applyTheme(current);
+    themeBtn?.addEventListener("click", async () => {
+      current = document.body.classList.contains("theme-dark") ? "light" : "dark";
+      applyTheme(current);
+      try { await chrome.storage.local.set({ [THEME_KEY]: current }); } catch {}
+    });
+  }
+
+  // 11. Review Before Save Toggle
+  const REVIEW_MODE_KEY = "qfePauseBeforeSave";
+  async function initReviewModeControl() {
+    const btn = document.getElementById("qfe-review-toggle");
+    if (!btn) return;
+    const render = (isOn) => {
+      btn.classList.toggle("is-on", Boolean(isOn));
+      btn.textContent = isOn ? "ON" : "OFF";
+      btn.setAttribute("aria-checked", isOn ? "true" : "false");
+    };
+    let isOn = false;
+    try {
+      const st = await chrome.storage.local.get(REVIEW_MODE_KEY);
+      isOn = Boolean(st[REVIEW_MODE_KEY]);
+    } catch {}
+    render(isOn);
+    btn.addEventListener("click", async () => {
+      isOn = !isOn;
+      render(isOn);
+      try {
+        await chrome.storage.local.set({ [REVIEW_MODE_KEY]: isOn });
+        showToast(isOn ? "⏸ Review Before Save: ON" : "⚡ Auto-Save: ON");
+      } catch {}
+    });
+    chrome.storage?.onChanged?.addListener((changes, area) => {
+      if (area === "local" && changes[REVIEW_MODE_KEY]) {
+        isOn = Boolean(changes[REVIEW_MODE_KEY].newValue);
+        render(isOn);
+      }
+    });
+  }
+
+  // 12. 1-Click Export / Import Settings & Workflows
+  function initBackupControls() {
+    const exportBtn = document.getElementById("flexi-export-btn");
+    const importBtn = document.getElementById("flexi-import-btn");
+    const fileInput = document.getElementById("flexi-import-file");
+
+    exportBtn?.addEventListener("click", async () => {
+      try {
+        const allData = await chrome.storage.local.get(null);
+        const payload = {
+          app: "SalesSnap",
+          version: "1.18.0",
+          exportedAt: new Date().toISOString(),
+          data: allData
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `salessnap-backup-${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        showToast("✓ Backup exported");
+      } catch {
+        showToast("Export failed", true);
+      }
+    });
+
+    importBtn?.addEventListener("click", () => fileInput?.click());
+    fileInput?.addEventListener("change", async () => {
+      const file = fileInput.files?.[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const parsed = JSON.parse(text);
+        const data = parsed?.data && typeof parsed.data === "object" ? parsed.data : parsed;
+        if (!data || typeof data !== "object") throw new Error("Invalid backup");
+        await chrome.storage.local.set(data);
+        showToast("✓ Settings imported! Reloading...");
+        setTimeout(() => location.reload(), 650);
+      } catch {
+        showToast("Invalid backup JSON file", true);
+      } finally {
+        fileInput.value = "";
+      }
+    });
+  }
+
   // Single-execution bootstrap guard (fixes double event listener registration)
   let isBooted = false;
   function boot() {
     if (isBooted) return;
     isBooted = true;
+    initThemeControl();
     initFlexibleField();
     initFlexibleField4();
     initOwnerSkipControl();
+    initReviewModeControl();
     initCollapsibleSectionsAndViewMode();
     initSpeedControl();
     initFloatingBarToggle();
     initCustomerInfoCard();
     initHeaderActions();
+    initBackupControls();
     setupGlobalMenuCloser();
     initScriptRows();
     setupKeyboardShortcuts();

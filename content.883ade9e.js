@@ -1,4 +1,4 @@
-/** Help Seif — Pure Vanilla JS Execution Engine (v1.17.30) */
+/** SalesSnap — Pure Vanilla JS Execution Engine (v1.18.0) */
 (() => {
 "use strict";
 if (window.__helpSeifEngineLoaded) return;
@@ -1759,7 +1759,7 @@ window.__helpSeifFinishHud?.("stopped");
 el.style.opacity = "1";
 el.style.transform = "translateY(0)";
 const titleEl = el.querySelector("#help-seif-hud-title");
-if (titleEl) titleEl.textContent = wfName || "Help Seif";
+if (titleEl) titleEl.textContent = wfName || "SalesSnap";
 const dotEl = el.querySelector("#help-seif-hud-dot");
 if (dotEl) {
 dotEl.style.background = "#a855f7";
@@ -1804,6 +1804,16 @@ dotEl.style.boxShadow = "0 0 0 3px rgba(239,68,68,0.25)";
 }
 if (stepEl) stepEl.textContent = "⏹ Workflow stopped by user";
 if (barEl) barEl.style.background = "#ef4444";
+} else if (status === "review") {
+if (dotEl) {
+dotEl.style.background = "#f59e0b";
+dotEl.style.boxShadow = "0 0 0 3px rgba(245,158,11,0.25)";
+}
+if (stepEl) stepEl.textContent = "⏸ Review fields & click Save manually";
+if (barEl) {
+barEl.style.width = "92%";
+barEl.style.background = "#f59e0b";
+}
 } else {
 if (dotEl) {
 dotEl.style.background = "#22c55e";
@@ -1878,9 +1888,8 @@ return "";
 };
 const waitForNextStepTarget = async (_unused, nextStep, maxMs) => {
 const mult = Number(window.__helpSeifDelayMultiplier) || 0.7;
-const deadline = Date.now() + Math.round(maxMs * mult);
-let ready = false;
-while (Date.now() < deadline && !window.__helpSeifAborted) {
+const timeoutMs = Math.max(40, Math.round(maxMs * mult));
+const isReady = () => {
 try {
 if (nextStep?.type === "MULTIPLE_FIELDS") {
 const list = (nextStep.fields || []).filter((f) => f?.key);
@@ -1893,7 +1902,7 @@ target.key,
 target.searchType,
 target.fieldType
 );
-if (el && isElementVisible(el)) ready = true;
+return !!(el && isElementVisible(el));
 }
 } else if (nextStep?.key) {
 const el = findClickElement(
@@ -1901,19 +1910,52 @@ nextStep.key,
 nextStep.searchType,
 nextStep.fieldType
 );
-if (el && isElementVisible(el)) ready = true;
+return !!(el && isElementVisible(el));
 }
-} catch {
-ready = false;
-}
-if (ready) {
-await onDelay({ value: "25" });
+} catch {}
+return false;
+};
+if (isReady()) {
+await delay(15);
 return true;
 }
-await onDelay({ value: "25" });
+return new Promise((resolve) => {
+let settled = false;
+let obs = null;
+let fallbackTimer = null;
+let timeoutTimer = null;
+const finish = (ok) => {
+if (settled) return;
+settled = true;
+try { obs?.disconnect(); } catch {}
+if (fallbackTimer) clearInterval(fallbackTimer);
+if (timeoutTimer) clearTimeout(timeoutTimer);
+resolve(ok);
+};
+const check = () => {
+if (window.__helpSeifAborted) return finish(false);
+if (isReady()) {
+setTimeout(() => finish(true), 15);
 }
-await onDelay({ value: "25" });
-return false;
+};
+try {
+if (document.body) {
+obs = new MutationObserver(check);
+obs.observe(document.body, { childList: true, subtree: true });
+}
+} catch {}
+fallbackTimer = setInterval(check, 60);
+timeoutTimer = setTimeout(() => finish(false), timeoutMs);
+});
+};
+const emitWorkflowState = (state, wfName) => {
+try {
+window.dispatchEvent(
+new CustomEvent("salessnap:workflow-state", {
+detail: { state, name: wfName || "" },
+})
+);
+} catch {}
 };
 const parser = async (resource, options) => {
 if (!resource?.interactions) return;
@@ -1921,14 +1963,17 @@ window.__helpSeifAborted = false;
 window.__helpSeifOwnerAlreadyCurrent = false;
 window.__helpSeifSaveFailed = false;
 window.__helpSeifDelayMultiplier = 0.7;
+let pauseBeforeSave = false;
+emitWorkflowState("running", resource?.name);
 try {
 if (typeof chrome !== "undefined" && chrome.storage?.local) {
 const st = await new Promise((res) =>
 chrome.storage.local.get(
-["qfeDelayMultiplier", "qfeTargetOwnerName"],
+["qfeDelayMultiplier", "qfeTargetOwnerName", "qfePauseBeforeSave"],
 res
 )
 );
+pauseBeforeSave = Boolean(st?.qfePauseBeforeSave);
 const mult = parseFloat(st?.qfeDelayMultiplier);
 if (Number.isFinite(mult) && mult >= 0.4 && mult <= 3) {
 window.__helpSeifDelayMultiplier = mult;
@@ -2325,6 +2370,7 @@ if (m) return m[0];
 return "";
 };
 const originalCloseDateForWon = isWonWorkflow ? readCurrentCloseDateValue() : "";
+let pausedForReview = false;
 let inLogACallFlow = false;
 const totalSteps = resource.interactions.length;
 for (let idx = 0; idx < totalSteps; idx++) {
@@ -2520,6 +2566,13 @@ new Event("change", { bubbles: true, composed: true })
 }
 } catch {}
 }
+if (
+pauseBeforeSave &&
+/SaveEdit/i.test(String(step.key || ""))
+) {
+pausedForReview = true;
+break;
+}
 const clicked = await onClickToElement(step);
 if (inLogACallFlow && isPublisherSaveClick(step)) {
 await onDelay({ value: "120" });
@@ -2558,10 +2611,13 @@ break;
 }
 }
 }
-window.__helpSeifFinishHud?.(
-window.__helpSeifAborted ? "stopped" : "done",
-resource?.name
-);
+const finalStatus = window.__helpSeifAborted
+? "stopped"
+: pausedForReview
+? "review"
+: "done";
+emitWorkflowState(finalStatus, resource?.name);
+window.__helpSeifFinishHud?.(finalStatus, resource?.name);
 };
 window.__helpSeifRunParser = parser;
 window.__helpSeifFillFields = fillSpecificFields;
