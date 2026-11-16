@@ -2540,6 +2540,48 @@ break;
 break;
 }
 case "CLICK": {
+if (isWonWorkflow && /SaveEdit|Save/i.test(String(step.key || ""))) {
+  try {
+    const currencyBtn = queryAllElements().find(
+      (el) =>
+        el.tagName === "BUTTON" &&
+        attrEqualsCI(el, "aria-label", "Opportunity Currency") &&
+        isElementVisible(el)
+    );
+    const curVal = currencyBtn
+      ? String(currencyBtn.getAttribute("data-value") || currencyBtn.textContent || "").trim()
+      : "";
+    if (currencyBtn && !/^EGP\b/i.test(curVal)) {
+      await onClickToElement({
+        id: "qfe-won-currency-open",
+        type: "CLICK",
+        key: 'button[role="combobox"][aria-label="Opportunity Currency"], button.slds-combobox__input[aria-label="Opportunity Currency"], [data-target-selection-name*="CurrencyIsoCode"] button[role="combobox"], button[aria-label="Opportunity Currency"]',
+        searchType: "cssSelector",
+      });
+      const deadline = Date.now() + 1400;
+      let egpOpt = null;
+      while (Date.now() < deadline) {
+        egpOpt = queryAllElements().find(
+          (el) =>
+            (el.tagName === "LIGHTNING-BASE-COMBOBOX-ITEM" || attrEqualsCI(el, "role", "option")) &&
+            String(el.getAttribute("data-value") || "").trim().toUpperCase() === "EGP" &&
+            isElementVisible(el)
+        );
+        if (egpOpt) break;
+        await delay(50);
+      }
+      if (egpOpt) {
+        await onClickToElement({
+          id: "qfe-won-currency-select",
+          type: "CLICK",
+          key: 'lightning-base-combobox-item[data-value="EGP"], [role="option"][data-value="EGP"], .slds-listbox__option[data-value="EGP"]',
+          searchType: "cssSelector",
+        });
+        await delay(200);
+      }
+    }
+  } catch {}
+}
 if (
 isWonWorkflow &&
 originalCloseDateForWon &&

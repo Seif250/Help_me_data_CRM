@@ -119,9 +119,6 @@ export const STARTER_RESOURCES = [
       { id: "qfe-won-stage-select", type: "CLICK", key: 'lightning-base-combobox-item[data-value="Registered Paid (Closed Won)"], [role="option"][data-value="Registered Paid (Closed Won)"], .slds-listbox__option[data-value="Registered Paid (Closed Won)"]', searchType: "cssSelector", fields: [{}] },
       { id: "qfe-won-after-stage", type: "DELAY", value: "350", fields: [{}] },
       { id: "qfe-won-opp-fields", type: "MULTIPLE_FIELDS", fields: [{ key: "Flexible_Field_3_Value__c", value: "{{FLEXIBLE_FIELD_3}}", fieldType: "text", searchType: "name" }, { key: "Flexible_Field_4_Value__c", value: "{{FLEXIBLE_FIELD_4}}", fieldType: "text", searchType: "name" }, { key: "Reason_Opportunity_Lost_Other__c", value: "", fieldType: "text", searchType: "name" }] },
-      { id: "qfe-won-currency-open", type: "CLICK", key: 'button[role="combobox"][aria-label="Opportunity Currency"], button.slds-combobox__input[aria-label="Opportunity Currency"], [data-target-selection-name*="CurrencyIsoCode"] button[role="combobox"], button[aria-label="Opportunity Currency"]', searchType: "cssSelector", fields: [{}] },
-      { id: "qfe-won-currency-wait", type: "DELAY", value: "300", fields: [{}] },
-      { id: "qfe-won-currency-select", type: "CLICK", key: 'lightning-base-combobox-item[data-value="EGP"], [role="option"][data-value="EGP"], .slds-listbox__option[data-value="EGP"]', searchType: "cssSelector", fields: [{}] },
       { id: "qfe-won-before-save", type: "DELAY", value: "350", fields: [{}] },
       { id: "qfe-won-save", type: "CLICK", key: 'button[name="SaveEdit"], button.slds-button_brand[name="SaveEdit"], .slds-docked-form-footer button.slds-button_brand, button[title="Save"]', searchType: "cssSelector", fields: [{}] },
       { id: "qfe-won-save-wait", type: "DELAY", value: "400", fields: [{}] }

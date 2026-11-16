@@ -442,23 +442,6 @@
             }
           }
         }
-        const hasCurrencyStep = item.interactions.some(
-          (s) => s?.id === "qfe-won-currency-select" || /Opportunity Currency/i.test(String(s?.key || ""))
-        );
-        if (!hasCurrencyStep) {
-          const currencySteps = [
-            { id: "qfe-won-currency-open", type: "CLICK", key: 'button[role="combobox"][aria-label="Opportunity Currency"], button.slds-combobox__input[aria-label="Opportunity Currency"], [data-target-selection-name*="CurrencyIsoCode"] button[role="combobox"], button[aria-label="Opportunity Currency"]', searchType: "cssSelector", fields: [{}] },
-            { id: "qfe-won-currency-wait", type: "DELAY", value: "300", fields: [{}] },
-            { id: "qfe-won-currency-select", type: "CLICK", key: 'lightning-base-combobox-item[data-value="EGP"], [role="option"][data-value="EGP"], .slds-listbox__option[data-value="EGP"]', searchType: "cssSelector", fields: [{}] }
-          ];
-          const saveIdx = item.interactions.findIndex((s) => s?.id === "qfe-won-before-save" || /SaveEdit/i.test(String(s?.key || "")));
-          if (saveIdx >= 0) {
-            item.interactions.splice(saveIdx, 0, ...currencySteps);
-          } else {
-            item.interactions.push(...currencySteps);
-          }
-          modified = true;
-        }
       }
       if (modified) {
         await chrome.storage.local.set({
