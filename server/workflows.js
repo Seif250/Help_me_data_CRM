@@ -30,8 +30,6 @@ export const STARTER_RESOURCES = [
       { id: "qfe-na-reason-open", type: "CLICK", key: 'button[aria-label="Reason Opportunity Lost or Closed"], button[aria-label*="Reason Opportunity Lost"]', searchType: "cssSelector", fields: [{}] },
       { id: "qfe-na-reason-wait", type: "DELAY", value: "400", fields: [{}] },
       { id: "qfe-na-reason-select", type: "CLICK", key: 'lightning-base-combobox-item[data-value="Not reachable/No answer"], [role="option"][data-value="Not reachable/No answer"]', searchType: "cssSelector", fields: [{}] },
-      { id: "qfe-na-reason-other-wait", type: "DELAY", value: "400", fields: [{}] },
-      { id: "qfe-na-reason-other", type: "MULTIPLE_FIELDS", fields: [{ key: 'input[name="Reason_Opportunity_Lost_Other__c"]', value: "No Answer", fieldType: "text", searchType: "cssSelector" }] },
       { id: "qfe-na-before-save", type: "DELAY", value: "400", fields: [{}] },
       { id: "qfe-na-save", type: "CLICK", key: 'button[name="SaveEdit"], .slds-button_brand[name="SaveEdit"]', searchType: "cssSelector", fields: [{}] },
       { id: "qfe-na-save-done", type: "DELAY", value: "400", fields: [{}] }
@@ -111,7 +109,7 @@ export const STARTER_RESOURCES = [
     id: "d4c8e9f0-1234-4a5b-9c8d-7e6f5a4b3c21",
     name: "Won",
     url: "https://britishcouncil.lightning.force.com/lightning/r/Opportunity/view",
-    description: "Set Stage to Registered Paid (Closed Won), fill Flexible Field 4 Value (CC/CS) & Flexible Field 3, clear loss reason, and save.",
+    description: "Set Stage to Registered Paid (Closed Won), fill Flexible Field 4 Value (CC/CS) & Flexible Field 3, set Opportunity Currency to EGP, clear loss reason, and save.",
     interactions: [
       { id: "qfe-won-page-settle", type: "DELAY", value: "300", fields: [{}] },
       { id: "qfe-won-edit-btn", type: "CLICK", key: 'button[title="Edit Stage"], button.test-id__inline-edit-trigger[title*="Stage"], [data-target-selection-name*="StageName"] button', searchType: "cssSelector", fields: [{}] },
@@ -121,6 +119,9 @@ export const STARTER_RESOURCES = [
       { id: "qfe-won-stage-select", type: "CLICK", key: 'lightning-base-combobox-item[data-value="Registered Paid (Closed Won)"], [role="option"][data-value="Registered Paid (Closed Won)"], .slds-listbox__option[data-value="Registered Paid (Closed Won)"]', searchType: "cssSelector", fields: [{}] },
       { id: "qfe-won-after-stage", type: "DELAY", value: "350", fields: [{}] },
       { id: "qfe-won-opp-fields", type: "MULTIPLE_FIELDS", fields: [{ key: "Flexible_Field_3_Value__c", value: "{{FLEXIBLE_FIELD_3}}", fieldType: "text", searchType: "name" }, { key: "Flexible_Field_4_Value__c", value: "{{FLEXIBLE_FIELD_4}}", fieldType: "text", searchType: "name" }, { key: "Reason_Opportunity_Lost_Other__c", value: "", fieldType: "text", searchType: "name" }] },
+      { id: "qfe-won-currency-open", type: "CLICK", key: 'button[role="combobox"][aria-label="Opportunity Currency"], button.slds-combobox__input[aria-label="Opportunity Currency"], [data-target-selection-name*="CurrencyIsoCode"] button[role="combobox"], button[aria-label="Opportunity Currency"]', searchType: "cssSelector", fields: [{}] },
+      { id: "qfe-won-currency-wait", type: "DELAY", value: "300", fields: [{}] },
+      { id: "qfe-won-currency-select", type: "CLICK", key: 'lightning-base-combobox-item[data-value="EGP"], [role="option"][data-value="EGP"], .slds-listbox__option[data-value="EGP"]', searchType: "cssSelector", fields: [{}] },
       { id: "qfe-won-before-save", type: "DELAY", value: "350", fields: [{}] },
       { id: "qfe-won-save", type: "CLICK", key: 'button[name="SaveEdit"], button.slds-button_brand[name="SaveEdit"], .slds-docked-form-footer button.slds-button_brand, button[title="Save"]', searchType: "cssSelector", fields: [{}] },
       { id: "qfe-won-save-wait", type: "DELAY", value: "400", fields: [{}] }

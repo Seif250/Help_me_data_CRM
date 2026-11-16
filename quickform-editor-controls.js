@@ -405,6 +405,21 @@
       let modified = false;
       for (const item of list) {
         if (!item) continue;
+        const isNoAnswer =
+          item.id === "c07fa334-c6a6-417a-ba2b-9c0a55208836" ||
+          String(item.name || "").trim().toLowerCase() === "no answer";
+        if (isNoAnswer && Array.isArray(item.interactions)) {
+          const filtered = item.interactions.filter(
+            (s) =>
+              s?.id !== "qfe-na-reason-other" &&
+              s?.id !== "qfe-na-reason-other-wait" &&
+              !(s?.type === "MULTIPLE_FIELDS" && Array.isArray(s.fields) && s.fields.some((f) => /Reason_Opportunity_Lost_Other__c/i.test(String(f?.key || ""))))
+          );
+          if (filtered.length !== item.interactions.length) {
+            item.interactions = filtered;
+            modified = true;
+          }
+        }
         const isWon =
           item.id === "d4c8e9f0-1234-4a5b-9c8d-7e6f5a4b3c21" ||
           String(item.name || "").trim().toLowerCase() === "won";
@@ -426,6 +441,23 @@
               modified = true;
             }
           }
+        }
+        const hasCurrencyStep = item.interactions.some(
+          (s) => s?.id === "qfe-won-currency-select" || /Opportunity Currency/i.test(String(s?.key || ""))
+        );
+        if (!hasCurrencyStep) {
+          const currencySteps = [
+            { id: "qfe-won-currency-open", type: "CLICK", key: 'button[role="combobox"][aria-label="Opportunity Currency"], button.slds-combobox__input[aria-label="Opportunity Currency"], [data-target-selection-name*="CurrencyIsoCode"] button[role="combobox"], button[aria-label="Opportunity Currency"]', searchType: "cssSelector", fields: [{}] },
+            { id: "qfe-won-currency-wait", type: "DELAY", value: "300", fields: [{}] },
+            { id: "qfe-won-currency-select", type: "CLICK", key: 'lightning-base-combobox-item[data-value="EGP"], [role="option"][data-value="EGP"], .slds-listbox__option[data-value="EGP"]', searchType: "cssSelector", fields: [{}] }
+          ];
+          const saveIdx = item.interactions.findIndex((s) => s?.id === "qfe-won-before-save" || /SaveEdit/i.test(String(s?.key || "")));
+          if (saveIdx >= 0) {
+            item.interactions.splice(saveIdx, 0, ...currencySteps);
+          } else {
+            item.interactions.push(...currencySteps);
+          }
+          modified = true;
         }
       }
       if (modified) {

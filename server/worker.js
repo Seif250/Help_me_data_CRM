@@ -1,5 +1,16 @@
 import { STARTER_RESOURCES } from "./workflows.js";
 
+// Deterministic version hash computed from STARTER_RESOURCES so any workflow edit auto-syncs to clients
+const WORKFLOWS_VERSION = (() => {
+  const s = JSON.stringify(STARTER_RESOURCES);
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return "wf-" + (h >>> 0).toString(36);
+})();
+
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
@@ -787,6 +798,7 @@ export default {
         plan: record.plan,
         expiresAt: record.expiresAt,
         maxDevices: record.maxDevices,
+        workflowsVersion: WORKFLOWS_VERSION,
         workflows: STARTER_RESOURCES
       });
     }
@@ -808,7 +820,17 @@ export default {
         await env.LICENSES.put(`key:${key}`, JSON.stringify(record));
       }
 
-      return json({ ok: true, plan: record.plan, expiresAt: record.expiresAt });
+      const clientWfVer = String(body.workflowsVersion || "");
+      const payload = {
+        ok: true,
+        plan: record.plan,
+        expiresAt: record.expiresAt,
+        workflowsVersion: WORKFLOWS_VERSION
+      };
+      if (clientWfVer !== WORKFLOWS_VERSION) {
+        payload.workflows = STARTER_RESOURCES;
+      }
+      return json(payload);
     }
 
     // Admin Endpoints

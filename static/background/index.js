@@ -62,6 +62,7 @@
         plan: data.plan || "PRO",
         expiresAt: data.expiresAt || null,
         apiUrl: baseUrl,
+        workflowsVersion: data.workflowsVersion || null,
         lastVerifiedAt: Date.now()
       };
 
@@ -103,7 +104,11 @@
       const res = await fetch(`${baseUrl}/api/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ key: lic.key, deviceId })
+        body: JSON.stringify({
+          key: lic.key,
+          deviceId,
+          workflowsVersion: lic.workflowsVersion || null
+        })
       });
       const data = await res.json().catch(() => ({}));
       if (res.status === 401 || res.status === 403 || data?.ok === false) {
@@ -119,10 +124,17 @@
           ...lic,
           plan: data.plan || lic.plan,
           expiresAt: data.expiresAt || lic.expiresAt,
+          workflowsVersion: data.workflowsVersion || lic.workflowsVersion || null,
           lastVerifiedAt: Date.now(),
           error: null
         };
-        await chrome.storage.local.set({ [LICENSE_KEY]: updated });
+        const toSave = { [LICENSE_KEY]: updated };
+        const hasNewWorkflows = Array.isArray(data.workflows) && data.workflows.length > 0;
+        if (hasNewWorkflows) {
+          toSave[STORAGE_KEY] = JSON.stringify(data.workflows);
+        }
+        await chrome.storage.local.set(toSave);
+        if (hasNewWorkflows) scheduleMenuRebuild();
         return { ok: true, license: updated };
       }
     } catch {
